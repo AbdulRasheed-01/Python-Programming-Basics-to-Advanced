@@ -405,3 +405,114 @@ Division: 15 / 4 = 3.75
 Integer Division: 15 // 4 = 3
 Remainder: 15 % 4 = 3
 Power: 15 ** 4 = 50625
+
+Comparison Operators
+
+# comparison.py
+x = 10
+y = 20
+
+print(f"x = {x}, y = {y}")
+print(f"x == y: {x == y}")
+print(f"x != y: {x != y}")
+print(f"x < y: {x < y}")
+print(f"x > y: {x > y}")
+print(f"x <= y: {x <= y}")
+print(f"x >= y: {x >= y}")
+
+# String comparison
+name1 = "Alice"
+name2 = "Bob"
+print(f"\n'Alice' < 'Bob': {name1 < name2}")  # Alphabetical comparison
+
+Output:
+
+x = 10, y = 20
+x == y: False
+x != y: True
+x < y: True
+x > y: False
+x <= y: True
+x >= y: False
+
+'Alice' < 'Bob': True
+
+Logical Operators
+# logical.py
+a = True
+b = False
+
+print(f"a = {a}, b = {b}")
+print(f"a and b: {a and b}")
+print(f"a or b: {a or b}")
+print(f"not a: {not a}")
+print(f"not b: {not b}")
+
+# Practical example
+age = 25
+has_license = True
+
+can_drive = age >= 18 and has_license
+print(f"\nCan drive: {can_drive}")
+
+# Short-circuit evaluation
+def get_true():
+    print("get_true called")
+    return True
+
+def get_false():
+    print("get_false called")
+    return False
+
+# and stops at first False
+result = get_false() and get_true()
+print(f"Result: {result}")
+
+# or stops at first True
+result = get_true() or get_false()
+print(f"Result: {result}")
+
+Output:
+
+
+a = True, b = False
+a and b: False
+a or b: True
+not a: False
+not b: True
+
+Can drive: True
+get_false called
+Result: False
+get_true called
+Result: True
+
+1.9 Practice Exercises
+
+Exercise 1: Personal Information Card
+Create a program that asks for user information and displays it in a formatted card.
+
+# exercise1.py
+"""
+Task: Create a personal information card
+1. Ask for: name, age, city, occupation, hobby
+2. Display in a formatted card
+"""
+
+# Your code here
+name = input("Enter your name: ")
+age = input("Enter your age: ")
+city = input("Enter your city: ")
+occupation = input("Enter your occupation: ")
+hobby = input("Enter your hobby: ")
+
+# Display card
+print("\n" + "="*40)
+print("         PERSONAL INFORMATION CARD")
+print("="*40)
+print(f"Name:       {name}")
+print(f"Age:        {age}")
+print(f"City:       {city}")
+print(f"Occupation: {occupation}")
+print(f"Hobby:      {hobby}")
+print("="*40)
