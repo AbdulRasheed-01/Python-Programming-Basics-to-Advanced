@@ -693,4 +693,215 @@ print(f"Total:       ${total_amount:,.2f}")
 print("="*30)
 
 Sample Run:
+SIMPLE INTEREST CALCULATOR
+==============================
+Enter principal amount: $1000
+Enter interest rate (% per year): 5
+Enter time (years): 3
 
+==============================
+RESULTS
+==============================
+Principal:   $1,000.00
+Rate:        5.0%
+Time:        3.0 years
+Interest:    $150.00
+Total:       $1,150.00
+==============================
+
+1.10 Weekly Project: Interactive Story Generator
+Create a program that generates a custom story based on user input.
+
+# week1_project.py
+"""
+WEEK 1 PROJECT: Interactive Story Generator
+Create a unique story using user inputs
+"""
+
+print("="*50)
+print("        INTERACTIVE STORY GENERATOR")
+print("="*50)
+
+# Get user inputs
+print("\nLet's create your story! Answer these questions:")
+name = input("Enter a character name: ")
+age = input("Enter their age: ")
+city = input("Enter a city name: ")
+superpower = input("Enter a superpower: ")
+animal = input("Enter an animal: ")
+color = input("Enter a color: ")
+food = input("Enter a favorite food: ")
+number = input("Enter a number: ")
+
+# Convert age to integer for calculations
+age_num = int(age)
+
+# Generate story parts
+print("\n" + "="*50)
+print("           YOUR CUSTOM STORY")
+print("="*50)
+
+# Story template with variations based on age
+if age_num < 18:
+    print(f"\nOnce upon a time, in the magical city of {city}, there lived a young")
+    print(f"hero named {name}. At just {age} years old, {name} discovered they had")
+    print(f"the incredible power of {superpower}!")
+    
+else:
+    print(f"\nIn the bustling metropolis of {city}, {name} lived an ordinary life")
+    print(f"as a {age}-year-old professional. But everything changed when they")
+    print(f"unlocked their hidden ability: {superpower}!")
+
+# Common story elements
+print(f"\nOne day, while eating their favorite {color} {food}, {name} noticed")
+print(f"a mysterious {animal} acting strangely. The {animal} seemed to be")
+print(f"carrying a message that would change everything...")
+
+print(f"\nUsing their {superpower} for the first time, {name} discovered")
+print(f"that they weren't alone. There were {number} other heroes in {city},")
+print(f"each with their own unique powers!")
+
+print(f"\nTogether, they formed a team to protect the city from evil.")
+print(f"And so began the legend of {name}, the hero with the power of")
+print(f"{superpower}, defender of {city}!")
+
+print("\n" + "="*50)
+print("            THE END")
+print("="*50)
+
+# Bonus: Save story to file
+save = input("\nDo you want to save your story? (yes/no): ")
+if save.lower() == 'yes':
+    filename = f"{name}_story.txt"
+    with open(filename, 'w') as file:
+        file.write("INTERACTIVE STORY\n")
+        file.write("="*50 + "\n")
+        file.write(f"Character: {name}\n")
+        file.write(f"Age: {age}\n")
+        file.write(f"City: {city}\n")
+        file.write(f"Superpower: {superpower}\n")
+        file.write("="*50 + "\n\n")
+        file.write("[Story content would be saved here]")
+    print(f"Story saved as '{filename}'")
+
+Sample Run:
+
+
+==================================================
+        INTERACTIVE STORY GENERATOR
+==================================================
+
+Let's create your story! Answer these questions:
+Enter a character name: Alex
+Enter their age: 25
+Enter a city name: Tokyo
+Enter a superpower: teleportation
+Enter an animal: dragon
+Enter a color: purple
+Enter a favorite food: ramen
+Enter a number: 7
+
+==================================================
+           YOUR CUSTOM STORY
+==================================================
+
+In the bustling metropolis of Tokyo, Alex lived an ordinary life
+as a 25-year-old professional. But everything changed when they
+unlocked their hidden ability: teleportation!
+
+One day, while eating their favorite purple ramen, Alex noticed
+a mysterious dragon acting strangely. The dragon seemed to be
+carrying a message that would change everything...
+
+Using their teleportation for the first time, Alex discovered
+that they weren't alone. There were 7 other heroes in Tokyo,
+each with their own unique powers!
+
+Together, they formed a team to protect the city from evil.
+And so began the legend of Alex, the hero with the power of
+teleportation, defender of Tokyo!
+
+==================================================
+            THE END
+==================================================
+
+Do you want to save your story? (yes/no): yes
+Story saved as 'Alex_story.txt'
+
+📝 Week 1 Summary
+What You Learned:
+✅ Python installation and setup
+
+✅ Basic syntax and variables
+
+✅ Data types (int, float, str, bool)
+
+✅ Input/output operations
+
+✅ Type conversion
+
+✅ Basic operators
+
+✅ Formatted output
+
+Common Errors to Avoid:
+
+# 1. Forgetting to convert input
+age = input("Age: ")
+next_year = age + 1  # ERROR! age is string
+
+# Correct:
+age = int(input("Age: "))
+next_year = age + 1
+
+# 2. Division by zero
+result = 10 / 0  # ZeroDivisionError
+
+# 3. Mismatched types
+result = "10" + 5  # TypeError
+
+# 4. Undefined variables
+print(x)  # NameError if x not defined
+
+🎯 Week 1 Challenges
+Challenge 1: BMI Calculator
+Create a BMI calculator using the formula: BMI = weight(kg) / (height(m))²
+
+Challenge 2: Currency Converter
+Convert between USD, EUR, and JPY with fixed exchange rates
+
+Challenge 3: Digital Clock
+Display current time in HH:MM:SS format (use import datetime)
+
+Challenge 4: Tip Calculator
+Calculate tip amount and split bill among friends
+
+Challenge 5: Mad Libs Game
+Create a more advanced Mad Libs with multiple story templates
+
+📚 Additional Resources
+Official Documentation:
+Python.org Tutorial
+
+W3Schools Python
+
+Real Python Tutorials
+
+Practice Platforms:
+HackerRank Python
+
+LeetCode
+
+Codecademy
+
+Books:
+"Automate the Boring Stuff with Python" - Al Sweigart
+
+"Python Crash Course" - Eric Matthes
+
+"Think Python" - Allen B. Downey
+
+🎉 Congratulations!
+You've completed Week 1 of Python Programming! You now have a solid foundation in Python basics. Remember, programming is like learning a new language - practice every day!
+
+Next Week: Week 2 - Control Flow & Loops (if statements, for loops, while loops)
