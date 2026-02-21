@@ -59,3 +59,24 @@ sudo apt install python3 python3-pip
 # Verify installation
 python3 --version
 pip3 --version
+
+VS Code Setup (Recommended)
+
+# Install VS Code extensions
+- Python (by Microsoft)
+- Pylance
+- Python Docstring Generator
+- Jupyter
+
+1.2 Your First Python Program
+Hello, World!
+Create a file called hello.py:
+
+# hello.py - My first Python program
+print("Hello, World!")
+print("Welcome to Python Programming!")
+
+Output:
+
+Hello, World!
+Welcome to Python Programming!
