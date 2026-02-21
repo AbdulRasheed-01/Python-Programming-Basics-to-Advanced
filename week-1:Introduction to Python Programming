@@ -34,3 +34,18 @@ Work with variables and data types
 Handle user input and output
 
 Write your first Python programs
+
+1.1 Installation & Setup
+
+Windows Installation
+    1. Go to https://www.python.org/downloads/
+    2. Download Python 3.x for Windows
+    3. Run installer (CHECK "Add Python to PATH")
+    4. Verify installation:
+
+macOS Installation
+    
+    # Using Homebrew
+    brew install python3
+    
+    # Or download from python.org
