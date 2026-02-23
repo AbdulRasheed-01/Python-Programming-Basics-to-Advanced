@@ -894,3 +894,303 @@ FizzBuzz up to 15 (Fizz:2, Buzz:3):
 32 Fizz 34 Buzz Fizz 37 38 Fizz Buzz 41 Fizz 43 Bazz FizzBuzz 46 
 47 Fizz Bazz Buzz Fizz 52 53 Fizz Buzz Bazz Fizz 58 59 FizzBuzz 61
 
+Exercise 3: Pattern Printing
+
+# exercise3_patterns.py
+"""
+Print various patterns using nested loops
+"""
+
+print("="*50)
+print("PATTERN PRINTING")
+print("="*50)
+
+# Pattern 1: Right triangle
+print("\n1. RIGHT TRIANGLE:")
+size = 5
+for i in range(1, size + 1):
+    print("*" * i)
+
+# Pattern 2: Inverted right triangle
+print("\n2. INVERTED RIGHT TRIANGLE:")
+size = 5
+for i in range(size, 0, -1):
+    print("*" * i)
+
+# Pattern 3: Pyramid
+print("\n3. PYRAMID:")
+size = 5
+for i in range(1, size + 1):
+    spaces = " " * (size - i)
+    stars = "*" * (2 * i - 1)
+    print(spaces + stars)
+
+# Pattern 4: Diamond
+print("\n4. DIAMOND:")
+size = 5
+# Top half
+for i in range(1, size + 1):
+    spaces = " " * (size - i)
+    stars = "*" * (2 * i - 1)
+    print(spaces + stars)
+# Bottom half
+for i in range(size - 1, 0, -1):
+    spaces = " " * (size - i)
+    stars = "*" * (2 * i - 1)
+    print(spaces + stars)
+
+# Pattern 5: Number pyramid
+print("\n5. NUMBER PYRAMID:")
+size = 5
+for i in range(1, size + 1):
+    # Spaces
+    for j in range(size - i):
+        print(" ", end="")
+    # Increasing numbers
+    for j in range(1, i + 1):
+        print(j, end="")
+    # Decreasing numbers
+    for j in range(i - 1, 0, -1):
+        print(j, end="")
+    print()
+
+# Pattern 6: Alphabet pattern
+print("\n6. ALPHABET PATTERN:")
+size = 5
+for i in range(size):
+    for j in range(i + 1):
+        print(chr(65 + j), end=" ")
+    print()
+
+# Pattern 7: Custom pattern with user input
+print("\n7. CUSTOM PATTERN:")
+try:
+    symbol = input("Enter a symbol to print: ")
+    height = int(input("Enter pattern height: "))
+    
+    print(f"\n{symbol} PYRAMID:")
+    for i in range(1, height + 1):
+        spaces = " " * (height - i)
+        pattern = symbol * (2 * i - 1)
+        print(spaces + pattern)
+        
+except ValueError:
+    print("Please enter valid input!")
+
+Output:
+
+==================================================
+PATTERN PRINTING
+==================================================
+
+1. RIGHT TRIANGLE:
+*
+**
+***
+****
+*****
+
+2. INVERTED RIGHT TRIANGLE:
+*****
+****
+***
+**
+*
+
+3. PYRAMID:
+    *
+   ***
+  *****
+ *******
+*********
+
+4. DIAMOND:
+    *
+   ***
+  *****
+ *******
+*********
+ *******
+  *****
+   ***
+    *
+
+5. NUMBER PYRAMID:
+    1
+   121
+  12321
+ 1234321
+123454321
+
+6. ALPHABET PATTERN:
+A 
+A B 
+A B C 
+A B C D 
+A B C D E 
+
+7. CUSTOM PATTERN:
+Enter a symbol to print: #
+Enter pattern height: 4
+
+# PYRAMID:
+   #
+  ###
+ #####
+#######
+
+Exercise 4: Prime Number Finder
+# exercise4_primes.py
+"""
+Find prime numbers in various ways
+"""
+
+import math
+import time
+
+print("="*50)
+print("PRIME NUMBER FINDER")
+print("="*50)
+
+def is_prime(n):
+    """Check if a number is prime"""
+    if n < 2:
+        return False
+    if n == 2:
+        return True
+    if n % 2 == 0:
+        return False
+    
+    # Check only odd divisors up to sqrt(n)
+    for i in range(3, int(math.sqrt(n)) + 1, 2):
+        if n % i == 0:
+            return False
+    return True
+
+# Find primes in a range
+print("\n1. FIND PRIMES IN A RANGE:")
+start = int(input("Enter start number: "))
+end = int(input("Enter end number: "))
+
+primes = []
+start_time = time.time()
+
+for num in range(start, end + 1):
+    if is_prime(num):
+        primes.append(num)
+
+end_time = time.time()
+print(f"\nPrimes between {start} and {end}:")
+print(primes)
+print(f"Found {len(primes)} primes in {end_time - start_time:.4f} seconds")
+
+# First N primes
+print("\n2. FIRST N PRIMES:")
+n = int(input("How many primes do you want? "))
+
+first_n_primes = []
+num = 2
+while len(first_n_primes) < n:
+    if is_prime(num):
+        first_n_primes.append(num)
+    num += 1
+
+print(f"First {n} primes: {first_n_primes}")
+
+# Prime factorization
+print("\n3. PRIME FACTORIZATION:")
+number = int(input("Enter a number to factorize: "))
+original = number
+factors = []
+
+divisor = 2
+while divisor <= number:
+    if number % divisor == 0:
+        factors.append(divisor)
+        number //= divisor
+    else:
+        divisor += 1
+
+print(f"Factors of {original}: {factors}")
+
+# Twin primes
+print("\n4. TWIN PRIMES (pairs with difference 2):")
+limit = int(input("Enter upper limit for twin primes: "))
+
+twin_primes = []
+for i in range(2, limit - 1):
+    if is_prime(i) and is_prime(i + 2):
+        twin_primes.append((i, i + 2))
+
+print(f"Twin primes up to {limit}:")
+for pair in twin_primes[:10]:  # Show first 10
+    print(f"  {pair[0]} and {pair[1]}")
+if len(twin_primes) > 10:
+    print(f"  ... and {len(twin_primes) - 10} more")
+
+# Performance comparison
+print("\n5. PERFORMANCE COMPARISON:")
+test_num = 999983  # A large prime
+
+start = time.time()
+result1 = is_prime(test_num)
+time1 = time.time() - start
+
+# Naive method (for comparison)
+def is_prime_naive(n):
+    if n < 2:
+        return False
+    for i in range(2, n):
+        if n % i == 0:
+            return False
+    return True
+
+start = time.time()
+result2 = is_prime_naive(test_num)
+time2 = time.time() - start
+
+print(f"Testing if {test_num} is prime:")
+print(f"  Optimized method: {result1}, took {time1:.6f} seconds")
+print(f"  Naive method:     {result2}, took {time2:.6f} seconds")
+print(f"  Speedup: {time2/time1:.1f}x faster!")
+
+Output:
+
+==================================================
+PRIME NUMBER FINDER
+==================================================
+
+1. FIND PRIMES IN A RANGE:
+Enter start number: 20
+Enter end number: 50
+
+Primes between 20 and 50:
+[23, 29, 31, 37, 41, 43, 47]
+Found 7 primes in 0.0012 seconds
+
+2. FIRST N PRIMES:
+How many primes do you want? 10
+First 10 primes: [2, 3, 5, 7, 11, 13, 17, 19, 23, 29]
+
+3. PRIME FACTORIZATION:
+Enter a number to factorize: 84
+Factors of 84: [2, 2, 3, 7]
+
+4. TWIN PRIMES (pairs with difference 2):
+Enter upper limit for twin primes: 100
+Twin primes up to 100:
+  (3, 5)
+  (5, 7)
+  (11, 13)
+  (17, 19)
+  (29, 31)
+  (41, 43)
+  (59, 61)
+  (71, 73)
+
+5. PERFORMANCE COMPARISON:
+Testing if 999983 is prime:
+  Optimized method: True, took 0.000432 seconds
+  Naive method:     True, took 0.094521 seconds
+  Speedup: 218.8x faster!
+
