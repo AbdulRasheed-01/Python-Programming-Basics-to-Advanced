@@ -107,3 +107,20 @@ if pin_correct:
         print("Insufficient funds")
 else:
     print("Incorrect PIN")
+
+Output:
+
+Example 1: Voting Eligibility
+Age 18: You are eligible to vote!
+----------------------------------------
+Example 2: Grade Calculator
+Score: 85
+Grade: B
+Message: Good job!
+----------------------------------------
+Example 3: Scholarship Eligibility
+Eligible for full scholarship!
+----------------------------------------
+Example 4: ATM Withdrawal
+Withdrawal successful! New balance: $500
+----------------------------------------
