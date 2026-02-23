@@ -244,4 +244,100 @@ True  False  False    True    False
 False True   False    True    True 
 False False  False    False   True
 
+Exercise 3: For Loops
+
+# for_loops.py
+"""
+Comprehensive for loop examples
+"""
+
+print("="*50)
+print("FOR LOOP BASICS")
+print("="*50)
+
+# Example 1: Iterating over a list
+print("\n1. Iterating over a list:")
+fruits = ["apple", "banana", "orange", "grape", "mango"]
+for fruit in fruits:
+    print(f"  - {fruit}")
+
+# Example 2: Using range()
+print("\n2. Range function variations:")
+print("  range(5):", end=" ")
+for i in range(5):
+    print(i, end=" ")
+
+print("\n  range(2, 8):", end=" ")
+for i in range(2, 8):
+    print(i, end=" ")
+
+print("\n  range(1, 10, 2):", end=" ")
+for i in range(1, 10, 2):
+    print(i, end=" ")
+
+print("\n  range(10, 0, -2):", end=" ")
+for i in range(10, 0, -2):
+    print(i, end=" ")
+
+# Example 3: Iterating over string
+print("\n\n3. Iterating over a string:")
+word = "PYTHON"
+for char in word:
+    print(f"  Character: {char}")
+
+# Example 4: enumerate() for index and value
+print("\n4. Using enumerate():")
+colors = ["red", "green", "blue", "yellow"]
+for index, color in enumerate(colors):
+    print(f"  Index {index}: {color}")
+
+# Example 5: zip() for parallel iteration
+print("\n5. Using zip() for parallel iteration:")
+names = ["Alice", "Bob", "Charlie"]
+scores = [85, 92, 78]
+grades = ["B", "A", "C"]
+
+for name, score, grade in zip(names, scores, grades):
+    print(f"  {name}: Score={score}, Grade={grade}")
+
+# Example 6: Nested loops
+print("\n6. Nested loops - Multiplication table:")
+print("    ", end="")
+for i in range(1, 6):
+    print(f"{i:4}", end="")
+print("\n   " + "-"*20)
+
+for i in range(1, 6):
+    print(f"{i:2} |", end="")
+    for j in range(1, 6):
+        print(f"{i*j:4}", end="")
+    print()
+
+# Example 7: List comprehension (preview)
+print("\n7. List comprehension (squaring numbers):")
+numbers = [1, 2, 3, 4, 5]
+squares = [n**2 for n in numbers]
+print(f"  Original: {numbers}")
+print(f"  Squares:  {squares}")
+
+# Example 8: Dictionary iteration
+print("\n8. Dictionary iteration:")
+person = {
+    "name": "John",
+    "age": 30,
+    "city": "New York",
+    "profession": "Engineer"
+}
+
+print("  Keys:", end=" ")
+for key in person.keys():
+    print(key, end=" ")
+
+print("\n  Values:", end=" ")
+for value in person.values():
+    print(value, end=" ")
+
+print("\n  Items:")
+for key, value in person.items():
+    print(f"    {key}: {value}")
 
