@@ -124,3 +124,64 @@ Eligible for full scholarship!
 Example 4: ATM Withdrawal
 Withdrawal successful! New balance: $500
 ----------------------------------------
+
+Exercise 2: Comparison and Logical Operators
+
+# logical_operators.py
+"""
+Demonstrating comparison and logical operators
+"""
+
+def compare_numbers(a, b):
+    """Compare two numbers and return results"""
+    print(f"\nComparing {a} and {b}:")
+    print(f"{a} == {b}: {a == b}")
+    print(f"{a} != {b}: {a != b}")
+    print(f"{a} < {b}: {a < b}")
+    print(f"{a} > {b}: {a > b}")
+    print(f"{a} <= {b}: {a <= b}")
+    print(f"{a} >= {b}: {a >= b}")
+
+# Test comparisons
+compare_numbers(10, 5)
+compare_numbers(7, 7)
+compare_numbers(3, 8)
+
+# Logical operators
+print("\n" + "="*40)
+print("LOGICAL OPERATORS")
+print("="*40)
+
+def check_eligibility(age, has_license, has_insurance):
+    """Check if person can drive"""
+    print(f"\nAge: {age}, License: {has_license}, Insurance: {has_insurance}")
+    
+    # AND operator - all must be True
+    can_drive = age >= 18 and has_license and has_insurance
+    print(f"AND (all required): {can_drive}")
+    
+    # OR operator - at least one True
+    can_drive_basic = age >= 18 and (has_license or has_insurance)
+    print(f"OR (license OR insurance): {can_drive_basic}")
+    
+    # NOT operator - reverses boolean
+    print(f"NOT can drive: {not can_drive}")
+
+# Test cases
+check_eligibility(25, True, True)
+check_eligibility(17, True, True)
+check_eligibility(30, True, False)
+check_eligibility(20, False, False)
+
+# Truth table for logical operators
+print("\n" + "="*40)
+print("TRUTH TABLE")
+print("="*40)
+print("A     B     A and B  A or B  not A")
+print("-"*40)
+
+for a in [True, False]:
+    for b in [True, False]:
+        print(f"{str(a):5} {str(b):5} {str(a and b):8} {str(a or b):7} {str(not a):6}")
+
+
