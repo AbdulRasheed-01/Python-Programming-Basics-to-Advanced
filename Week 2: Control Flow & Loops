@@ -1903,4 +1903,181 @@ ID     Name                 Age   Grade  Subjects
 S001   Alice Johnson        15    10     5/5 subjects
 S002   Bob Smith            16    11     5/5 subjects
 
+📊 Week 2 Quiz
+# week2_quiz.py
+"""
+Week 2 Quiz - Test your knowledge
+"""
 
+def quiz():
+    score = 0
+    total = 10
+    
+    print("\n" + "="*50)
+    print("WEEK 2 QUIZ - Control Flow & Loops")
+    print("="*50)
+    
+    # Question 1
+    print("\n1. What will be the output of this code?")
+    print("   x = 5")
+    print("   if x > 3:")
+    print("       print('A')")
+    print("   elif x == 5:")
+    print("       print('B')")
+    print("   else:")
+    print("       print('C')")
+    answer = input("   Your answer: ").upper()
+    if answer == "A":
+        print("   ✅ Correct! The first condition is True")
+        score += 1
+    else:
+        print("   ❌ Incorrect. The output is 'A' because x > 3 is True")
+    
+    # Question 2
+    print("\n2. How many times will this loop run?")
+    print("   for i in range(2, 10, 3):")
+    print("       print(i)")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 3:
+            print("   ✅ Correct! Values: 2, 5, 8")
+            score += 1
+        else:
+            print("   ❌ Incorrect. It runs 3 times (2, 5, 8)")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 3
+    print("\n3. What does 'continue' do in a loop?")
+    print("   a) Exits the loop completely")
+    print("   b) Skips the rest of current iteration")
+    print("   c) Restarts the loop")
+    print("   d) Does nothing")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("   ✅ Correct! Continue skips to next iteration")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Continue skips the rest of current iteration")
+    
+    # Question 4
+    print("\n4. What is the output?")
+    print("   for i in range(3):")
+    print("       for j in range(2):")
+    print("           print(i, j)")
+    print("           if j == 1:")
+    print("               break")
+    print("   (Think about the pairs printed)")
+    answer = input("   Type 'see' to see answer: ")
+    if answer.lower() == "see":
+        print("   Output: (0,0), (0,1), (1,0), (1,1), (2,0), (2,1)")
+        print("   ✅ Break only breaks inner loop")
+        score += 1
+    
+    # Question 5
+    print("\n5. Which loop is guaranteed to run at least once?")
+    print("   a) for loop")
+    print("   b) while loop")
+    print("   c) do-while loop (Python doesn't have it)")
+    print("   d) All loops")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "c":
+        print("   ✅ Correct! Python doesn't have do-while")
+        score += 1
+    else:
+        print("   ❌ Python doesn't have a do-while loop")
+    
+    # Question 6
+    print("\n6. What is the output?")
+    print("   x = 0")
+    print("   while x < 3:")
+    print("       x += 1")
+    print("   else:")
+    print("       print(x)")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 3:
+            print("   ✅ Correct! else runs after normal completion")
+            score += 1
+        else:
+            print("   ❌ The else runs after loop completes, output is 3")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 7
+    print("\n7. How many times will 'Hello' be printed?")
+    print("   for i in range(3):")
+    print("       for j in range(3):")
+    print("           if i == j:")
+    print("               continue")
+    print("           print('Hello')")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 6:
+            print("   ✅ Correct! 9 total - 3 skipped = 6")
+            score += 1
+        else:
+            print("   ❌ Should be 6 (9 total iterations minus 3 continues)")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 8
+    print("\n8. What is the value of x after this loop?")
+    print("   x = 0")
+    print("   for i in range(5):")
+    print("       if i == 3:")
+    print("           break")
+    print("       x += i")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 3:
+            print("   ✅ Correct! Sum of 0+1+2 = 3")
+            score += 1
+        else:
+            print("   ❌ Loop stops at i=3, so x = 0+1+2 = 3")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 9
+    print("\n9. Which statement is TRUE about Python loops?")
+    print("   a) For loops can only iterate over numbers")
+    print("   b) While loops always execute at least once")
+    print("   c) Else clause can be used with both for and while")
+    print("   d) Break only works in for loops")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "c":
+        print("   ✅ Correct! Python has for-else and while-else")
+        score += 1
+    else:
+        print("   ❌ Python supports else with both loop types")
+    
+    # Question 10
+    print("\n10. What does this code print?")
+    print("    for i in range(2):")
+    print("        pass")
+    print("    print('Done')")
+    answer = input("    Your answer: ")
+    if answer.lower() == "done":
+        print("   ✅ Correct! pass does nothing")
+        score += 1
+    else:
+        print("   ❌ 'pass' is a placeholder, so it prints 'Done'")
+    
+    # Final score
+    print("\n" + "="*50)
+    print(f"QUIZ COMPLETE! Your score: {score}/{total}")
+    print("="*50)
+    
+    if score == total:
+        print("🏆 Perfect! You're a control flow master!")
+    elif score >= 8:
+        print("🌟 Great job! You have a solid understanding!")
+    elif score >= 6:
+        print("📚 Good effort! Review the topics you missed.")
+    else:
+        print("💪 Keep practicing! Review the material and try again.")
+    
+    return score
+
+if __name__ == "__main__":
+    quiz()
