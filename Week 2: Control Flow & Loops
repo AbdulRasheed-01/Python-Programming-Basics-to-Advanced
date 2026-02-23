@@ -770,4 +770,33 @@ if play_again == "yes":
 else:
     print("Thanks for playing!")
 
+Sample Run:
+
+==================================================
+NUMBER GUESSING GAME
+==================================================
+
+Select Difficulty:
+1. Easy (1-20, 10 attempts)
+2. Medium (1-50, 7 attempts)
+3. Hard (1-100, 5 attempts)
+Choose difficulty (1-3): 2
+
+I'm thinking of a number between 1 and 50
+You have 7 attempts. Good luck!
+
+Attempt 1/7 - Your guess: 25
+📉 Too low! Try a higher number.
+Attempt 2/7 - Your guess: 37
+📈 Too high! Try a lower number.
+Attempt 3/7 - Your guess: 31
+📈 Too high! Try a lower number.
+Attempt 4/7 - Your guess: 28
+📉 Too low! Try a higher number.
+Attempt 5/7 - Your guess: 29
+
+🎉 Congratulations! You got it in 5 attempts!
+
+Play again? (yes/no): no
+Thanks for playing!
 
