@@ -184,4 +184,64 @@ for a in [True, False]:
     for b in [True, False]:
         print(f"{str(a):5} {str(b):5} {str(a and b):8} {str(a or b):7} {str(not a):6}")
 
+Output:
+
+Comparing 10 and 5:
+10 == 5: False
+10 != 5: True
+10 < 5: False
+10 > 5: True
+10 <= 5: False
+10 >= 5: True
+
+Comparing 7 and 7:
+7 == 7: True
+7 != 7: False
+7 < 7: False
+7 > 7: False
+7 <= 7: True
+7 >= 7: True
+
+Comparing 3 and 8:
+3 == 8: False
+3 != 8: True
+3 < 8: True
+3 > 8: False
+3 <= 8: True
+3 >= 8: False
+
+========================================
+LOGICAL OPERATORS
+========================================
+
+Age: 25, License: True, Insurance: True
+AND (all required): True
+OR (license OR insurance): True
+NOT can drive: False
+
+Age: 17, License: True, Insurance: True
+AND (all required): False
+OR (license OR insurance): True
+NOT can drive: True
+
+Age: 30, License: True, Insurance: False
+AND (all required): False
+OR (license OR insurance): True
+NOT can drive: True
+
+Age: 20, License: False, Insurance: False
+AND (all required): False
+OR (license OR insurance): False
+NOT can drive: True
+
+========================================
+TRUTH TABLE
+========================================
+A     B     A and B  A or B  not A
+----------------------------------------
+True  True   True     True    False
+True  False  False    True    False
+False True   False    True    True 
+False False  False    False   True
+
 
