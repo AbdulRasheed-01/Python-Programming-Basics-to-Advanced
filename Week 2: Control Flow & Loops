@@ -1445,3 +1445,462 @@ New balance: $4900.00
 
 Press Enter to continue...
 
+📝 Weekly Project: Student Grade Management System
+
+# week2_project.py
+"""
+WEEK 2 PROJECT: Student Grade Management System
+A comprehensive system to manage student grades with various features
+"""
+
+import datetime
+import statistics
+
+class GradeManager:
+    def __init__(self):
+        self.students = {}
+        self.subjects = ["Math", "Science", "English", "History", "Art"]
+        self.load_sample_data()
+    
+    def load_sample_data(self):
+        """Load sample students for demonstration"""
+        self.students = {
+            "S001": {
+                "name": "Alice Johnson",
+                "age": 15,
+                "grade": 10,
+                "subjects": {
+                    "Math": [85, 90, 88, 92],
+                    "Science": [78, 82, 85, 88],
+                    "English": [92, 88, 94, 90],
+                    "History": [75, 80, 78, 82],
+                    "Art": [95, 92, 96, 94]
+                }
+            },
+            "S002": {
+                "name": "Bob Smith",
+                "age": 16,
+                "grade": 11,
+                "subjects": {
+                    "Math": [72, 75, 80, 78],
+                    "Science": [85, 88, 82, 86],
+                    "English": [65, 70, 68, 72],
+                    "History": [90, 92, 88, 94],
+                    "Art": [80, 82, 78, 84]
+                }
+            }
+        }
+    
+    def display_header(self):
+        """Display system header"""
+        print("\n" + "="*60)
+        print("     STUDENT GRADE MANAGEMENT SYSTEM")
+        print("="*60)
+        print(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}")
+        print(f"Total Students: {len(self.students)}")
+        print("-"*60)
+    
+    def main_menu(self):
+        """Display main menu"""
+        while True:
+            self.display_header()
+            print("\nMAIN MENU:")
+            print("1. Add New Student")
+            print("2. View All Students")
+            print("3. Add Grades for Student")
+            print("4. Calculate Statistics")
+            print("5. Generate Report Card")
+            print("6. Class Performance Analysis")
+            print("7. Search Student")
+            print("8. Exit")
+            print("-"*40)
+            
+            choice = input("Select option (1-8): ")
+            
+            if choice == "1":
+                self.add_student()
+            elif choice == "2":
+                self.view_all_students()
+            elif choice == "3":
+                self.add_grades()
+            elif choice == "4":
+                self.calculate_statistics()
+            elif choice == "5":
+                self.generate_report_card()
+            elif choice == "6":
+                self.class_analysis()
+            elif choice == "7":
+                self.search_student()
+            elif choice == "8":
+                print("\nThank you for using Grade Management System!")
+                break
+            else:
+                print("\n❌ Invalid option. Please try again.")
+                input("Press Enter to continue...")
+    
+    def add_student(self):
+        """Add a new student"""
+        print("\n" + "-"*40)
+        print("ADD NEW STUDENT")
+        print("-"*40)
+        
+        # Generate student ID
+        student_id = f"S{len(self.students) + 1:03d}"
+        print(f"Student ID: {student_id}")
+        
+        name = input("Enter student name: ")
+        if not name:
+            print("❌ Name cannot be empty!")
+            input("Press Enter to continue...")
+            return
+        
+        try:
+            age = int(input("Enter age: "))
+            grade = int(input("Enter grade level (9-12): "))
+            
+            if age < 0 or grade < 9 or grade > 12:
+                print("❌ Invalid age or grade!")
+                input("Press Enter to continue...")
+                return
+            
+            self.students[student_id] = {
+                "name": name,
+                "age": age,
+                "grade": grade,
+                "subjects": {subject: [] for subject in self.subjects}
+            }
+            
+            print(f"\n✅ Student {name} added successfully with ID: {student_id}")
+            
+        except ValueError:
+            print("❌ Please enter valid numbers!")
+        
+        input("Press Enter to continue...")
+    
+    def view_all_students(self):
+        """Display all students"""
+        print("\n" + "-"*40)
+        print("ALL STUDENTS")
+        print("-"*40)
+        
+        if not self.students:
+            print("No students registered.")
+        else:
+            print(f"{'ID':<6} {'Name':<20} {'Age':<5} {'Grade':<6} {'Subjects':<10}")
+            print("-"*50)
+            
+            for student_id, data in self.students.items():
+                subject_count = sum(1 for grades in data['subjects'].values() if grades)
+                print(f"{student_id:<6} {data['name']:<20} {data['age']:<5} "
+                      f"{data['grade']:<6} {subject_count}/5 subjects")
+        
+        input("\nPress Enter to continue...")
+    
+    def add_grades(self):
+        """Add grades for a student"""
+        print("\n" + "-"*40)
+        print("ADD GRADES")
+        print("-"*40)
+        
+        student_id = input("Enter student ID: ")
+        
+        if student_id not in self.students:
+            print("❌ Student not found!")
+            input("Press Enter to continue...")
+            return
+        
+        student = self.students[student_id]
+        print(f"\nStudent: {student['name']}")
+        
+        # Show current grades
+        print("\nCurrent Grades:")
+        for subject, grades in student['subjects'].items():
+            if grades:
+                avg = sum(grades) / len(grades)
+                print(f"  {subject}: {grades} (Avg: {avg:.1f})")
+            else:
+                print(f"  {subject}: No grades yet")
+        
+        print("\nSelect subject:")
+        for i, subject in enumerate(self.subjects, 1):
+            print(f"{i}. {subject}")
+        
+        try:
+            subject_choice = int(input("Subject number: "))
+            if 1 <= subject_choice <= len(self.subjects):
+                subject = self.subjects[subject_choice - 1]
+                
+                grade = float(input(f"Enter grade for {subject} (0-100): "))
+                
+                if 0 <= grade <= 100:
+                    student['subjects'][subject].append(grade)
+                    print(f"✅ Grade {grade} added to {subject}")
+                    
+                    # Calculate new average
+                    avg = sum(student['subjects'][subject]) / len(student['subjects'][subject])
+                    print(f"New average in {subject}: {avg:.1f}")
+                else:
+                    print("❌ Grade must be between 0 and 100!")
+            else:
+                print("❌ Invalid subject!")
+                
+        except ValueError:
+            print("❌ Please enter valid numbers!")
+        
+        input("Press Enter to continue...")
+    
+    def calculate_statistics(self):
+        """Calculate statistics for a student"""
+        print("\n" + "-"*40)
+        print("STUDENT STATISTICS")
+        print("-"*40)
+        
+        student_id = input("Enter student ID: ")
+        
+        if student_id not in self.students:
+            print("❌ Student not found!")
+            input("Press Enter to continue...")
+            return
+        
+        student = self.students[student_id]
+        print(f"\nStatistics for: {student['name']}")
+        print("-"*40)
+        
+        all_grades = []
+        for subject, grades in student['subjects'].items():
+            if grades:
+                avg = sum(grades) / len(grades)
+                max_grade = max(grades)
+                min_grade = min(grades)
+                print(f"\n{subject}:")
+                print(f"  Average: {avg:.1f}")
+                print(f"  Highest: {max_grade}")
+                print(f"  Lowest: {min_grade}")
+                print(f"  Count: {len(grades)}")
+                all_grades.extend(grades)
+        
+        if all_grades:
+            print("\n" + "-"*40)
+            print("OVERALL STATISTICS:")
+            print(f"Overall Average: {sum(all_grades)/len(all_grades):.1f}")
+            print(f"Highest Overall: {max(all_grades)}")
+            print(f"Lowest Overall: {min(all_grades)}")
+            print(f"Total Grades: {len(all_grades)}")
+            
+            # Calculate letter grade
+            overall = sum(all_grades)/len(all_grades)
+            if overall >= 90:
+                letter = "A"
+            elif overall >= 80:
+                letter = "B"
+            elif overall >= 70:
+                letter = "C"
+            elif overall >= 60:
+                letter = "D"
+            else:
+                letter = "F"
+            
+            print(f"Letter Grade: {letter}")
+        
+        input("\nPress Enter to continue...")
+    
+    def generate_report_card(self):
+        """Generate a report card for a student"""
+        print("\n" + "-"*40)
+        print("GENERATE REPORT CARD")
+        print("-"*40)
+        
+        student_id = input("Enter student ID: ")
+        
+        if student_id not in self.students:
+            print("❌ Student not found!")
+            input("Press Enter to continue...")
+            return
+        
+        student = self.students[student_id]
+        
+        print("\n" + "="*60)
+        print("                 REPORT CARD")
+        print("="*60)
+        print(f"Student ID: {student_id}")
+        print(f"Name: {student['name']}")
+        print(f"Age: {student['age']}")
+        print(f"Grade: {student['grade']}")
+        print(f"Date: {datetime.datetime.now().strftime('%Y-%m-%d')}")
+        print("-"*60)
+        
+        print(f"{'Subject':<15} {'Grades':<25} {'Average':<10} {'Grade':<8}")
+        print("-"*60)
+        
+        total_points = 0
+        subject_count = 0
+        
+        for subject in self.subjects:
+            grades = student['subjects'][subject]
+            if grades:
+                avg = sum(grades) / len(grades)
+                total_points += avg
+                subject_count += 1
+                
+                # Determine letter grade
+                if avg >= 90:
+                    letter = "A"
+                elif avg >= 80:
+                    letter = "B"
+                elif avg >= 70:
+                    letter = "C"
+                elif avg >= 60:
+                    letter = "D"
+                else:
+                    letter = "F"
+                
+                # Format grades string
+                grades_str = ", ".join(str(g) for g in grades)
+                print(f"{subject:<15} {grades_str:<25} {avg:<10.1f} {letter:<8}")
+            else:
+                print(f"{subject:<15} {'No grades':<25} {'-':<10} {'-':<8}")
+        
+        if subject_count > 0:
+            gpa = total_points / subject_count / 20  # Convert to 5-point scale
+            print("-"*60)
+            print(f"GPA: {gpa:.2f}")
+            
+            # Honor roll status
+            if gpa >= 4.5:
+                print("🏆 HIGH HONOR ROLL")
+            elif gpa >= 3.5:
+                print("📚 HONOR ROLL")
+            elif gpa >= 2.0:
+                print("✓ Good Standing")
+            else:
+                print("⚠️ Academic Probation")
+        
+        print("="*60)
+        
+        # Option to save to file
+        save = input("\nSave report card to file? (yes/no): ").lower()
+        if save == "yes":
+            filename = f"{student_id}_report_card.txt"
+            with open(filename, 'w') as f:
+                # Write the same report to file
+                f.write("REPORT CARD\n")
+                f.write("="*50 + "\n")
+                f.write(f"Student: {student['name']}\n")
+                f.write(f"Date: {datetime.datetime.now()}\n")
+            print(f"✅ Report card saved as {filename}")
+        
+        input("\nPress Enter to continue...")
+    
+    def class_analysis(self):
+        """Analyze class performance"""
+        print("\n" + "-"*40)
+        print("CLASS PERFORMANCE ANALYSIS")
+        print("-"*40)
+        
+        if not self.students:
+            print("No students to analyze.")
+            input("Press Enter to continue...")
+            return
+        
+        # Group by grade
+        by_grade = {}
+        for student_id, data in self.students.items():
+            grade = data['grade']
+            if grade not in by_grade:
+                by_grade[grade] = []
+            by_grade[grade].append(data)
+        
+        for grade, students in sorted(by_grade.items()):
+            print(f"\nGRADE {grade} ({len(students)} students)")
+            print("-"*30)
+            
+            subject_averages = {subject: [] for subject in self.subjects}
+            
+            for student in students:
+                for subject, grades in student['subjects'].items():
+                    if grades:
+                        subject_averages[subject].append(sum(grades)/len(grades))
+            
+            print(f"{'Subject':<15} {'Class Avg':<12} {'Range':<15}")
+            print("-"*40)
+            
+            for subject in self.subjects:
+                if subject_averages[subject]:
+                    avg = sum(subject_averages[subject]) / len(subject_averages[subject])
+                    min_val = min(subject_averages[subject])
+                    max_val = max(subject_averages[subject])
+                    print(f"{subject:<15} {avg:<12.1f} {min_val:.1f} - {max_val:.1f}")
+                else:
+                    print(f"{subject:<15} {'-':<12} {'-':<15}")
+        
+        input("\nPress Enter to continue...")
+    
+    def search_student(self):
+        """Search for a student by name or ID"""
+        print("\n" + "-"*40)
+        print("SEARCH STUDENT")
+        print("-"*40)
+        
+        search_term = input("Enter student name or ID: ").lower()
+        
+        results = []
+        for student_id, data in self.students.items():
+            if search_term in student_id.lower() or search_term in data['name'].lower():
+                results.append((student_id, data))
+        
+        if results:
+            print(f"\nFound {len(results)} matching student(s):")
+            print("-"*40)
+            for student_id, data in results:
+                print(f"ID: {student_id}")
+                print(f"Name: {data['name']}")
+                print(f"Age: {data['age']}, Grade: {data['grade']}")
+                
+                # Calculate overall average
+                all_grades = []
+                for grades in data['subjects'].values():
+                    all_grades.extend(grades)
+                if all_grades:
+                    avg = sum(all_grades) / len(all_grades)
+                    print(f"Overall Average: {avg:.1f}")
+                print("-"*30)
+        else:
+            print("No matching students found.")
+        
+        input("\nPress Enter to continue...")
+
+# Run the system
+if __name__ == "__main__":
+    system = GradeManager()
+    system.main_menu()
+
+Sample Run:
+
+============================================================
+     STUDENT GRADE MANAGEMENT SYSTEM
+============================================================
+Date: 2024-01-15 14:30
+Total Students: 2
+------------------------------------------------------------
+
+MAIN MENU:
+1. Add New Student
+2. View All Students
+3. Add Grades for Student
+4. Calculate Statistics
+5. Generate Report Card
+6. Class Performance Analysis
+7. Search Student
+8. Exit
+----------------------------------------
+Select option (1-8): 2
+
+----------------------------------------
+ALL STUDENTS
+----------------------------------------
+ID     Name                 Age   Grade  Subjects  
+--------------------------------------------------
+S001   Alice Johnson        15    10     5/5 subjects
+S002   Bob Smith            16    11     5/5 subjects
+
+
