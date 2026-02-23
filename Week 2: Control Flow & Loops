@@ -400,4 +400,169 @@ FOR LOOP BASICS
     city: New York
     profession: Engineer
 
+Exercise 4: While Loops
+
+# while_loops.py
+"""
+Comprehensive while loop examples
+"""
+
+print("="*50)
+print("WHILE LOOP BASICS")
+print("="*50)
+
+# Example 1: Basic counter
+print("\n1. Basic counter:")
+count = 1
+while count <= 5:
+    print(f"  Count: {count}")
+    count += 1
+
+# Example 2: User input validation
+print("\n2. Input validation (enter 'quit' to exit):")
+user_input = ""
+while user_input.lower() != "quit":
+    user_input = input("  Enter something (or 'quit'): ")
+    if user_input.lower() != "quit":
+        print(f"  You entered: {user_input}")
+
+# Example 3: Number guessing game
+print("\n3. Number guessing game:")
+import random
+secret = random.randint(1, 10)
+attempts = 0
+guessed = False
+
+while not guessed:
+    guess = int(input("  Guess a number (1-10): "))
+    attempts += 1
+    
+    if guess == secret:
+        print(f"  Correct! You got it in {attempts} attempts!")
+        guessed = True
+    elif guess < secret:
+        print("  Too low! Try again.")
+    else:
+        print("  Too high! Try again.")
+
+# Example 4: Menu system
+print("\n4. Simple menu system:")
+choice = ""
+while choice != "3":
+    print("\n  MENU:")
+    print("  1. Say Hello")
+    print("  2. Show Date")
+    print("  3. Exit")
+    
+    choice = input("  Choose option: ")
+    
+    if choice == "1":
+        print("  Hello! How are you today?")
+    elif choice == "2":
+        from datetime import datetime
+        print(f"  Today's date: {datetime.now().strftime('%Y-%m-%d')}")
+    elif choice == "3":
+        print("  Goodbye!")
+    else:
+        print("  Invalid choice, try again.")
+
+# Example 5: while-else clause
+print("\n5. While-else example:")
+counter = 1
+while counter <= 3:
+    print(f"  Inside loop: {counter}")
+    counter += 1
+else:
+    print("  Loop completed normally (no break)")
+
+# Example 6: Infinite loop with break condition
+print("\n6. Fibonacci sequence (first 10 numbers):")
+a, b = 0, 1
+count = 0
+while True:  # Infinite loop
+    print(f"  {a}", end=" ")
+    a, b = b, a + b
+    count += 1
+    if count >= 10:
+        break
+print()  # New line
+
+# Example 7: Summation with while
+print("\n7. Sum numbers until total exceeds 100:")
+numbers = [23, 45, 12, 67, 8, 34, 56, 19]
+total = 0
+i = 0
+while i < len(numbers) and total <= 100:
+    total += numbers[i]
+    print(f"  Added {numbers[i]}, total now: {total}")
+    i += 1
+print(f"  Final total: {total}")
+
+Sample Output:
+
+==================================================
+WHILE LOOP BASICS
+==================================================
+
+1. Basic counter:
+  Count: 1
+  Count: 2
+  Count: 3
+  Count: 4
+  Count: 5
+
+2. Input validation (enter 'quit' to exit):
+  Enter something (or 'quit'): hello
+  You entered: hello
+  Enter something (or 'quit'): python
+  You entered: python
+  Enter something (or 'quit'): quit
+
+3. Number guessing game:
+  Guess a number (1-10): 5
+  Too low! Try again.
+  Guess a number (1-10): 8
+  Too high! Try again.
+  Guess a number (1-10): 7
+  Correct! You got it in 3 attempts!
+
+4. Simple menu system:
+
+  MENU:
+  1. Say Hello
+  2. Show Date
+  3. Exit
+  Choose option: 1
+  Hello! How are you today?
+
+  MENU:
+  1. Say Hello
+  2. Show Date
+  3. Exit
+  Choose option: 2
+  Today's date: 2024-01-15
+
+  MENU:
+  1. Say Hello
+  2. Show Date
+  3. Exit
+  Choose option: 3
+  Goodbye!
+
+5. While-else example:
+  Inside loop: 1
+  Inside loop: 2
+  Inside loop: 3
+  Loop completed normally (no break)
+
+6. Fibonacci sequence (first 10 numbers):
+  0 1 1 2 3 5 8 13 21 34 
+
+7. Sum numbers until total exceeds 100:
+  Added 23, total now: 23
+  Added 45, total now: 68
+  Added 12, total now: 80
+  Added 67, total now: 147
+  Final total: 147
+
 
