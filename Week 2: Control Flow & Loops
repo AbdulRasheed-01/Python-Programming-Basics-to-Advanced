@@ -2081,3 +2081,9 @@ def quiz():
 
 if __name__ == "__main__":
     quiz()
+
+🎉 Congratulations!
+You've completed Week 2! You now understand how to control the flow of your Python programs. These concepts are the foundation of all programming logic.
+Next Week: Week 3 - Data Structures (Lists, Tuples, Dictionaries, Sets)
+
+
