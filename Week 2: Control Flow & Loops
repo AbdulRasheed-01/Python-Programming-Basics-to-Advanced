@@ -15,3 +15,22 @@ By the end of this week, you will be able to:
 ✅ Handle nested loops and conditions
 
 ✅ Solve real-world problems using control flow
+
+   Theory Content
+  2.1 Conditional Statements (if/elif/else)
+  
+  Basic Syntax:
+  
+  if condition:
+      # code to execute if condition is True
+      statement1
+      statement2
+  
+  elif another_condition:
+      # code to execute if first condition is False and this is True
+      statement3
+  
+  else:
+      # code to execute if all conditions are False
+      statement4
+
