@@ -33,4 +33,77 @@ By the end of this week, you will be able to:
   else:
       # code to execute if all conditions are False
       statement4
+🔧 Practical Exercises
+Exercise 1: Basic If-Else Statements
 
+# if_else_basics.py
+"""
+Basic if-else examples
+"""
+
+# Example 1: Simple if statement
+age = 18
+print("Example 1: Voting Eligibility")
+if age >= 18:
+    print(f"Age {age}: You are eligible to vote!")
+else:
+    print(f"Age {age}: You are not eligible to vote yet.")
+print("-" * 40)
+
+# Example 2: If-elif-else
+print("Example 2: Grade Calculator")
+score = 85
+
+if score >= 90:
+    grade = "A"
+    message = "Excellent!"
+elif score >= 80:
+    grade = "B"
+    message = "Good job!"
+elif score >= 70:
+    grade = "C"
+    message = "Fair"
+elif score >= 60:
+    grade = "D"
+    message = "Needs improvement"
+else:
+    grade = "F"
+    message = "Failed"
+
+print(f"Score: {score}")
+print(f"Grade: {grade}")
+print(f"Message: {message}")
+print("-" * 40)
+
+# Example 3: Multiple conditions with and/or
+print("Example 3: Scholarship Eligibility")
+gpa = 3.5
+extracurricular = True
+family_income = 45000
+
+if gpa >= 3.5 and extracurricular and family_income < 50000:
+    print("Eligible for full scholarship!")
+elif gpa >= 3.0 and (extracurricular or family_income < 60000):
+    print("Eligible for partial scholarship")
+else:
+    print("Not eligible for scholarship")
+print("-" * 40)
+
+# Example 4: Nested if statements
+print("Example 4: ATM Withdrawal")
+balance = 1000
+withdrawal = 500
+pin_correct = True
+daily_limit = 1000
+
+if pin_correct:
+    if withdrawal <= balance:
+        if withdrawal <= daily_limit:
+            balance -= withdrawal
+            print(f"Withdrawal successful! New balance: ${balance}")
+        else:
+            print(f"Exceeds daily limit of ${daily_limit}")
+    else:
+        print("Insufficient funds")
+else:
+    print("Incorrect PIN")
