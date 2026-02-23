@@ -1194,3 +1194,254 @@ Testing if 999983 is prime:
   Naive method:     True, took 0.094521 seconds
   Speedup: 218.8x faster!
 
+Exercise 5: ATM Simulation
+# exercise5_atm.py
+"""
+ATM Machine Simulation
+"""
+
+import time
+import getpass  # For hidden password input (note: doesn't work in all IDEs)
+
+print("="*50)
+print("ATM MACHINE SIMULATION")
+print("="*50)
+
+# Account data
+accounts = {
+    "123456": {
+        "pin": "1234",
+        "name": "John Doe",
+        "balance": 5000.00,
+        "transactions": []
+    },
+    "789012": {
+        "pin": "5678",
+        "name": "Jane Smith",
+        "balance": 3500.00,
+        "transactions": []
+    },
+    "345678": {
+        "pin": "9012",
+        "name": "Bob Johnson",
+        "balance": 8200.00,
+        "transactions": []
+    }
+}
+
+def add_transaction(account, type, amount):
+    """Add transaction to history"""
+    timestamp = time.strftime("%Y-%m-%d %H:%M:%S")
+    accounts[account]["transactions"].append({
+        "type": type,
+        "amount": amount,
+        "balance": accounts[account]["balance"],
+        "time": timestamp
+    })
+
+def display_transactions(account):
+    """Show transaction history"""
+    print("\n" + "-"*40)
+    print("TRANSACTION HISTORY")
+    print("-"*40)
+    trans = accounts[account]["transactions"][-10:]  # Last 10 transactions
+    if not trans:
+        print("No transactions yet")
+    else:
+        for t in reversed(trans):
+            print(f"{t['time']} - {t['type']}: ${t['amount']:.2f} (Balance: ${t['balance']:.2f})")
+
+def atm_menu(account):
+    """Display ATM menu and process choices"""
+    while True:
+        print("\n" + "="*40)
+        print(f"WELCOME, {accounts[account]['name']}")
+        print("="*40)
+        print("1. Check Balance")
+        print("2. Withdraw Cash")
+        print("3. Deposit Cash")
+        print("4. Transfer Money")
+        print("5. Transaction History")
+        print("6. Change PIN")
+        print("7. Exit")
+        print("-"*40)
+        
+        choice = input("Select option (1-7): ")
+        
+        if choice == "1":  # Check Balance
+            print(f"\nCurrent Balance: ${accounts[account]['balance']:.2f}")
+            
+        elif choice == "2":  # Withdraw
+            try:
+                amount = float(input("Enter amount to withdraw: $"))
+                if amount <= 0:
+                    print("Amount must be positive!")
+                elif amount > accounts[account]['balance']:
+                    print("Insufficient funds!")
+                elif amount % 20 != 0:  # ATM only dispenses $20 bills
+                    print("Amount must be in multiples of $20")
+                else:
+                    accounts[account]['balance'] -= amount
+                    add_transaction(account, "WITHDRAW", amount)
+                    print(f"✅ Withdrawal successful! Please take your cash.")
+                    print(f"New balance: ${accounts[account]['balance']:.2f}")
+            except ValueError:
+                print("Invalid amount!")
+                
+        elif choice == "3":  # Deposit
+            try:
+                amount = float(input("Enter amount to deposit: $"))
+                if amount <= 0:
+                    print("Amount must be positive!")
+                else:
+                    accounts[account]['balance'] += amount
+                    add_transaction(account, "DEPOSIT", amount)
+                    print(f"✅ Deposit successful!")
+                    print(f"New balance: ${accounts[account]['balance']:.2f}")
+            except ValueError:
+                print("Invalid amount!")
+                
+        elif choice == "4":  # Transfer
+            print("\n--- TRANSFER MONEY ---")
+            to_account = input("Enter recipient account number: ")
+            if to_account not in accounts:
+                print("❌ Recipient account not found!")
+                continue
+            
+            try:
+                amount = float(input("Enter amount to transfer: $"))
+                if amount <= 0:
+                    print("Amount must be positive!")
+                elif amount > accounts[account]['balance']:
+                    print("Insufficient funds!")
+                else:
+                    # Verify recipient name
+                    print(f"Recipient: {accounts[to_account]['name']}")
+                    confirm = input("Confirm transfer? (yes/no): ").lower()
+                    
+                    if confirm == "yes":
+                        accounts[account]['balance'] -= amount
+                        accounts[to_account]['balance'] += amount
+                        add_transaction(account, f"TRANSFER TO {to_account}", amount)
+                        add_transaction(to_account, f"TRANSFER FROM {account}", amount)
+                        print(f"✅ Transfer of ${amount:.2f} completed!")
+                    else:
+                        print("Transfer cancelled")
+            except ValueError:
+                print("Invalid amount!")
+                
+        elif choice == "5":  # Transaction History
+            display_transactions(account)
+            
+        elif choice == "6":  # Change PIN
+            print("\n--- CHANGE PIN ---")
+            current_pin = input("Enter current PIN: ")
+            if current_pin == accounts[account]['pin']:
+                new_pin = input("Enter new PIN (4 digits): ")
+                if len(new_pin) == 4 and new_pin.isdigit():
+                    confirm_pin = input("Confirm new PIN: ")
+                    if new_pin == confirm_pin:
+                        accounts[account]['pin'] = new_pin
+                        print("✅ PIN changed successfully!")
+                    else:
+                        print("❌ PINs don't match!")
+                else:
+                    print("❌ PIN must be 4 digits!")
+            else:
+                print("❌ Incorrect current PIN!")
+                
+        elif choice == "7":  # Exit
+            print("\nThank you for using our ATM. Goodbye!")
+            break
+        else:
+            print("Invalid option. Please try again.")
+        
+        input("\nPress Enter to continue...")
+
+# Main ATM loop
+while True:
+    print("\n" + "="*50)
+    print("    WELCOME TO PYTHON ATM")
+    print("="*50)
+    print("\nPlease insert your card (enter account number):")
+    
+    account = input("Account Number: ")
+    
+    if account not in accounts:
+        print("❌ Account not found!")
+        continue
+    
+    # PIN verification
+    attempts = 0
+    max_attempts = 3
+    
+    while attempts < max_attempts:
+        pin = input("Enter PIN: ")
+        
+        if pin == accounts[account]['pin']:
+            print(f"\n✅ Login successful!")
+            atm_menu(account)
+            break
+        else:
+            attempts += 1
+            remaining = max_attempts - attempts
+            if remaining > 0:
+                print(f"❌ Incorrect PIN! {remaining} attempts remaining.")
+            else:
+                print("❌ Too many incorrect attempts. Card retained.")
+                print("Please contact customer service.")
+                break
+    
+    # Ask if another transaction
+    another = input("\nAnother transaction? (yes/no): ").lower()
+    if another != "yes":
+        print("\nThank you for banking with us. Goodbye!")
+        break
+
+Sample Run:
+
+==================================================
+    WELCOME TO PYTHON ATM
+==================================================
+
+Please insert your card (enter account number):
+Account Number: 123456
+Enter PIN: 1234
+
+✅ Login successful!
+
+========================================
+WELCOME, John Doe
+========================================
+1. Check Balance
+2. Withdraw Cash
+3. Deposit Cash
+4. Transfer Money
+5. Transaction History
+6. Change PIN
+7. Exit
+----------------------------------------
+Select option (1-7): 1
+
+Current Balance: $5000.00
+
+Press Enter to continue...
+
+========================================
+WELCOME, John Doe
+========================================
+1. Check Balance
+2. Withdraw Cash
+3. Deposit Cash
+4. Transfer Money
+5. Transaction History
+6. Change PIN
+7. Exit
+----------------------------------------
+Select option (1-7): 2
+Enter amount to withdraw: $100
+✅ Withdrawal successful! Please take your cash.
+New balance: $4900.00
+
+Press Enter to continue...
+
