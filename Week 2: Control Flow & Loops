@@ -565,4 +565,209 @@ WHILE LOOP BASICS
   Added 67, total now: 147
   Final total: 147
 
+Exercise 5: Break, Continue, Pass
+
+# loop_control.py
+"""
+Loop control statements: break, continue, pass
+"""
+
+print("="*50)
+print("LOOP CONTROL STATEMENTS")
+print("="*50)
+
+# Example 1: break - exit loop immediately
+print("\n1. BREAK - Find first even number:")
+numbers = [3, 7, 5, 8, 9, 2, 4, 6]
+for num in numbers:
+    if num % 2 == 0:
+        print(f"  Found first even number: {num}")
+        break
+    print(f"  {num} is odd, continuing...")
+
+# Example 2: continue - skip rest of iteration
+print("\n2. CONTINUE - Print only odd numbers:")
+for i in range(1, 11):
+    if i % 2 == 0:
+        continue  # Skip even numbers
+    print(f"  Odd number: {i}")
+
+# Example 3: pass - placeholder (does nothing)
+print("\n3. PASS - Placeholder for future code:")
+for i in range(1, 6):
+    if i == 3:
+        pass  # Will add logic later
+    else:
+        print(f"  Processing number {i}")
+
+# Example 4: break in nested loops
+print("\n4. BREAK in nested loops - find target:")
+matrix = [
+    [1, 2, 3],
+    [4, 5, 6],
+    [7, 8, 9]
+]
+target = 5
+found = False
+
+for i, row in enumerate(matrix):
+    for j, value in enumerate(row):
+        if value == target:
+            print(f"  Found {target} at position [{i}][{j}]")
+            found = True
+            break  # Breaks inner loop only
+    if found:
+        break  # Breaks outer loop
+
+# Example 5: continue with while loop
+print("\n5. CONTINUE in while - process only positive numbers:")
+numbers = [10, -5, 7, -2, 3, -8, 4]
+i = 0
+while i < len(numbers):
+    if numbers[i] < 0:
+        i += 1
+        continue  # Skip negative numbers
+    print(f"  Processing positive: {numbers[i]}")
+    i += 1
+
+# Example 6: Practical example - input validation with continue
+print("\n6. Input validation - collect positive numbers:")
+positive_numbers = []
+while len(positive_numbers) < 3:
+    try:
+        num = int(input("  Enter a positive number: "))
+        if num <= 0:
+            print("  Number must be positive, try again.")
+            continue
+        positive_numbers.append(num)
+    except ValueError:
+        print("  Invalid input, enter a number.")
+        continue
+print(f"  Collected: {positive_numbers}")
+
+# Example 7: pass in class/function definitions
+print("\n7. PASS as placeholder in functions:")
+def future_function():
+    pass  # Will implement later
+
+class FutureClass:
+    pass  # Will implement later
+
+print("  Placeholders created successfully")
+
+Output:
+
+==================================================
+LOOP CONTROL STATEMENTS
+==================================================
+
+1. BREAK - Find first even number:
+  3 is odd, continuing...
+  7 is odd, continuing...
+  5 is odd, continuing...
+  Found first even number: 8
+
+2. CONTINUE - Print only odd numbers:
+  Odd number: 1
+  Odd number: 3
+  Odd number: 5
+  Odd number: 7
+  Odd number: 9
+
+3. PASS - Placeholder for future code:
+  Processing number 1
+  Processing number 2
+  Processing number 4
+  Processing number 5
+
+4. BREAK in nested loops - find target:
+  Found 5 at position [1][1]
+
+5. CONTINUE in while - process only positive numbers:
+  Processing positive: 10
+  Processing positive: 7
+  Processing positive: 3
+  Processing positive: 4
+
+6. Input validation - collect positive numbers:
+  Enter a positive number: 5
+  Enter a positive number: -2
+  Number must be positive, try again.
+  Enter a positive number: 8
+  Enter a positive number: 3
+  Collected: [5, 8, 3]
+
+7. PASS as placeholder in functions:
+  Placeholders created successfully
+📝 Weekly Exercises
+
+Exercise 1: Number Guessing Game
+
+# exercise1_guess_game.py
+"""
+Number Guessing Game with Difficulty Levels
+"""
+
+import random
+
+print("="*50)
+print("NUMBER GUESSING GAME")
+print("="*50)
+
+# Select difficulty
+print("\nSelect Difficulty:")
+print("1. Easy (1-20, 10 attempts)")
+print("2. Medium (1-50, 7 attempts)")
+print("3. Hard (1-100, 5 attempts)")
+
+difficulty = input("Choose difficulty (1-3): ")
+
+if difficulty == "1":
+    max_num = 20
+    max_attempts = 10
+elif difficulty == "2":
+    max_num = 50
+    max_attempts = 7
+elif difficulty == "3":
+    max_num = 100
+    max_attempts = 5
+else:
+    print("Invalid choice. Using medium as default.")
+    max_num = 50
+    max_attempts = 7
+
+# Generate secret number
+secret = random.randint(1, max_num)
+attempts = 0
+guessed = False
+
+print(f"\nI'm thinking of a number between 1 and {max_num}")
+print(f"You have {max_attempts} attempts. Good luck!\n")
+
+while attempts < max_attempts and not guessed:
+    try:
+        guess = int(input(f"Attempt {attempts + 1}/{max_attempts} - Your guess: "))
+        attempts += 1
+        
+        if guess == secret:
+            print(f"\n🎉 Congratulations! You got it in {attempts} attempts!")
+            guessed = True
+        elif guess < secret:
+            print("📉 Too low! Try a higher number.")
+        else:
+            print("📈 Too high! Try a lower number.")
+            
+    except ValueError:
+        print("❌ Please enter a valid number.")
+
+if not guessed:
+    print(f"\n😢 Game Over! The number was {secret}.")
+    
+# Play again?
+play_again = input("\nPlay again? (yes/no): ").lower()
+if play_again == "yes":
+    exec(open(__file__).read())  # Restart game
+else:
+    print("Thanks for playing!")
+
 
