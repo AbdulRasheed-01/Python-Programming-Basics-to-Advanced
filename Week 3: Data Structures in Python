@@ -657,4 +657,318 @@ Access by index: 10, 20, 30
 Student: Alice, Age: 16, Grade: 10
 Subjects: ['Math', 'Science', 'English']
 
+Exercise 3: Dictionaries - Key-Value Pairs
+# dictionaries_basics.py
+"""
+Comprehensive guide to Python dictionaries
+"""
+
+print("="*60)
+print("DICTIONARIES IN PYTHON")
+print("="*60)
+
+# 1. Creating Dictionaries
+print("\n1. CREATING DICTIONARIES:")
+print("-"*40)
+
+# Empty dictionary
+empty_dict = {}
+print(f"Empty dict: {empty_dict}")
+
+# Using curly braces
+person = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York",
+    "profession": "Engineer"
+}
+print(f"Person dict: {person}")
+
+# Using dict() constructor
+person2 = dict(name="Bob", age=25, city="Los Angeles")
+print(f"Using dict(): {person2}")
+
+# From list of tuples
+items = [("key1", "value1"), ("key2", "value2")]
+dict_from_pairs = dict(items)
+print(f"From pairs: {dict_from_pairs}")
+
+# Using zip
+keys = ["name", "age", "city"]
+values = ["Charlie", 28, "Chicago"]
+dict_from_zip = dict(zip(keys, values))
+print(f"From zip: {dict_from_zip}")
+
+# Nested dictionaries
+company = {
+    "name": "Tech Corp",
+    "employees": {
+        "alice": {"age": 30, "role": "Engineer"},
+        "bob": {"age": 25, "role": "Designer"},
+        "charlie": {"age": 35, "role": "Manager"}
+    },
+    "location": "Silicon Valley"
+}
+print(f"\nNested dictionary (company):")
+print(f"  Company: {company['name']}")
+print(f"  Location: {company['location']}")
+print(f"  Employees: {len(company['employees'])}")
+
+# 2. Accessing Dictionary Elements
+print("\n2. ACCESSING ELEMENTS:")
+print("-"*40)
+
+person = {"name": "Alice", "age": 30, "city": "New York"}
+
+# Using keys
+print(f"Name: {person['name']}")
+print(f"Age: {person['age']}")
+
+# Using get() (safe access)
+print(f"City: {person.get('city')}")
+print(f"Country: {person.get('country', 'Not specified')}")
+
+# Keys, Values, Items
+print(f"\nKeys: {list(person.keys())}")
+print(f"Values: {list(person.values())}")
+print(f"Items: {list(person.items())}")
+
+# 3. Modifying Dictionaries
+print("\n3. MODIFYING DICTIONARIES:")
+print("-"*40)
+
+person = {"name": "Alice", "age": 30}
+print(f"Original: {person}")
+
+# Add new key-value pair
+person["city"] = "New York"
+print(f"After adding city: {person}")
+
+# Update existing key
+person["age"] = 31
+print(f"After updating age: {person}")
+
+# Using update()
+person.update({"profession": "Engineer", "salary": 80000})
+print(f"After update(): {person}")
+
+# Set default (only adds if key doesn't exist)
+person.setdefault("country", "USA")
+person.setdefault("age", 40)  # Won't change existing
+print(f"After setdefault: {person}")
+
+# 4. Removing Elements
+print("\n4. REMOVING ELEMENTS:")
+print("-"*40)
+
+person = {"name": "Alice", "age": 30, "city": "NYC", "country": "USA", "zip": "10001"}
+print(f"Original: {person}")
+
+# pop() - remove by key
+removed = person.pop("zip")
+print(f"Removed 'zip': {removed}, Remaining: {person}")
+
+# popitem() - remove last inserted (Python 3.7+)
+last = person.popitem()
+print(f"Removed last: {last}, Remaining: {person}")
+
+# del statement
+del person["country"]
+print(f"After del 'country': {person}")
+
+# clear() - remove all
+person.clear()
+print(f"After clear: {person}")
+
+# 5. Dictionary Operations
+print("\n5. DICTIONARY OPERATIONS:")
+print("-"*40)
+
+dict1 = {"a": 1, "b": 2}
+dict2 = {"c": 3, "d": 4}
+
+# Merge dictionaries (Python 3.9+)
+merged = dict1 | dict2
+print(f"Merged: {merged}")
+
+# Update in place
+dict1.update(dict2)
+print(f"After update: {dict1}")
+
+# Length
+print(f"Length: {len(dict1)}")
+
+# Membership (checks keys)
+print(f"'a' in dict1: {'a' in dict1}")
+print(f"'x' in dict1: {'x' in dict1}")
+
+# 6. Dictionary Comprehension
+print("\n6. DICTIONARY COMPREHENSION:")
+print("-"*40)
+
+# Squares
+squares = {x: x**2 for x in range(1, 6)}
+print(f"Squares: {squares}")
+
+# Filtering
+even_squares = {x: x**2 for x in range(1, 11) if x % 2 == 0}
+print(f"Even squares: {even_squares}")
+
+# From two lists
+names = ["Alice", "Bob", "Charlie"]
+ages = [25, 30, 35]
+name_age = {name: age for name, age in zip(names, ages)}
+print(f"Name to age: {name_age}")
+
+# Transform values
+words = ["hello", "world", "python"]
+word_lengths = {word: len(word) for word in words}
+print(f"Word lengths: {word_lengths}")
+
+# Invert dictionary
+original = {"a": 1, "b": 2, "c": 3}
+inverted = {value: key for key, value in original.items()}
+print(f"Original: {original}")
+print(f"Inverted: {inverted}")
+
+# Conditional transformation
+grades = {"Alice": 85, "Bob": 92, "Charlie": 78, "Diana": 95}
+letter_grades = {
+    name: "A" if score >= 90 else "B" if score >= 80 else "C"
+    for name, score in grades.items()
+}
+print(f"Letter grades: {letter_grades}")
+
+# 7. Dictionary Methods Summary
+print("\n7. DICTIONARY METHODS SUMMARY:")
+print("-"*40)
+
+methods = {
+    "clear()": "Remove all items",
+    "copy()": "Return shallow copy",
+    "fromkeys()": "Create dict with default values",
+    "get(key[, default])": "Safe access with default",
+    "items()": "Return key-value pairs",
+    "keys()": "Return keys",
+    "pop(key[, default])": "Remove and return value",
+    "popitem()": "Remove and return last item",
+    "setdefault(key[, default])": "Get or set default",
+    "update([other])": "Update from other dict",
+    "values()": "Return values"
+}
+
+for method, desc in methods.items():
+    print(f"  {method:20} - {desc}")
+
+# 8. defaultdict and Counter
+print("\n8. SPECIALIZED DICTIONARIES:")
+print("-"*40)
+
+from collections import defaultdict, Counter
+
+# defaultdict - provides default values
+word_count = defaultdict(int)
+words = ["apple", "banana", "apple", "cherry", "banana", "apple"]
+for word in words:
+    word_count[word] += 1  # No KeyError!
+print(f"Word count (defaultdict): {dict(word_count)}")
+
+# Grouping with defaultdict
+students = [
+    ("Alice", "Math"), ("Bob", "Science"), ("Alice", "Physics"),
+    ("Charlie", "Math"), ("Bob", "Math"), ("Alice", "Chemistry")
+]
+subjects_by_student = defaultdict(list)
+for student, subject in students:
+    subjects_by_student[student].append(subject)
+print(f"Subjects by student: {dict(subjects_by_student)}")
+
+# Counter - count occurrences
+colors = ["red", "blue", "red", "green", "blue", "red", "yellow"]
+color_counter = Counter(colors)
+print(f"Color counter: {color_counter}")
+print(f"Most common: {color_counter.most_common(2)}")
+
+# 9. Practical Examples
+print("\n9. PRACTICAL EXAMPLES:")
+print("-"*40)
+
+# Example 1: Phone book
+phone_book = {
+    "Alice": "555-1234",
+    "Bob": "555-5678",
+    "Charlie": "555-9012"
+}
+print("Phone Book:")
+for name, phone in phone_book.items():
+    print(f"  {name}: {phone}")
+
+# Example 2: Grade calculator
+student_grades = {
+    "Alice": [85, 90, 88, 92],
+    "Bob": [78, 82, 85, 80],
+    "Charlie": [92, 95, 89, 94]
+}
+
+averages = {}
+for student, grades in student_grades.items():
+    avg = sum(grades) / len(grades)
+    averages[student] = round(avg, 1)
+
+print("\nStudent Averages:")
+for student, avg in averages.items():
+    print(f"  {student}: {avg}")
+
+# Example 3: Inventory management
+inventory = {
+    "apple": {"price": 0.5, "quantity": 100},
+    "banana": {"price": 0.3, "quantity": 150},
+    "orange": {"price": 0.6, "quantity": 80}
+}
+
+print("\nInventory:")
+total_value = 0
+for item, details in inventory.items():
+    value = details["price"] * details["quantity"]
+    total_value += value
+    print(f"  {item}: ${details['price']} each, {details['quantity']} in stock (${value:.2f})")
+print(f"  Total inventory value: ${total_value:.2f}")
+
+# Example 4: Cache implementation
+cache = {}
+
+def expensive_operation(n):
+    """Simulate expensive computation"""
+    if n in cache:
+        print(f"  Cache hit for {n}")
+        return cache[n]
+    
+    print(f"  Computing for {n}...")
+    result = n * n  # Simulate expensive calculation
+    cache[n] = result
+    return result
+
+print("\nCaching example:")
+for num in [5, 3, 5, 8, 3]:
+    result = expensive_operation(num)
+    print(f"  Result for {num}: {result}")
+print(f"  Cache: {cache}")
+
+# Example 5: JSON-like data
+import json
+data = {
+    "users": [
+        {"id": 1, "name": "Alice", "active": True},
+        {"id": 2, "name": "Bob", "active": False},
+        {"id": 3, "name": "Charlie", "active": True}
+    ],
+    "total": 3,
+    "status": "success"
+}
+print(f"\nJSON-like data: {json.dumps(data, indent=2)}")
+
+Output:
+
+
+
 
