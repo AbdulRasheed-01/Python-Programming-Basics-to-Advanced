@@ -3035,6 +3035,8 @@ def quiz():
 if __name__ == "__main__":
     quiz()
 
+🎉 Congratulations!
+You've completed Week 3! You now have a solid understanding of Python's core data structures. These are the building blocks you'll use in every Python program you write.
 
 
 
