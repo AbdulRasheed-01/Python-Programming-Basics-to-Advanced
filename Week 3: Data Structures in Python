@@ -1092,6 +1092,273 @@ JSON-like data: {
   "total": 3,
   "status": "success"
 }
+Exercise 4: Sets - Unique Collections
+# sets_basics.py
+"""
+Comprehensive guide to Python sets
+"""
+
+print("="*60)
+print("SETS IN PYTHON")
+print("="*60)
+
+# 1. Creating Sets
+print("\n1. CREATING SETS:")
+print("-"*40)
+
+# Empty set (note: {} creates empty dict)
+empty_set = set()
+print(f"Empty set: {empty_set}, Type: {type(empty_set)}")
+
+# Set with values
+fruits = {"apple", "banana", "orange", "apple", "banana"}  # Duplicates removed
+print(f"Fruits set: {fruits}")  # Note: duplicates gone, order may vary
+
+# From list
+numbers = set([1, 2, 3, 2, 4, 3, 5])
+print(f"From list with duplicates: {numbers}")
+
+# From string
+chars = set("hello world")
+print(f"From string 'hello world': {chars}")
+
+# From range
+range_set = set(range(1, 6))
+print(f"From range: {range_set}")
+
+# Mixed types (must be hashable)
+mixed = {1, "hello", 3.14, (1, 2)}  # Tuple is okay
+print(f"Mixed set: {mixed}")
+
+# 2. Set Operations
+print("\n2. SET OPERATIONS:")
+print("-"*40)
+
+A = {1, 2, 3, 4, 5}
+B = {4, 5, 6, 7, 8}
+print(f"Set A: {A}")
+print(f"Set B: {B}")
+
+# Union
+print(f"A ∪ B: {A | B}")
+print(f"A.union(B): {A.union(B)}")
+
+# Intersection
+print(f"A ∩ B: {A & B}")
+print(f"A.intersection(B): {A.intersection(B)}")
+
+# Difference
+print(f"A - B: {A - B}")
+print(f"A.difference(B): {A.difference(B)}")
+print(f"B - A: {B - A}")
+
+# Symmetric difference (elements in either but not both)
+print(f"A △ B: {A ^ B}")
+print(f"A.symmetric_difference(B): {A.symmetric_difference(B)}")
+
+# Subset/Superset
+C = {1, 2, 3}
+print(f"\nC: {C}")
+print(f"C ⊆ A? {C.issubset(A)}")
+print(f"A ⊇ C? {A.issuperset(C)}")
+print(f"C ⊆ B? {C.issubset(B)}")
+
+# Disjoint (no common elements)
+D = {9, 10, 11}
+print(f"\nD: {D}")
+print(f"A and D disjoint? {A.isdisjoint(D)}")
+print(f"A and B disjoint? {A.isdisjoint(B)}")
+
+# 3. Modifying Sets
+print("\n3. MODIFYING SETS:")
+print("-"*40)
+
+S = {1, 2, 3}
+print(f"Original: {S}")
+
+# Add elements
+S.add(4)
+print(f"After add(4): {S}")
+
+# Add multiple
+S.update([5, 6, 7])
+print(f"After update([5,6,7]): {S}")
+
+# Remove elements
+S.remove(3)  # Raises KeyError if not present
+print(f"After remove(3): {S}")
+
+# Discard (no error if not present)
+S.discard(10)  # No error
+print(f"After discard(10): {S}")
+
+# Pop (removes and returns arbitrary element)
+popped = S.pop()
+print(f"Popped: {popped}, Remaining: {S}")
+
+# Clear
+S.clear()
+print(f"After clear: {S}")
+
+# 4. Set Comprehension
+print("\n4. SET COMPREHENSION:")
+print("-"*40)
+
+# Squares
+squares = {x**2 for x in range(1, 6)}
+print(f"Squares: {squares}")
+
+# Even numbers
+evens = {x for x in range(1, 11) if x % 2 == 0}
+print(f"Evens: {evens}")
+
+# Unique characters
+words = ["hello", "world", "python"]
+unique_chars = {char for word in words for char in word}
+print(f"Unique chars from {words}: {unique_chars}")
+
+# Filtered
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+prime_set = {x for x in numbers if x > 1 and all(x % i != 0 for i in range(2, int(x**0.5) + 1))}
+print(f"Primes from 1-10: {prime_set}")
+
+# 5. Set Methods Summary
+print("\n5. SET METHODS SUMMARY:")
+print("-"*40)
+
+methods = {
+    "add(elem)": "Add element to set",
+    "clear()": "Remove all elements",
+    "copy()": "Return shallow copy",
+    "difference(set)": "Return difference as new set",
+    "difference_update(set)": "Remove common elements",
+    "discard(elem)": "Remove if present, no error",
+    "intersection(set)": "Return intersection",
+    "intersection_update(set)": "Keep only intersection",
+    "isdisjoint(set)": "Check if no common elements",
+    "issubset(set)": "Check if subset",
+    "issuperset(set)": "Check if superset",
+    "pop()": "Remove and return arbitrary element",
+    "remove(elem)": "Remove element (error if missing)",
+    "symmetric_difference(set)": "Return symmetric difference",
+    "symmetric_difference_update(set)": "Update with symmetric difference",
+    "union(set)": "Return union",
+    "update(set)": "Add elements from set"
+}
+
+for method, desc in methods.items():
+    print(f"  {method:30} - {desc}")
+
+# 6. Practical Applications
+print("\n6. PRACTICAL APPLICATIONS:")
+print("-"*40)
+
+# Example 1: Remove duplicates from list
+list_with_dupes = [1, 2, 3, 2, 4, 3, 5, 1, 6]
+unique_list = list(set(list_with_dupes))
+print(f"Original list: {list_with_dupes}")
+print(f"Unique list: {unique_list}")
+
+# Example 2: Find common elements
+students_math = {"Alice", "Bob", "Charlie", "Diana"}
+students_science = {"Bob", "Diana", "Eve", "Frank"}
+students_both = students_math & students_science
+print(f"\nStudents in both: {students_both}")
+
+# Example 3: Find unique visitors
+website_visits = [
+    "192.168.1.1", "192.168.1.2", "192.168.1.1",
+    "192.168.1.3", "192.168.1.2", "192.168.1.4"
+]
+unique_ips = set(website_visits)
+print(f"\nUnique visitors: {unique_ips} ({len(unique_ips)} unique)")
+
+# Example 4: Data validation
+valid_colors = {"red", "green", "blue", "yellow"}
+user_input = ["red", "purple", "green", "orange", "blue"]
+invalid = set(user_input) - valid_colors
+print(f"\nInvalid colors: {invalid}")
+
+# Example 5: Set operations in database queries (simulated)
+all_users = {"A", "B", "C", "D", "E", "F"}
+active_users = {"A", "C", "E", "G"}
+premium_users = {"A", "B", "F", "H"}
+
+print(f"\nAll users: {all_users}")
+print(f"Active users: {active_users}")
+print(f"Premium users: {premium_users}")
+print(f"Active AND Premium: {active_users & premium_users}")
+print(f"Active OR Premium: {active_users | premium_users}")
+print(f"Active but not Premium: {active_users - premium_users}")
+print(f"Inactive users: {all_users - active_users}")
+print(f"Neither active nor premium: {all_users - (active_users | premium_users)}")
+
+# Example 6: Finding anagrams
+def find_anagrams(word, word_list):
+    """Find anagrams of word in word_list"""
+    word_sorted = ''.join(sorted(word))
+    return {w for w in word_list if ''.join(sorted(w)) == word_sorted}
+
+words = ["listen", "silent", "enlist", "hello", "world", "act", "cat", "tac"]
+anagrams = find_anagrams("listen", words)
+print(f"\nAnagrams of 'listen': {anagrams}")
+
+# Example 7: Set for fast membership testing
+import time
+import random
+
+# List vs Set performance
+size = 1000000
+test_list = list(range(size))
+test_set = set(test_list)
+test_item = random.randint(0, size - 1)
+
+# List membership test
+start = time.time()
+result = test_item in test_list
+list_time = time.time() - start
+
+# Set membership test
+start = time.time()
+result = test_item in test_set
+set_time = time.time() - start
+
+print(f"\nMembership testing ({size} items):")
+print(f"  List: {list_time:.6f} seconds")
+print(f"  Set:  {set_time:.6f} seconds")
+print(f"  Set is {list_time/set_time:.1f}x faster!")
+
+# Example 8: Removing duplicates while preserving order
+def unique_preserve_order(items):
+    """Remove duplicates while preserving first occurrence order"""
+    seen = set()
+    result = []
+    for item in items:
+        if item not in seen:
+            seen.add(item)
+            result.append(item)
+    return result
+
+items = [3, 1, 2, 1, 3, 4, 2, 5, 4, 6]
+unique_ordered = unique_preserve_order(items)
+print(f"\nOriginal with duplicates: {items}")
+print(f"Unique (preserving order): {unique_ordered}")
+
+# Example 9: Finding missing elements
+complete_set = set(range(1, 11))
+current_set = {1, 3, 5, 7, 9}
+missing = complete_set - current_set
+print(f"\nMissing numbers: {missing}")
+
+# Example 10: Set of tuples for coordinates
+visited_points = set()
+visited_points.add((10, 20))
+visited_points.add((30, 40))
+visited_points.add((10, 20))  # Duplicate, won't be added
+print(f"\nVisited points: {visited_points}")
+print(f"Have we been to (10,20)? {(10,20) in visited_points}")
+print(f"Have we been to (50,60)? {(50,60) in visited_points}")
+
 
 
 
