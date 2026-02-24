@@ -969,6 +969,130 @@ print(f"\nJSON-like data: {json.dumps(data, indent=2)}")
 
 Output:
 
+============================================================
+DICTIONARIES IN PYTHON
+============================================================
+
+1. CREATING DICTIONARIES:
+----------------------------------------
+Empty dict: {}
+Person dict: {'name': 'Alice', 'age': 30, 'city': 'New York', 'profession': 'Engineer'}
+Using dict(): {'name': 'Bob', 'age': 25, 'city': 'Los Angeles'}
+From pairs: {'key1': 'value1', 'key2': 'value2'}
+From zip: {'name': 'Charlie', 'age': 28, 'city': 'Chicago'}
+
+Nested dictionary (company):
+  Company: Tech Corp
+  Location: Silicon Valley
+  Employees: 3
+
+2. ACCESSING ELEMENTS:
+----------------------------------------
+Name: Alice
+Age: 30
+City: New York
+Country: Not specified
+
+Keys: ['name', 'age', 'city']
+Values: ['Alice', 30, 'New York']
+Items: [('name', 'Alice'), ('age', 30), ('city', 'New York')]
+
+3. MODIFYING DICTIONARIES:
+----------------------------------------
+Original: {'name': 'Alice', 'age': 30}
+After adding city: {'name': 'Alice', 'age': 30, 'city': 'New York'}
+After updating age: {'name': 'Alice', 'age': 31, 'city': 'New York'}
+After update(): {'name': 'Alice', 'age': 31, 'city': 'New York', 'profession': 'Engineer', 'salary': 80000}
+After setdefault: {'name': 'Alice', 'age': 31, 'city': 'New York', 'profession': 'Engineer', 'salary': 80000, 'country': 'USA'}
+
+4. REMOVING ELEMENTS:
+----------------------------------------
+Original: {'name': 'Alice', 'age': 30, 'city': 'NYC', 'country': 'USA', 'zip': '10001'}
+Removed 'zip': 10001, Remaining: {'name': 'Alice', 'age': 30, 'city': 'NYC', 'country': 'USA'}
+Removed last: ('country', 'USA'), Remaining: {'name': 'Alice', 'age': 30, 'city': 'NYC'}
+After del 'country': {'name': 'Alice', 'age': 30, 'city': 'NYC'}
+After clear: {}
+
+5. DICTIONARY OPERATIONS:
+----------------------------------------
+Merged: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+After update: {'a': 1, 'b': 2, 'c': 3, 'd': 4}
+Length: 4
+'a' in dict1: True
+'x' in dict1: False
+
+6. DICTIONARY COMPREHENSION:
+----------------------------------------
+Squares: {1: 1, 2: 4, 3: 9, 4: 16, 5: 25}
+Even squares: {2: 4, 4: 16, 6: 36, 8: 64, 10: 100}
+Name to age: {'Alice': 25, 'Bob': 30, 'Charlie': 35}
+Word lengths: {'hello': 5, 'world': 5, 'python': 6}
+Original: {'a': 1, 'b': 2, 'c': 3}
+Inverted: {1: 'a', 2: 'b', 3: 'c'}
+Letter grades: {'Alice': 'B', 'Bob': 'A', 'Charlie': 'C', 'Diana': 'A'}
+
+7. DICTIONARY METHODS SUMMARY:
+----------------------------------------
+  clear()               - Remove all items
+  copy()                - Return shallow copy
+  fromkeys()            - Create dict with default values
+  get(key[, default])   - Safe access with default
+  items()               - Return key-value pairs
+  keys()                - Return keys
+  pop(key[, default])   - Remove and return value
+  popitem()             - Remove and return last item
+  setdefault(key[, default]) - Get or set default
+  update([other])       - Update from other dict
+  values()              - Return values
+
+8. SPECIALIZED DICTIONARIES:
+----------------------------------------
+Word count (defaultdict): {'apple': 3, 'banana': 2, 'cherry': 1}
+Subjects by student: {'Alice': ['Math', 'Physics', 'Chemistry'], 'Bob': ['Science', 'Math'], 'Charlie': ['Math']}
+Color counter: Counter({'red': 3, 'blue': 2, 'green': 1, 'yellow': 1})
+Most common: [('red', 3), ('blue', 2)]
+
+9. PRACTICAL EXAMPLES:
+----------------------------------------
+Phone Book:
+  Alice: 555-1234
+  Bob: 555-5678
+  Charlie: 555-9012
+
+Student Averages:
+  Alice: 88.8
+  Bob: 81.2
+  Charlie: 92.5
+
+Inventory:
+  apple: $0.5 each, 100 in stock ($50.00)
+  banana: $0.3 each, 150 in stock ($45.00)
+  orange: $0.6 each, 80 in stock ($48.00)
+  Total inventory value: $143.00
+
+Caching example:
+  Computing for 5...
+  Result for 5: 25
+  Computing for 3...
+  Result for 3: 9
+  Cache hit for 5
+  Result for 5: 25
+  Computing for 8...
+  Result for 8: 64
+  Cache hit for 3
+  Result for 3: 9
+  Cache: {5: 25, 3: 9, 8: 64}
+
+JSON-like data: {
+  "users": [
+    {"id": 1, "name": "Alice", "active": true},
+    {"id": 2, "name": "Bob", "active": false},
+    {"id": 3, "name": "Charlie", "active": true}
+  ],
+  "total": 3,
+  "status": "success"
+}
+
 
 
 
