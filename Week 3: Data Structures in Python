@@ -564,3 +564,97 @@ Student = namedtuple('Student', ['name', 'age', 'grade', 'subjects'])
 alice = Student("Alice", 16, 10, ["Math", "Science", "English"])
 print(f"\nStudent: {alice.name}, Age: {alice.age}, Grade: {alice.grade}")
 print(f"Subjects: {alice.subjects}")
+
+Output:
+
+============================================================
+TUPLES IN PYTHON
+============================================================
+
+1. CREATING TUPLES:
+----------------------------------------
+Empty tuple: ()
+Single element: (1,), Type: <class 'tuple'>
+Another single: (1,)
+2D coordinates: (10, 20)
+Person tuple: ('Alice', 25, 'Engineer', 5.6)
+From list: (1, 2, 3, 4, 5)
+From range: (1, 2, 3, 4, 5)
+Nested tuple: ((1, 2), (3, 4), (5, 6))
+
+2. ACCESSING ELEMENTS:
+----------------------------------------
+Colors: ('red', 'green', 'blue', 'yellow', 'purple')
+First: red
+Last: purple
+Second: green
+First three: ('red', 'green', 'blue')
+Last two: ('yellow', 'purple')
+Every other: ('red', 'blue', 'purple')
+Reversed: ('purple', 'yellow', 'blue', 'green', 'red')
+
+3. TUPLE OPERATIONS:
+----------------------------------------
+Length: 5
+Numbers: (1, 2, 3, 2, 4, 2, 5)
+Count of 2: 3
+Count of 7: 0
+Index of 4: 4
+Index of 2 (first): 1
+Is 3 in numbers? True
+Is 10 in numbers? False
+Concatenated: (1, 2, 3, 4, 5, 6)
+Repeated: (1, 2, 3, 1, 2, 3, 1, 2, 3)
+
+4. TUPLE IMMUTABILITY:
+----------------------------------------
+Original tuple: (10, 20)
+❌ Cannot modify tuple: 'tuple' object does not support item assignment
+Tuple with lists: ([1, 2], [3, 4])
+After modifying inner list: ([1, 2, 3], [3, 4])
+
+5. TUPLE UNPACKING:
+----------------------------------------
+x=10, y=20
+Alice is 25 years old and works as Engineer
+First: 1, Middle: [2, 3, 4], Last: 5
+Before swap: a=5, b=10
+After swap: a=10, b=5
+John Doe lives in NYC
+
+6. WHEN TO USE TUPLES:
+----------------------------------------
+  Coordinates: (40.7128, -74.006)
+  RGB Color: (255, 128, 0)
+  Date: (2024, 1, 15)
+  Config: ('localhost', 8080, True)
+  Return multiple: Functions return tuples
+
+7. PERFORMANCE COMPARISON:
+----------------------------------------
+List creation (1M times): 0.0892 seconds
+Tuple creation (1M times): 0.0234 seconds
+Tuples are 3.81x faster to create
+
+List access (1M times): 0.0456 seconds
+Tuple access (1M times): 0.0443 seconds
+Access speed is similar
+
+8. PRACTICAL EXAMPLES:
+----------------------------------------
+Cities by coordinates:
+  (40.7128, -74.006): New York
+  (34.0522, -118.2437): Los Angeles
+  (41.8781, -87.6298): Chicago
+
+Numbers: [45, 23, 89, 12, 67, 34]
+Min: 12, Max: 89
+
+Named tuple Point: Point(x=10, y=20, z=30)
+Access by name: p.x=10, p.y=20, p.z=30
+Access by index: 10, 20, 30
+
+Student: Alice, Age: 16, Grade: 10
+Subjects: ['Math', 'Science', 'English']
+
+
