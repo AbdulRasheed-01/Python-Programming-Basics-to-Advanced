@@ -2875,6 +2875,166 @@ if __name__ == "__main__":
     system = StudentDataSystem()
     system.run()
 
+📊 Week 3 Quiz
+
+# week3_quiz.py
+"""
+Week 3 Quiz - Test your knowledge of Python Data Structures
+"""
+
+def quiz():
+    score = 0
+    total = 10
+    
+    print("\n" + "="*50)
+    print("WEEK 3 QUIZ - Python Data Structures")
+    print("="*50)
+    
+    # Question 1
+    print("\n1. Which data structure is best for storing key-value pairs?")
+    print("   a) List")
+    print("   b) Tuple")
+    print("   c) Dictionary")
+    print("   d) Set")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "c":
+        print("   ✅ Correct! Dictionaries store key-value pairs")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Dictionaries are for key-value pairs")
+    
+    # Question 2
+    print("\n2. What will be the output of: len({1, 2, 3, 2, 1})")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 3:
+            print("   ✅ Correct! Sets remove duplicates")
+            score += 1
+        else:
+            print("   ❌ Incorrect. Sets contain unique elements only, so length is 3")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 3
+    print("\n3. Which of these is immutable?")
+    print("   a) List")
+    print("   b) Dictionary")
+    print("   c) Set")
+    print("   d) Tuple")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "d":
+        print("   ✅ Correct! Tuples are immutable")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Tuples cannot be changed after creation")
+    
+    # Question 4
+    print("\n4. What does {} represent in Python?")
+    print("   a) Empty list")
+    print("   b) Empty tuple")
+    print("   c) Empty dictionary")
+    print("   d) Empty set")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "c":
+        print("   ✅ Correct! {} creates an empty dictionary")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Use set() for empty set, {} for dict")
+    
+    # Question 5
+    print("\n5. What is the result of: [1, 2, 3] + [4, 5, 6]")
+    print("   a) [1, 2, 3, 4, 5, 6]")
+    print("   b) [5, 7, 9]")
+    print("   c) Error")
+    print("   d) [[1,2,3], [4,5,6]]")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "a":
+        print("   ✅ Correct! + concatenates lists")
+        score += 1
+    else:
+        print("   ❌ Incorrect. List concatenation joins them")
+    
+    # Question 6
+    print("\n6. Which method adds an element to a set?")
+    print("   a) append()")
+    print("   b) add()")
+    print("   c) insert()")
+    print("   d) extend()")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("   ✅ Correct! sets use add()")
+        score += 1
+    else:
+        print("   ❌ Incorrect. append() is for lists, add() for sets")
+    
+    # Question 7
+    print("\n7. What is the output of: (1, 2, 3)[1]")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 2:
+            print("   ✅ Correct! Tuples support indexing")
+            score += 1
+        else:
+            print("   ❌ Incorrect. Index 1 gives second element: 2")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 8
+    print("\n8. Which operation finds common elements in two sets?")
+    print("   a) union (|)")
+    print("   b) intersection (&)")
+    print("   c) difference (-)")
+    print("   d) symmetric difference (^)")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("   ✅ Correct! & finds intersection")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Intersection (&) finds common elements")
+    
+    # Question 9
+    print("\n9. What does dict.items() return?")
+    print("   a) List of keys")
+    print("   b) List of values")
+    print("   c) List of (key, value) tuples")
+    print("   d) List of dictionaries")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "c":
+        print("   ✅ Correct! items() returns key-value pairs")
+        score += 1
+    else:
+        print("   ❌ Incorrect. items() returns (key, value) tuples")
+    
+    # Question 10
+    print("\n10. Which data structure maintains insertion order (Python 3.7+)?")
+    print("    a) Set")
+    print("    b) Dictionary")
+    print("    c) Both")
+    print("    d) Neither")
+    answer = input("    Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("    ✅ Correct! Dictionaries preserve insertion order")
+        score += 1
+    else:
+        print("    ❌ Incorrect. Dictionaries maintain insertion order since Python 3.7")
+    
+    # Final score
+    print("\n" + "="*50)
+    print(f"QUIZ COMPLETE! Your score: {score}/{total}")
+    print("="*50)
+    
+    if score == total:
+        print("🏆 Perfect! You're a data structures master!")
+    elif score >= 8:
+        print("🌟 Great job! You have a solid understanding!")
+    elif score >= 6:
+        print("📚 Good effort! Review the topics you missed.")
+    else:
+        print("💪 Keep practicing! Data structures are fundamental.")
+
+if __name__ == "__main__":
+    quiz()
+
 
 
 
