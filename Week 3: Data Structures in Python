@@ -345,3 +345,222 @@ Words grouped by first letter:
   a: ['apple', 'apricot', 'avocado']
   b: ['banana', 'berry']
   c: ['cherry']
+
+Exercise 2: Tuples - Immutable Sequences
+
+# tuples_basics.py
+"""
+Comprehensive guide to Python tuples
+"""
+
+print("="*60)
+print("TUPLES IN PYTHON")
+print("="*60)
+
+# 1. Creating Tuples
+print("\n1. CREATING TUPLES:")
+print("-"*40)
+
+# Empty tuple
+empty_tuple = ()
+print(f"Empty tuple: {empty_tuple}")
+
+# Single element tuple (note the comma!)
+single = (1,)
+print(f"Single element: {single}, Type: {type(single)}")
+
+# Without parentheses
+another_single = 1,
+print(f"Another single: {another_single}")
+
+# Multiple elements
+coordinates = (10, 20)
+print(f"2D coordinates: {coordinates}")
+
+# Mixed types
+person = ("Alice", 25, "Engineer", 5.6)
+print(f"Person tuple: {person}")
+
+# Using tuple() constructor
+numbers = tuple([1, 2, 3, 4, 5])
+print(f"From list: {numbers}")
+
+# From range
+range_tuple = tuple(range(1, 6))
+print(f"From range: {range_tuple}")
+
+# Nested tuples
+nested = ((1, 2), (3, 4), (5, 6))
+print(f"Nested tuple: {nested}")
+
+# 2. Accessing Tuple Elements
+print("\n2. ACCESSING ELEMENTS:")
+print("-"*40)
+
+colors = ("red", "green", "blue", "yellow", "purple")
+print(f"Colors: {colors}")
+
+# Indexing
+print(f"First: {colors[0]}")
+print(f"Last: {colors[-1]}")
+print(f"Second: {colors[1]}")
+
+# Slicing
+print(f"First three: {colors[:3]}")
+print(f"Last two: {colors[-2:]}")
+print(f"Every other: {colors[::2]}")
+print(f"Reversed: {colors[::-1]}")
+
+# 3. Tuple Operations
+print("\n3. TUPLE OPERATIONS:")
+print("-"*40)
+
+# Length
+print(f"Length: {len(colors)}")
+
+# Count
+numbers = (1, 2, 3, 2, 4, 2, 5)
+print(f"Numbers: {numbers}")
+print(f"Count of 2: {numbers.count(2)}")
+print(f"Count of 7: {numbers.count(7)}")
+
+# Index
+print(f"Index of 4: {numbers.index(4)}")
+print(f"Index of 2 (first): {numbers.index(2)}")
+
+# Membership
+print(f"Is 3 in numbers? {3 in numbers}")
+print(f"Is 10 in numbers? {10 in numbers}")
+
+# Concatenation
+tuple1 = (1, 2, 3)
+tuple2 = (4, 5, 6)
+combined = tuple1 + tuple2
+print(f"Concatenated: {combined}")
+
+# Repetition
+repeated = tuple1 * 3
+print(f"Repeated: {repeated}")
+
+# 4. Tuple Immutability
+print("\n4. TUPLE IMMUTABILITY:")
+print("-"*40)
+
+point = (10, 20)
+print(f"Original tuple: {point}")
+
+try:
+    point[0] = 30  # This will fail
+except TypeError as e:
+    print(f"❌ Cannot modify tuple: {e}")
+
+# But if tuple contains mutable objects
+nested_list = ([1, 2], [3, 4])
+print(f"Tuple with lists: {nested_list}")
+nested_list[0].append(3)  # This works! (modifying list inside tuple)
+print(f"After modifying inner list: {nested_list}")
+
+# 5. Tuple Unpacking
+print("\n5. TUPLE UNPACKING:")
+print("-"*40)
+
+# Basic unpacking
+point = (10, 20)
+x, y = point
+print(f"x={x}, y={y}")
+
+# Multiple values
+person = ("Alice", 25, "Engineer")
+name, age, profession = person
+print(f"{name} is {age} years old and works as {profession}")
+
+# Using * for remaining items
+numbers = (1, 2, 3, 4, 5)
+first, *middle, last = numbers
+print(f"First: {first}, Middle: {middle}, Last: {last}")
+
+# Swapping variables (tuple unpacking magic)
+a, b = 5, 10
+print(f"Before swap: a={a}, b={b}")
+a, b = b, a
+print(f"After swap: a={a}, b={b}")
+
+# Ignoring values
+data = ("John", "Doe", 30, "NYC", "Engineer")
+first_name, last_name, *_, city = data  # _ ignores values
+print(f"{first_name} {last_name} lives in {city}")
+
+# 6. When to Use Tuples
+print("\n6. WHEN TO USE TUPLES:")
+print("-"*40)
+
+examples = {
+    "Coordinates": (40.7128, -74.0060),  # NYC coordinates
+    "RGB Color": (255, 128, 0),  # Orange
+    "Date": (2024, 1, 15),
+    "Config": ("localhost", 8080, True),  # Host, port, SSL
+    "Return multiple": "Functions return tuples"
+}
+
+for use_case, example in examples.items():
+    print(f"  {use_case}: {example}")
+
+# 7. Tuple vs List Performance
+print("\n7. PERFORMANCE COMPARISON:")
+print("-"*40)
+
+import timeit
+
+# Creating
+list_time = timeit.timeit("[1,2,3,4,5]", number=1000000)
+tuple_time = timeit.timeit("(1,2,3,4,5)", number=1000000)
+print(f"List creation (1M times): {list_time:.4f} seconds")
+print(f"Tuple creation (1M times): {tuple_time:.4f} seconds")
+print(f"Tuples are {list_time/tuple_time:.2f}x faster to create")
+
+# Accessing
+list_access = timeit.timeit("x = [1,2,3,4,5][2]", number=1000000)
+tuple_access = timeit.timeit("x = (1,2,3,4,5)[2]", number=1000000)
+print(f"\nList access (1M times): {list_access:.4f} seconds")
+print(f"Tuple access (1M times): {tuple_access:.4f} seconds")
+print(f"Access speed is similar")
+
+# 8. Practical Examples
+print("\n8. PRACTICAL EXAMPLES:")
+print("-"*40)
+
+# Dictionary with tuple keys
+locations = {
+    (40.7128, -74.0060): "New York",
+    (34.0522, -118.2437): "Los Angeles",
+    (41.8781, -87.6298): "Chicago"
+}
+print("Cities by coordinates:")
+for coords, city in locations.items():
+    print(f"  {coords}: {city}")
+
+# Multiple return values
+def get_min_max(numbers):
+    """Return min and max as tuple"""
+    return (min(numbers), max(numbers))
+
+nums = [45, 23, 89, 12, 67, 34]
+min_val, max_val = get_min_max(nums)
+print(f"\nNumbers: {nums}")
+print(f"Min: {min_val}, Max: {max_val}")
+
+# Named tuples (enhanced tuples)
+from collections import namedtuple
+
+# Define a named tuple type
+Point = namedtuple('Point', ['x', 'y', 'z'])
+p = Point(10, 20, 30)
+print(f"\nNamed tuple Point: {p}")
+print(f"Access by name: p.x={p.x}, p.y={p.y}, p.z={p.z}")
+print(f"Access by index: {p[0]}, {p[1]}, {p[2]}")
+
+# Student record
+Student = namedtuple('Student', ['name', 'age', 'grade', 'subjects'])
+alice = Student("Alice", 16, 10, ["Math", "Science", "English"])
+print(f"\nStudent: {alice.name}, Age: {alice.age}, Grade: {alice.grade}")
+print(f"Subjects: {alice.subjects}")
