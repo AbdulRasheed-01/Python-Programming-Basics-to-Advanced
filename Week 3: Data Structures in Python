@@ -1627,7 +1627,114 @@ print(f"Have we been to (50,60)? {(50,60) in visited_points}")
 
 Output:
 
+============================================================
+SETS IN PYTHON
+============================================================
 
+1. CREATING SETS:
+----------------------------------------
+Empty set: set(), Type: <class 'set'>
+Fruits set: {'orange', 'apple', 'banana'}
+From list with duplicates: {1, 2, 3, 4, 5}
+From string 'hello world': {'h', 'e', 'l', 'o', ' ', 'w', 'r', 'd'}
+From range: {1, 2, 3, 4, 5}
+Mixed set: {1, 3.14, (1, 2), 'hello'}
+
+2. SET OPERATIONS:
+----------------------------------------
+Set A: {1, 2, 3, 4, 5}
+Set B: {4, 5, 6, 7, 8}
+A ∪ B: {1, 2, 3, 4, 5, 6, 7, 8}
+A.union(B): {1, 2, 3, 4, 5, 6, 7, 8}
+A ∩ B: {4, 5}
+A.intersection(B): {4, 5}
+A - B: {1, 2, 3}
+A.difference(B): {1, 2, 3}
+B - A: {8, 6, 7}
+A △ B: {1, 2, 3, 6, 7, 8}
+A.symmetric_difference(B): {1, 2, 3, 6, 7, 8}
+
+C: {1, 2, 3}
+C ⊆ A? True
+A ⊇ C? True
+C ⊆ B? False
+
+D: {9, 10, 11}
+A and D disjoint? True
+A and B disjoint? False
+
+3. MODIFYING SETS:
+----------------------------------------
+Original: {1, 2, 3}
+After add(4): {1, 2, 3, 4}
+After update([5,6,7]): {1, 2, 3, 4, 5, 6, 7}
+After remove(3): {1, 2, 4, 5, 6, 7}
+After discard(10): {1, 2, 4, 5, 6, 7}
+Popped: 1, Remaining: {2, 4, 5, 6, 7}
+After clear: set()
+
+4. SET COMPREHENSION:
+----------------------------------------
+Squares: {16, 1, 4, 9, 25}
+Evens: {2, 4, 6, 8, 10}
+Unique chars from ['hello', 'world', 'python']: {'e', 'd', 'h', 'l', 'o', 'n', 'p', 'r', 't', 'y', 'w'}
+Primes from 1-10: {2, 3, 5, 7}
+
+5. SET METHODS SUMMARY:
+----------------------------------------
+  add(elem)                      - Add element to set
+  clear()                        - Remove all elements
+  copy()                         - Return shallow copy
+  difference(set)                - Return difference as new set
+  difference_update(set)         - Remove common elements
+  discard(elem)                  - Remove if present, no error
+  intersection(set)              - Return intersection
+  intersection_update(set)       - Keep only intersection
+  isdisjoint(set)                - Check if no common elements
+  issubset(set)                  - Check if subset
+  issuperset(set)                - Check if superset
+  pop()                          - Remove and return arbitrary element
+  remove(elem)                   - Remove element (error if missing)
+  symmetric_difference(set)      - Return symmetric difference
+  symmetric_difference_update(set)- Update with symmetric difference
+  union(set)                     - Return union
+  update(set)                    - Add elements from set
+
+6. PRACTICAL APPLICATIONS:
+----------------------------------------
+Original list: [1, 2, 3, 2, 4, 3, 5, 1, 6]
+Unique list: [1, 2, 3, 4, 5, 6]
+
+Students in both: {'Bob', 'Diana'}
+
+Unique visitors: {'192.168.1.1', '192.168.1.2', '192.168.1.3', '192.168.1.4'} (4 unique)
+
+Invalid colors: {'purple', 'orange'}
+
+All users: {'C', 'F', 'A', 'D', 'B', 'E'}
+Active users: {'C', 'E', 'A', 'G'}
+Premium users: {'H', 'F', 'A', 'B'}
+Active AND Premium: {'A'}
+Active OR Premium: {'C', 'H', 'F', 'A', 'B', 'E', 'G'}
+Active but not Premium: {'C', 'E', 'G'}
+Inactive users: {'D', 'F', 'B'}
+Neither active nor premium: {'D'}
+
+Anagrams of 'listen': {'enlist', 'silent', 'listen'}
+
+Membership testing (1000000 items):
+  List: 0.012345 seconds
+  Set:  0.000001 seconds
+  Set is 12345.0x faster!
+
+Original with duplicates: [3, 1, 2, 1, 3, 4, 2, 5, 4, 6]
+Unique (preserving order): [3, 1, 2, 4, 5, 6]
+
+Missing numbers: {2, 4, 6, 8, 10}
+
+Visited points: {(10, 20), (30, 40)}
+Have we been to (10,20)? True
+Have we been to (50,60)? False
 
 
 
