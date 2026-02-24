@@ -1737,6 +1737,1144 @@ Have we been to (10,20)? True
 Have we been to (50,60)? False
 
 
+📝 Weekly Project: Student Data Management System
+
+# week3_project.py
+"""
+WEEK 3 PROJECT: Student Data Management System
+A comprehensive system using all data structures
+"""
+
+import json
+import csv
+from collections import defaultdict, Counter
+from datetime import datetime
+import random
+
+class StudentDataSystem:
+    def __init__(self):
+        self.students = {}  # Dictionary of student records
+        self.courses = set()  # Set of available courses
+        self.enrollments = defaultdict(list)  # Course -> list of students
+        self.grades = defaultdict(dict)  # Student -> {course: grade}
+        self.attendance = defaultdict(list)  # Student -> list of attendance records
+        self.initialize_sample_data()
+    
+    def initialize_sample_data(self):
+        """Initialize with sample data"""
+        # Sample students
+        self.students = {
+            "S001": {
+                "name": "Alice Johnson",
+                "age": 20,
+                "email": "alice@university.edu",
+                "major": "Computer Science",
+                "year": 3
+            },
+            "S002": {
+                "name": "Bob Smith",
+                "age": 22,
+                "email": "bob@university.edu",
+                "major": "Engineering",
+                "year": 4
+            },
+            "S003": {
+                "name": "Charlie Brown",
+                "age": 19,
+                "email": "charlie@university.edu",
+                "major": "Mathematics",
+                "year": 2
+            },
+            "S004": {
+                "name": "Diana Prince",
+                "age": 21,
+                "email": "diana@university.edu",
+                "major": "Physics",
+                "year": 3
+            },
+            "S005": {
+                "name": "Evan Wright",
+                "age": 20,
+                "email": "evan@university.edu",
+                "major": "Computer Science",
+                "year": 2
+            }
+        }
+        
+        # Sample courses
+        self.courses = {"CS101", "CS201", "MATH101", "PHYS101", "ENG101", "MATH201"}
+        
+        # Sample enrollments
+        enrollment_data = {
+            "CS101": ["S001", "S002", "S003", "S005"],
+            "CS201": ["S001", "S004"],
+            "MATH101": ["S001", "S002", "S003", "S004", "S005"],
+            "PHYS101": ["S002", "S004"],
+            "ENG101": ["S001", "S003", "S005"],
+            "MATH201": ["S003", "S004"]
+        }
+        
+        for course, students in enrollment_data.items():
+            self.enrollments[course].extend(students)
+        
+        # Sample grades
+        grade_data = {
+            "S001": {"CS101": 85, "CS201": 92, "MATH101": 78, "ENG101": 88},
+            "S002": {"CS101": 92, "MATH101": 85, "PHYS101": 79},
+            "S003": {"CS101": 78, "MATH101": 95, "ENG101": 82, "MATH201": 88},
+            "S004": {"CS201": 88, "MATH101": 91, "PHYS101": 94, "MATH201": 86},
+            "S005": {"CS101": 95, "MATH101": 84, "ENG101": 90}
+        }
+        
+        for student, grades in grade_data.items():
+            self.grades[student] = grades
+        
+        # Sample attendance
+        dates = ["2024-01-15", "2024-01-16", "2024-01-17", "2024-01-18", "2024-01-19"]
+        for student in self.students:
+            self.attendance[student] = [
+                {"date": date, "status": random.choice(["Present", "Present", "Present", "Late", "Absent"])}
+                for date in dates
+            ]
+    
+    def display_menu(self):
+        """Display main menu"""
+        print("\n" + "="*60)
+        print("     STUDENT DATA MANAGEMENT SYSTEM")
+        print("="*60)
+        print("\nMAIN MENU:")
+        print("1. Student Management")
+        print("2. Course Management")
+        print("3. Grade Management")
+        print("4. Attendance Tracking")
+        print("5. Reports & Analytics")
+        print("6. Data Export/Import")
+        print("7. Exit")
+        print("-"*40)
+        
+        return input("Select option (1-7): ")
+    
+    def student_management_menu(self):
+        """Student management submenu"""
+        while True:
+            print("\n" + "-"*40)
+            print("STUDENT MANAGEMENT")
+            print("-"*40)
+            print("1. View All Students")
+            print("2. Add New Student")
+            print("3. Update Student Info")
+            print("4. Delete Student")
+            print("5. Search Students")
+            print("6. View Student Details")
+            print("7. Back to Main Menu")
+            
+            choice = input("Select option (1-7): ")
+            
+            if choice == "1":
+                self.view_all_students()
+            elif choice == "2":
+                self.add_student()
+            elif choice == "3":
+                self.update_student()
+            elif choice == "4":
+                self.delete_student()
+            elif choice == "5":
+                self.search_students()
+            elif choice == "6":
+                self.view_student_details()
+            elif choice == "7":
+                break
+            else:
+                print("Invalid option!")
+            
+            input("\nPress Enter to continue...")
+    
+    def view_all_students(self):
+        """Display all students"""
+        print("\n" + "-"*40)
+        print("ALL STUDENTS")
+        print("-"*40)
+        print(f"{'ID':<6} {'Name':<20} {'Major':<20} {'Year':<5}")
+        print("-"*51)
+        
+        for sid, info in sorted(self.students.items()):
+            print(f"{sid:<6} {info['name']:<20} {info['major']:<20} {info['year']:<5}")
+        print(f"\nTotal students: {len(self.students)}")
+    
+    def add_student(self):
+        """Add a new student"""
+        print("\n" + "-"*40)
+        print("ADD NEW STUDENT")
+        print("-"*40)
+        
+        # Generate new ID
+        new_id = f"S{len(self.students) + 1:03d}"
+        print(f"New Student ID: {new_id}")
+        
+        name = input("Enter full name: ")
+        if not name:
+            print("❌ Name cannot be empty!")
+            return
+        
+        try:
+            age = int(input("Enter age: "))
+            email = input("Enter email: ")
+            major = input("Enter major: ")
+            year = int(input("Enter year (1-4): "))
+            
+            if year < 1 or year > 4:
+                print("❌ Year must be between 1 and 4!")
+                return
+            
+            self.students[new_id] = {
+                "name": name,
+                "age": age,
+                "email": email,
+                "major": major,
+                "year": year
+            }
+            
+            print(f"✅ Student {name} added successfully with ID: {new_id}")
+            
+        except ValueError:
+            print("❌ Please enter valid numbers!")
+    
+    def update_student(self):
+        """Update student information"""
+        sid = input("Enter student ID to update: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        student = self.students[sid]
+        print(f"\nUpdating: {student['name']}")
+        print("Leave blank to keep current value")
+        
+        name = input(f"Name [{student['name']}]: ") or student['name']
+        
+        age_str = input(f"Age [{student['age']}]: ")
+        age = int(age_str) if age_str else student['age']
+        
+        email = input(f"Email [{student['email']}]: ") or student['email']
+        major = input(f"Major [{student['major']}]: ") or student['major']
+        
+        year_str = input(f"Year [{student['year']}]: ")
+        year = int(year_str) if year_str else student['year']
+        
+        self.students[sid] = {
+            "name": name,
+            "age": age,
+            "email": email,
+            "major": major,
+            "year": year
+        }
+        
+        print("✅ Student information updated!")
+    
+    def delete_student(self):
+        """Delete a student"""
+        sid = input("Enter student ID to delete: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        print(f"\nStudent: {self.students[sid]['name']}")
+        confirm = input("Are you sure? (yes/no): ").lower()
+        
+        if confirm == "yes":
+            # Remove from students
+            del self.students[sid]
+            
+            # Remove from enrollments
+            for course in list(self.enrollments.keys()):
+                if sid in self.enrollments[course]:
+                    self.enrollments[course].remove(sid)
+            
+            # Remove from grades
+            if sid in self.grades:
+                del self.grades[sid]
+            
+            # Remove from attendance
+            if sid in self.attendance:
+                del self.attendance[sid]
+            
+            print("✅ Student deleted successfully!")
+    
+    def search_students(self):
+        """Search for students"""
+        print("\n" + "-"*40)
+        print("SEARCH STUDENTS")
+        print("-"*40)
+        print("Search by:")
+        print("1. Name")
+        print("2. Major")
+        print("3. Year")
+        print("4. Back")
+        
+        choice = input("Select option (1-4): ")
+        
+        if choice == "1":
+            term = input("Enter name (or part of name): ").lower()
+            results = [(sid, info) for sid, info in self.students.items() 
+                      if term in info['name'].lower()]
+            
+            print(f"\nFound {len(results)} matching students:")
+            for sid, info in results:
+                print(f"  {sid}: {info['name']} - {info['major']} (Year {info['year']})")
+                
+        elif choice == "2":
+            major = input("Enter major: ").lower()
+            results = [(sid, info) for sid, info in self.students.items() 
+                      if major in info['major'].lower()]
+            
+            print(f"\nStudents in {major}:")
+            for sid, info in results:
+                print(f"  {sid}: {info['name']} (Year {info['year']})")
+                
+        elif choice == "3":
+            try:
+                year = int(input("Enter year (1-4): "))
+                results = [(sid, info) for sid, info in self.students.items() 
+                          if info['year'] == year]
+                
+                print(f"\nYear {year} students:")
+                for sid, info in results:
+                    print(f"  {sid}: {info['name']} - {info['major']}")
+            except ValueError:
+                print("❌ Please enter a valid year!")
+    
+    def view_student_details(self):
+        """View detailed information about a student"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        student = self.students[sid]
+        print("\n" + "="*50)
+        print(f"STUDENT DETAILS: {student['name']}")
+        print("="*50)
+        print(f"ID: {sid}")
+        print(f"Name: {student['name']}")
+        print(f"Age: {student['age']}")
+        print(f"Email: {student['email']}")
+        print(f"Major: {student['major']}")
+        print(f"Year: {student['year']}")
+        
+        # Courses
+        enrolled_courses = []
+        for course, students in self.enrollments.items():
+            if sid in students:
+                enrolled_courses.append(course)
+        
+        print(f"\nEnrolled Courses: {', '.join(enrolled_courses) if enrolled_courses else 'None'}")
+        
+        # Grades
+        if sid in self.grades and self.grades[sid]:
+            print("\nGrades:")
+            total = 0
+            for course, grade in self.grades[sid].items():
+                print(f"  {course}: {grade}")
+                total += grade
+            avg = total / len(self.grades[sid])
+            print(f"  Average: {avg:.1f}")
+            
+            # Letter grade
+            if avg >= 90:
+                letter = "A"
+            elif avg >= 80:
+                letter = "B"
+            elif avg >= 70:
+                letter = "C"
+            elif avg >= 60:
+                letter = "D"
+            else:
+                letter = "F"
+            print(f"  Letter Grade: {letter}")
+        
+        # Attendance
+        if sid in self.attendance:
+            print(f"\nRecent Attendance:")
+            present = sum(1 for record in self.attendance[sid] if record['status'] == 'Present')
+            late = sum(1 for record in self.attendance[sid] if record['status'] == 'Late')
+            absent = sum(1 for record in self.attendance[sid] if record['status'] == 'Absent')
+            total = len(self.attendance[sid])
+            
+            print(f"  Present: {present}/{total} ({present/total*100:.1f}%)")
+            print(f"  Late: {late}/{total} ({late/total*100:.1f}%)")
+            print(f"  Absent: {absent}/{total} ({absent/total*100:.1f}%)")
+    
+    def course_management_menu(self):
+        """Course management submenu"""
+        while True:
+            print("\n" + "-"*40)
+            print("COURSE MANAGEMENT")
+            print("-"*40)
+            print("1. View All Courses")
+            print("2. Add New Course")
+            print("3. Delete Course")
+            print("4. View Course Roster")
+            print("5. Enroll Student")
+            print("6. Withdraw Student")
+            print("7. Back to Main Menu")
+            
+            choice = input("Select option (1-7): ")
+            
+            if choice == "1":
+                self.view_all_courses()
+            elif choice == "2":
+                self.add_course()
+            elif choice == "3":
+                self.delete_course()
+            elif choice == "4":
+                self.view_course_roster()
+            elif choice == "5":
+                self.enroll_student()
+            elif choice == "6":
+                self.withdraw_student()
+            elif choice == "7":
+                break
+            else:
+                print("Invalid option!")
+            
+            input("\nPress Enter to continue...")
+    
+    def view_all_courses(self):
+        """Display all courses"""
+        print("\n" + "-"*40)
+        print("ALL COURSES")
+        print("-"*40)
+        
+        for course in sorted(self.courses):
+            enrollment_count = len(self.enrollments.get(course, []))
+            print(f"{course}: {enrollment_count} students enrolled")
+        print(f"\nTotal courses: {len(self.courses)}")
+    
+    def add_course(self):
+        """Add a new course"""
+        course = input("Enter course code (e.g., CS101): ").upper()
+        
+        if course in self.courses:
+            print("❌ Course already exists!")
+            return
+        
+        self.courses.add(course)
+        self.enrollments[course] = []
+        print(f"✅ Course {course} added successfully!")
+    
+    def delete_course(self):
+        """Delete a course"""
+        course = input("Enter course code to delete: ").upper()
+        
+        if course not in self.courses:
+            print("❌ Course not found!")
+            return
+        
+        # Check if any students are enrolled
+        if self.enrollments.get(course, []):
+            print(f"⚠️ Warning: {len(self.enrollments[course])} students are enrolled!")
+            confirm = input("Are you sure? (yes/no): ").lower()
+            if confirm != "yes":
+                return
+        
+        self.courses.remove(course)
+        if course in self.enrollments:
+            del self.enrollments[course]
+        
+        # Remove grades for this course
+        for student in self.grades:
+            if course in self.grades[student]:
+                del self.grades[student][course]
+        
+        print("✅ Course deleted successfully!")
+    
+    def view_course_roster(self):
+        """View students in a course"""
+        course = input("Enter course code: ").upper()
+        
+        if course not in self.courses:
+            print("❌ Course not found!")
+            return
+        
+        enrolled = self.enrollments.get(course, [])
+        print(f"\n{'-'*40}")
+        print(f"COURSE ROSTER: {course}")
+        print(f"{'-'*40}")
+        
+        if not enrolled:
+            print("No students enrolled.")
+        else:
+            for sid in enrolled:
+                if sid in self.students:
+                    student = self.students[sid]
+                    grade = self.grades.get(sid, {}).get(course, "Not graded")
+                    print(f"{sid}: {student['name']} - Grade: {grade}")
+    
+    def enroll_student(self):
+        """Enroll a student in a course"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        course = input("Enter course code: ").upper()
+        
+        if course not in self.courses:
+            print("❌ Course not found!")
+            return
+        
+        if sid in self.enrollments.get(course, []):
+            print("❌ Student already enrolled in this course!")
+            return
+        
+        self.enrollments[course].append(sid)
+        print(f"✅ {self.students[sid]['name']} enrolled in {course}")
+    
+    def withdraw_student(self):
+        """Withdraw a student from a course"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        course = input("Enter course code: ").upper()
+        
+        if course not in self.courses:
+            print("❌ Course not found!")
+            return
+        
+        if sid not in self.enrollments.get(course, []):
+            print("❌ Student not enrolled in this course!")
+            return
+        
+        self.enrollments[course].remove(sid)
+        if sid in self.grades and course in self.grades[sid]:
+            del self.grades[sid][course]
+        
+        print(f"✅ {self.students[sid]['name']} withdrawn from {course}")
+    
+    def grade_management_menu(self):
+        """Grade management submenu"""
+        while True:
+            print("\n" + "-"*40)
+            print("GRADE MANAGEMENT")
+            print("-"*40)
+            print("1. View All Grades")
+            print("2. Add/Update Grade")
+            print("3. View Student Grades")
+            print("4. View Course Grades")
+            print("5. Calculate GPA")
+            print("6. Grade Distribution")
+            print("7. Back to Main Menu")
+            
+            choice = input("Select option (1-7): ")
+            
+            if choice == "1":
+                self.view_all_grades()
+            elif choice == "2":
+                self.add_update_grade()
+            elif choice == "3":
+                self.view_student_grades()
+            elif choice == "4":
+                self.view_course_grades()
+            elif choice == "5":
+                self.calculate_gpa()
+            elif choice == "6":
+                self.grade_distribution()
+            elif choice == "7":
+                break
+            else:
+                print("Invalid option!")
+            
+            input("\nPress Enter to continue...")
+    
+    def view_all_grades(self):
+        """View all grades"""
+        print("\n" + "-"*40)
+        print("ALL GRADES")
+        print("-"*40)
+        
+        for student in sorted(self.students.keys()):
+            name = self.students[student]['name']
+            grades = self.grades.get(student, {})
+            if grades:
+                avg = sum(grades.values()) / len(grades)
+                print(f"\n{name}:")
+                for course, grade in sorted(grades.items()):
+                    print(f"  {course}: {grade}")
+                print(f"  Average: {avg:.1f}")
+    
+    def add_update_grade(self):
+        """Add or update a grade"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        course = input("Enter course code: ").upper()
+        
+        if course not in self.courses:
+            print("❌ Course not found!")
+            return
+        
+        if sid not in self.enrollments.get(course, []):
+            print("❌ Student not enrolled in this course!")
+            return
+        
+        try:
+            grade = float(input("Enter grade (0-100): "))
+            if 0 <= grade <= 100:
+                if sid not in self.grades:
+                    self.grades[sid] = {}
+                self.grades[sid][course] = grade
+                print(f"✅ Grade {grade} recorded for {self.students[sid]['name']} in {course}")
+            else:
+                print("❌ Grade must be between 0 and 100!")
+        except ValueError:
+            print("❌ Please enter a valid number!")
+    
+    def view_student_grades(self):
+        """View grades for a specific student"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        name = self.students[sid]['name']
+        grades = self.grades.get(sid, {})
+        
+        print(f"\n{'-'*40}")
+        print(f"GRADES: {name}")
+        print(f"{'-'*40}")
+        
+        if not grades:
+            print("No grades recorded.")
+        else:
+            for course, grade in sorted(grades.items()):
+                print(f"{course}: {grade}")
+            avg = sum(grades.values()) / len(grades)
+            print(f"\nAverage: {avg:.1f}")
+    
+    def view_course_grades(self):
+        """View all grades for a course"""
+        course = input("Enter course code: ").upper()
+        
+        if course not in self.courses:
+            print("❌ Course not found!")
+            return
+        
+        print(f"\n{'-'*40}")
+        print(f"GRADES FOR {course}")
+        print(f"{'-'*40}")
+        
+        grades_found = False
+        for sid, grades in self.grades.items():
+            if course in grades:
+                name = self.students[sid]['name']
+                grade = grades[course]
+                print(f"{name}: {grade}")
+                grades_found = True
+        
+        if not grades_found:
+            print("No grades recorded for this course.")
+    
+    def calculate_gpa(self):
+        """Calculate GPA for a student"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        grades = self.grades.get(sid, {})
+        if not grades:
+            print("No grades recorded.")
+            return
+        
+        # Convert to 4.0 scale
+        grade_points = 0
+        for grade in grades.values():
+            if grade >= 90:
+                grade_points += 4.0
+            elif grade >= 80:
+                grade_points += 3.0
+            elif grade >= 70:
+                grade_points += 2.0
+            elif grade >= 60:
+                grade_points += 1.0
+            else:
+                grade_points += 0.0
+        
+        gpa = grade_points / len(grades)
+        print(f"\n{self.students[sid]['name']}'s GPA: {gpa:.2f}")
+    
+    def grade_distribution(self):
+        """Show grade distribution for a course"""
+        course = input("Enter course code: ").upper()
+        
+        if course not in self.courses:
+            print("❌ Course not found!")
+            return
+        
+        grades = []
+        for sid, student_grades in self.grades.items():
+            if course in student_grades:
+                grades.append(student_grades[course])
+        
+        if not grades:
+            print("No grades recorded for this course.")
+            return
+        
+        # Count letter grades
+        distribution = Counter()
+        for grade in grades:
+            if grade >= 90:
+                distribution['A'] += 1
+            elif grade >= 80:
+                distribution['B'] += 1
+            elif grade >= 70:
+                distribution['C'] += 1
+            elif grade >= 60:
+                distribution['D'] += 1
+            else:
+                distribution['F'] += 1
+        
+        print(f"\n{'-'*40}")
+        print(f"GRADE DISTRIBUTION: {course}")
+        print(f"{'-'*40}")
+        print(f"Total Students: {len(grades)}")
+        print(f"Average: {sum(grades)/len(grades):.1f}")
+        print(f"Highest: {max(grades)}")
+        print(f"Lowest: {min(grades)}")
+        print(f"\nDistribution:")
+        for grade in ['A', 'B', 'C', 'D', 'F']:
+            count = distribution[grade]
+            percentage = count / len(grades) * 100
+            bar = '█' * int(percentage / 5)
+            print(f"{grade}: {bar} {count} ({percentage:.1f}%)")
+    
+    def attendance_menu(self):
+        """Attendance tracking submenu"""
+        while True:
+            print("\n" + "-"*40)
+            print("ATTENDANCE TRACKING")
+            print("-"*40)
+            print("1. Mark Attendance")
+            print("2. View Attendance")
+            print("3. Attendance Summary")
+            print("4. Back to Main Menu")
+            
+            choice = input("Select option (1-4): ")
+            
+            if choice == "1":
+                self.mark_attendance()
+            elif choice == "2":
+                self.view_attendance()
+            elif choice == "3":
+                self.attendance_summary()
+            elif choice == "4":
+                break
+            else:
+                print("Invalid option!")
+            
+            input("\nPress Enter to continue...")
+    
+    def mark_attendance(self):
+        """Mark attendance for a student"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        date = input("Enter date (YYYY-MM-DD): ")
+        status = input("Status (Present/Late/Absent): ").capitalize()
+        
+        if status not in ["Present", "Late", "Absent"]:
+            print("❌ Invalid status!")
+            return
+        
+        # Check if record exists
+        if sid not in self.attendance:
+            self.attendance[sid] = []
+        
+        # Update or add record
+        found = False
+        for record in self.attendance[sid]:
+            if record['date'] == date:
+                record['status'] = status
+                found = True
+                break
+        
+        if not found:
+            self.attendance[sid].append({"date": date, "status": status})
+        
+        print(f"✅ Attendance marked for {self.students[sid]['name']}")
+    
+    def view_attendance(self):
+        """View attendance for a student"""
+        sid = input("Enter student ID: ")
+        
+        if sid not in self.students:
+            print("❌ Student not found!")
+            return
+        
+        attendance = self.attendance.get(sid, [])
+        
+        print(f"\n{'-'*40}")
+        print(f"ATTENDANCE: {self.students[sid]['name']}")
+        print(f"{'-'*40}")
+        
+        if not attendance:
+            print("No attendance records.")
+        else:
+            for record in sorted(attendance, key=lambda x: x['date']):
+                print(f"{record['date']}: {record['status']}")
+    
+    def attendance_summary(self):
+        """Show attendance summary"""
+        print("\n" + "-"*40)
+        print("ATTENDANCE SUMMARY")
+        print("-"*40)
+        
+        for sid, student in self.students.items():
+            attendance = self.attendance.get(sid, [])
+            if attendance:
+                present = sum(1 for r in attendance if r['status'] == 'Present')
+                late = sum(1 for r in attendance if r['status'] == 'Late')
+                absent = sum(1 for r in attendance if r['status'] == 'Absent')
+                total = len(attendance)
+                
+                attendance_rate = (present + late) / total * 100
+                print(f"\n{student['name']}:")
+                print(f"  Attendance Rate: {attendance_rate:.1f}%")
+                print(f"  Present: {present}, Late: {late}, Absent: {absent}")
+    
+    def reports_menu(self):
+        """Reports and analytics submenu"""
+        while True:
+            print("\n" + "-"*40)
+            print("REPORTS & ANALYTICS")
+            print("-"*40)
+            print("1. Student Statistics")
+            print("2. Course Statistics")
+            print("3. Grade Analytics")
+            print("4. Attendance Analytics")
+            print("5. Department Report")
+            print("6. Back to Main Menu")
+            
+            choice = input("Select option (1-6): ")
+            
+            if choice == "1":
+                self.student_statistics()
+            elif choice == "2":
+                self.course_statistics()
+            elif choice == "3":
+                self.grade_analytics()
+            elif choice == "4":
+                self.attendance_analytics()
+            elif choice == "5":
+                self.department_report()
+            elif choice == "6":
+                break
+            else:
+                print("Invalid option!")
+            
+            input("\nPress Enter to continue...")
+    
+    def student_statistics(self):
+        """Generate student statistics"""
+        print("\n" + "-"*40)
+        print("STUDENT STATISTICS")
+        print("-"*40)
+        
+        # Year distribution
+        year_dist = Counter(info['year'] for info in self.students.values())
+        print("\nStudents by Year:")
+        for year in range(1, 5):
+            count = year_dist[year]
+            print(f"  Year {year}: {count} students ({count/len(self.students)*100:.1f}%)")
+        
+        # Major distribution
+        major_dist = Counter(info['major'] for info in self.students.values())
+        print("\nStudents by Major:")
+        for major, count in major_dist.most_common():
+            print(f"  {major}: {count} students")
+        
+        # Age statistics
+        ages = [info['age'] for info in self.students.values()]
+        if ages:
+            print(f"\nAge Statistics:")
+            print(f"  Average: {sum(ages)/len(ages):.1f}")
+            print(f"  Youngest: {min(ages)}")
+            print(f"  Oldest: {max(ages)}")
+    
+    def course_statistics(self):
+        """Generate course statistics"""
+        print("\n" + "-"*40)
+        print("COURSE STATISTICS")
+        print("-"*40)
+        
+        print(f"\nTotal Courses: {len(self.courses)}")
+        
+        # Enrollment statistics
+        enroll_counts = {course: len(students) for course, students in self.enrollments.items()}
+        
+        if enroll_counts:
+            most_popular = max(enroll_counts.items(), key=lambda x: x[1])
+            least_popular = min(enroll_counts.items(), key=lambda x: x[1])
+            
+            print(f"Most Popular: {most_popular[0]} ({most_popular[1]} students)")
+            print(f"Least Popular: {least_popular[0]} ({least_popular[1]} students)")
+            
+            avg_enrollment = sum(enroll_counts.values()) / len(enroll_counts)
+            print(f"Average Enrollment: {avg_enrollment:.1f} students per course")
+    
+    def grade_analytics(self):
+        """Generate grade analytics"""
+        print("\n" + "-"*40)
+        print("GRADE ANALYTICS")
+        print("-"*40)
+        
+        all_grades = []
+        course_averages = {}
+        
+        for course in self.courses:
+            grades = []
+            for sid, student_grades in self.grades.items():
+                if course in student_grades:
+                    grades.append(student_grades[course])
+                    all_grades.append(student_grades[course])
+            
+            if grades:
+                course_averages[course] = sum(grades) / len(grades)
+        
+        if all_grades:
+            print(f"\nOverall Statistics:")
+            print(f"  Average: {sum(all_grades)/len(all_grades):.1f}")
+            print(f"  Highest: {max(all_grades)}")
+            print(f"  Lowest: {min(all_grades)}")
+            
+            print(f"\nCourse Averages:")
+            for course, avg in sorted(course_averages.items(), key=lambda x: x[1], reverse=True):
+                print(f"  {course}: {avg:.1f}")
+    
+    def attendance_analytics(self):
+        """Generate attendance analytics"""
+        print("\n" + "-"*40)
+        print("ATTENDANCE ANALYTICS")
+        print("-"*40)
+        
+        attendance_rates = []
+        
+        for sid, student in self.students.items():
+            records = self.attendance.get(sid, [])
+            if records:
+                present = sum(1 for r in records if r['status'] == 'Present')
+                late = sum(1 for r in records if r['status'] == 'Late')
+                total = len(records)
+                rate = (present + late) / total * 100
+                attendance_rates.append((student['name'], rate))
+        
+        if attendance_rates:
+            # Sort by attendance rate
+            attendance_rates.sort(key=lambda x: x[1], reverse=True)
+            
+            print("\nTop 5 Attendance:")
+            for name, rate in attendance_rates[:5]:
+                print(f"  {name}: {rate:.1f}%")
+            
+            print("\nBottom 5 Attendance:")
+            for name, rate in attendance_rates[-5:]:
+                print(f"  {name}: {rate:.1f}%")
+            
+            avg_rate = sum(rate for _, rate in attendance_rates) / len(attendance_rates)
+            print(f"\nAverage Attendance Rate: {avg_rate:.1f}%")
+    
+    def department_report(self):
+        """Generate department report"""
+        print("\n" + "-"*40)
+        print("DEPARTMENT REPORT")
+        print("-"*40)
+        
+        # Group by major
+        by_major = defaultdict(list)
+        for sid, info in self.students.items():
+            by_major[info['major']].append(sid)
+        
+        for major, students in by_major.items():
+            print(f"\n{major.upper()} DEPARTMENT")
+            print(f"{'-'*30}")
+            print(f"Students: {len(students)}")
+            
+            # Course enrollment by department
+            dept_courses = [c for c in self.courses if c.startswith(major[:2].upper())]
+            print(f"Courses: {len(dept_courses)}")
+            
+            # Average GPA for department
+            gpas = []
+            for sid in students:
+                grades = self.grades.get(sid, {})
+                if grades:
+                    grade_points = 0
+                    for grade in grades.values():
+                        if grade >= 90:
+                            grade_points += 4.0
+                        elif grade >= 80:
+                            grade_points += 3.0
+                        elif grade >= 70:
+                            grade_points += 2.0
+                        elif grade >= 60:
+                            grade_points += 1.0
+                    gpa = grade_points / len(grades)
+                    gpas.append(gpa)
+            
+            if gpas:
+                avg_gpa = sum(gpas) / len(gpas)
+                print(f"Average GPA: {avg_gpa:.2f}")
+    
+    def export_menu(self):
+        """Data export/import submenu"""
+        while True:
+            print("\n" + "-"*40)
+            print("DATA EXPORT/IMPORT")
+            print("-"*40)
+            print("1. Export to JSON")
+            print("2. Export to CSV")
+            print("3. Import from JSON")
+            print("4. Back to Main Menu")
+            
+            choice = input("Select option (1-4): ")
+            
+            if choice == "1":
+                self.export_json()
+            elif choice == "2":
+                self.export_csv()
+            elif choice == "3":
+                self.import_json()
+            elif choice == "4":
+                break
+            else:
+                print("Invalid option!")
+            
+            input("\nPress Enter to continue...")
+    
+    def export_json(self):
+        """Export data to JSON file"""
+        filename = input("Enter filename (default: student_data.json): ") or "student_data.json"
+        
+        data = {
+            "students": self.students,
+            "courses": list(self.courses),
+            "enrollments": self.enrollments,
+            "grades": self.grades,
+            "attendance": self.attendance,
+            "export_date": str(datetime.now())
+        }
+        
+        try:
+            with open(filename, 'w') as f:
+                json.dump(data, f, indent=2)
+            print(f"✅ Data exported to {filename}")
+        except Exception as e:
+            print(f"❌ Error exporting data: {e}")
+    
+    def export_csv(self):
+        """Export student data to CSV"""
+        filename = input("Enter CSV filename (default: students.csv): ") or "students.csv"
+        
+        try:
+            with open(filename, 'w', newline='') as f:
+                writer = csv.writer(f)
+                writer.writerow(["ID", "Name", "Age", "Email", "Major", "Year", "GPA"])
+                
+                for sid, info in self.students.items():
+                    # Calculate GPA
+                    grades = self.grades.get(sid, {})
+                    if grades:
+                        grade_points = 0
+                        for grade in grades.values():
+                            if grade >= 90:
+                                grade_points += 4.0
+                            elif grade >= 80:
+                                grade_points += 3.0
+                            elif grade >= 70:
+                                grade_points += 2.0
+                            elif grade >= 60:
+                                grade_points += 1.0
+                        gpa = grade_points / len(grades)
+                    else:
+                        gpa = 0.0
+                    
+                    writer.writerow([
+                        sid,
+                        info['name'],
+                        info['age'],
+                        info['email'],
+                        info['major'],
+                        info['year'],
+                        f"{gpa:.2f}"
+                    ])
+            
+            print(f"✅ Data exported to {filename}")
+        except Exception as e:
+            print(f"❌ Error exporting data: {e}")
+    
+    def import_json(self):
+        """Import data from JSON file"""
+        filename = input("Enter filename: ")
+        
+        try:
+            with open(filename, 'r') as f:
+                data = json.load(f)
+            
+            self.students = data.get("students", self.students)
+            self.courses = set(data.get("courses", self.courses))
+            self.enrollments = defaultdict(list, data.get("enrollments", self.enrollments))
+            self.grades = data.get("grades", self.grades)
+            self.attendance = data.get("attendance", self.attendance)
+            
+            print(f"✅ Data imported from {filename}")
+        except FileNotFoundError:
+            print("❌ File not found!")
+        except Exception as e:
+            print(f"❌ Error importing data: {e}")
+    
+    def run(self):
+        """Main program loop"""
+        while True:
+            choice = self.display_menu()
+            
+            if choice == "1":
+                self.student_management_menu()
+            elif choice == "2":
+                self.course_management_menu()
+            elif choice == "3":
+                self.grade_management_menu()
+            elif choice == "4":
+                self.attendance_menu()
+            elif choice == "5":
+                self.reports_menu()
+            elif choice == "6":
+                self.export_menu()
+            elif choice == "7":
+                print("\nThank you for using Student Data Management System!")
+                break
+            else:
+                print("Invalid option! Please try again.")
+
+# Run the system
+if __name__ == "__main__":
+    system = StudentDataSystem()
+    system.run()
+
 
 
 
