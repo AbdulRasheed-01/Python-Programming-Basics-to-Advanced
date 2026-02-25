@@ -1400,5 +1400,87 @@ os.remove("useful_functions.py")
 shutil.rmtree("mypackage")
 print("Cleanup complete!")
 
+Output:
+
+============================================================
+MODULES AND PACKAGES
+============================================================
+
+1. BUILT-IN MODULES:
+math.pi = 3.141592653589793
+random.randint(1,10) = 7
+datetime.now() = 2024-01-16 15:30:45.123456
+Current directory: /home/user/ros2_ws
+Python version: 3.10.12 (main, Nov 20 2024, 15:14:05) [GCC 11.4.0]
+
+2. IMPORT WITH ALIAS:
+math.sqrt(16) = 4.0
+Current time: 15:30:45
+
+3. IMPORT SPECIFIC FUNCTIONS:
+sqrt(25) = 5.0
+sin(pi/2) = 1.0
+
+4. IMPORT ALL (AVOID IN PRODUCTION):
+cos(0) = 1.0
+log10(100) = 2.0
+
+5. CREATING CUSTOM MODULE:
+mymath.add(5, 3) = 8
+mymath.PI = 3.14159
+mymath.circle_area(5) = 78.54
+mymath.__version__ = 1.0.0
+mymath.__doc__ = My custom math utilities module
+
+6. MODULE SEARCH PATH:
+  0: /home/user/ros2_ws
+  1: /usr/lib/python310.zip
+  2: /usr/lib/python3.10
+  3: /usr/lib/python3.10/lib-dynload
+  4: /home/user/.local/lib/python3.10/site-packages
+
+7. RELOADING MODULES:
+After reload - mymath.cube(3) = 27
+
+8. MODULE ATTRIBUTES:
+__name__: __main__
+__file__: /home/user/ros2_ws/module_demo.py
+__package__: None
+
+9. CREATING A PACKAGE:
+Initializing mypackage
+
+Importing from mypackage:
+mypackage.__version__: 1.0.0
+calculator.add(10, 5): 15
+strings.reverse('hello'): olleh
+helpers.is_prime(17): True
+
+10. __name__ == '__main__' PATTERN:
+useful_functions.add(5, 3) = 8
+
+11. MODULE DOCUMENTATION:
+Help on module math:
+
+NAME
+    math
+
+MODULE REFERENCE
+    https://docs.python.org/3/library/math.html
+...
+
+12. THIRD-PARTY MODULES:
+To install third-party modules:
+  pip install requests
+  pip install numpy
+  pip install pandas
+
+Example of using requests (if installed):
+import requests
+response = requests.get('https://api.github.com')
+print(response.status_code)
+
+Cleaning up created files...
+Cleanup complete!
 
 
