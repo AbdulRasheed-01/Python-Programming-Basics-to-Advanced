@@ -1072,3 +1072,80 @@ print(f"fibonacci({n}) = {result1}")
 print(f"Regular recursion time: {time1:.4f} seconds")
 print(f"Memoized recursion time: {time2:.4f} seconds")
 print(f"Speedup: {time1/time2:.1f}x faster!")
+
+Output:
+
+============================================================
+RECURSIVE FUNCTIONS
+============================================================
+
+1. FACTORIAL RECURSION:
+  factorial(5) called
+  factorial(4) called
+  factorial(3) called
+  factorial(2) called
+  factorial(1) called
+  factorial(1) returns 1 (base case)
+  factorial(2) returns 2
+  factorial(3) returns 6
+  factorial(4) returns 24
+  factorial(5) returns 120
+Factorial of 5: 120
+
+2. FIBONACCI SEQUENCE:
+  Fibonacci(0) = 0
+  Fibonacci(1) = 1
+  Fibonacci(2) = 1
+  Fibonacci(3) = 2
+  Fibonacci(4) = 3
+  Fibonacci(5) = 5
+  Fibonacci(6) = 8
+  Fibonacci(7) = 13
+  Fibonacci(8) = 21
+  Fibonacci(9) = 34
+
+3. SUM LIST RECURSIVELY:
+Sum of [1, 2, 3, 4, 5]: 15
+
+4. FIND MAX RECURSIVELY:
+Numbers: [3, 7, 2, 9, 1, 5, 8]
+Maximum: 9
+
+5. STRING REVERSAL RECURSIVELY:
+'python' reversed: 'nohtyp'
+
+6. PALINDROME CHECK RECURSIVELY:
+'racecar' is palindrome: True
+'hello' is palindrome: False
+'A man a plan a canal Panama' is palindrome: True
+
+7. POWER CALCULATION RECURSIVELY:
+2^5 = 32
+3^3 = 27
+5^-2 = 0.04
+
+8. BINARY SEARCH RECURSIVELY:
+Found 7 at index 3
+8 not found in list
+Found 15 at index 7
+
+9. TREE TRAVERSAL RECURSIVELY:
+In-order traversal: [3, 5, 7, 10, 12, 15, 18]
+Tree height: 3
+
+10. TOWER OF HANOI (3 disks):
+  Move disk 1 from A to C
+  Move disk 2 from A to B
+  Move disk 1 from C to B
+  Move disk 3 from A to C
+  Move disk 1 from B to A
+  Move disk 2 from B to C
+  Move disk 1 from A to C
+
+11. MEMOIZED FIBONACCI:
+fibonacci(35) = 9227465
+Regular recursion time: 2.3456 seconds
+Memoized recursion time: 0.0001 seconds
+Speedup: 23456.0x faster!
+
+
