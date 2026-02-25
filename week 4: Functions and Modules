@@ -1148,4 +1148,257 @@ Regular recursion time: 2.3456 seconds
 Memoized recursion time: 0.0001 seconds
 Speedup: 23456.0x faster!
 
+Exercise 5: Modules and Packages
+
+# module_demo.py
+"""
+Creating and using modules
+"""
+
+print("="*60)
+print("MODULES AND PACKAGES")
+print("="*60)
+
+# 1. Importing built-in modules
+print("\n1. BUILT-IN MODULES:")
+import math
+import random
+import datetime
+import os
+import sys
+
+print(f"math.pi = {math.pi}")
+print(f"random.randint(1,10) = {random.randint(1, 10)}")
+print(f"datetime.now() = {datetime.datetime.now()}")
+print(f"Current directory: {os.getcwd()}")
+print(f"Python version: {sys.version}")
+
+# 2. Import with alias
+print("\n2. IMPORT WITH ALIAS:")
+import math as m
+import datetime as dt
+
+print(f"math.sqrt(16) = {m.sqrt(16)}")
+print(f"Current time: {dt.datetime.now().strftime('%H:%M:%S')}")
+
+# 3. Import specific functions
+print("\n3. IMPORT SPECIFIC FUNCTIONS:")
+from math import sqrt, pi, sin, cos
+from random import choice, shuffle
+from datetime import date, timedelta
+
+print(f"sqrt(25) = {sqrt(25)}")
+print(f"sin(pi/2) = {sin(pi/2)}")
+
+# 4. Import all (not recommended for production)
+print("\n4. IMPORT ALL (AVOID IN PRODUCTION):")
+from math import *
+print(f"cos(0) = {cos(0)}")
+print(f"log10(100) = {log10(100)}")
+
+# 5. Creating our own module
+print("\n5. CREATING CUSTOM MODULE:")
+
+# Let's create a module file
+module_code = """
+'''My custom math utilities module'''
+
+def add(a, b):
+    '''Add two numbers'''
+    return a + b
+
+def subtract(a, b):
+    '''Subtract b from a'''
+    return a - b
+
+def multiply(a, b):
+    '''Multiply two numbers'''
+    return a * b
+
+def divide(a, b):
+    '''Divide a by b'''
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+PI = 3.14159
+E = 2.71828
+
+def circle_area(radius):
+    '''Calculate area of circle'''
+    return PI * radius ** 2
+
+def circle_circumference(radius):
+    '''Calculate circumference of circle'''
+    return 2 * PI * radius
+
+__version__ = "1.0.0"
+"""
+
+# Write module to file
+with open("mymath.py", "w") as f:
+    f.write(module_code)
+
+# Import and use our module
+import mymath
+
+print(f"mymath.add(5, 3) = {mymath.add(5, 3)}")
+print(f"mymath.PI = {mymath.PI}")
+print(f"mymath.circle_area(5) = {mymath.circle_area(5):.2f}")
+print(f"mymath.__version__ = {mymath.__version__}")
+print(f"mymath.__doc__ = {mymath.__doc__}")
+
+# 6. Module search path
+print("\n6. MODULE SEARCH PATH:")
+for i, path in enumerate(sys.path[:5]):  # Show first 5 paths
+    print(f"  {i}: {path}")
+
+# 7. Reloading modules
+print("\n7. RELOADING MODULES:")
+import importlib
+
+# Modify the module file
+with open("mymath.py", "a") as f:
+    f.write("\n\ndef cube(x):\n    return x ** 3\n")
+
+# Reload to get new function
+importlib.reload(mymath)
+print(f"After reload - mymath.cube(3) = {mymath.cube(3)}")
+
+# 8. Module attributes
+print("\n8. MODULE ATTRIBUTES:")
+print(f"__name__: {__name__}")
+print(f"__file__: {__file__}")
+print(f"__package__: {__package__}")
+
+# 9. Creating a package
+print("\n9. CREATING A PACKAGE:")
+
+# Create package directory structure
+import os
+os.makedirs("mypackage", exist_ok=True)
+os.makedirs("mypackage/subpackage", exist_ok=True)
+
+# Create __init__.py files
+with open("mypackage/__init__.py", "w") as f:
+    f.write('''"""My package package"""\nprint("Initializing mypackage")\n\n__version__ = "1.0.0"\n''')
+
+with open("mypackage/subpackage/__init__.py", "w") as f:
+    f.write('''"""Subpackage module"""\n''')
+
+# Create module files
+with open("mypackage/calculator.py", "w") as f:
+    f.write('''
+def add(a, b):
+    """Add two numbers"""
+    return a + b
+
+def subtract(a, b):
+    """Subtract b from a"""
+    return a - b
+
+def multiply(a, b):
+    """Multiply two numbers"""
+    return a * b
+
+def divide(a, b):
+    """Divide a by b"""
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+''')
+
+with open("mypackage/strings.py", "w") as f:
+    f.write('''
+def reverse(s):
+    """Reverse a string"""
+    return s[::-1]
+
+def uppercase(s):
+    """Convert to uppercase"""
+    return s.upper()
+
+def count_vowels(s):
+    """Count vowels in string"""
+    vowels = "aeiouAEIOU"
+    return sum(1 for c in s if c in vowels)
+''')
+
+with open("mypackage/subpackage/helpers.py", "w") as f:
+    f.write('''
+def is_even(n):
+    """Check if number is even"""
+    return n % 2 == 0
+
+def is_prime(n):
+    """Check if number is prime"""
+    if n < 2:
+        return False
+    for i in range(2, int(n**0.5) + 1):
+        if n % i == 0:
+            return False
+    return True
+''')
+
+# Import from package
+print("\nImporting from mypackage:")
+import mypackage
+from mypackage import calculator, strings
+from mypackage.subpackage import helpers
+
+print(f"mypackage.__version__: {mypackage.__version__}")
+print(f"calculator.add(10, 5): {calculator.add(10, 5)}")
+print(f"strings.reverse('hello'): {strings.reverse('hello')}")
+print(f"helpers.is_prime(17): {helpers.is_prime(17)}")
+
+# 10. Using __name__ == "__main__"
+print("\n10. __name__ == '__main__' PATTERN:")
+
+# Create a module that can be run directly or imported
+with open("useful_functions.py", "w") as f:
+    f.write('''
+def add(a, b):
+    return a + b
+
+def main():
+    """Main function when run directly"""
+    print("Running useful_functions directly")
+    print(f"Test: add(5, 3) = {add(5, 3)}")
+
+if __name__ == "__main__":
+    main()
+''')
+
+# Import the module
+import useful_functions
+print(f"useful_functions.add(5, 3) = {useful_functions.add(5, 3)}")
+
+# 11. Module documentation
+print("\n11. MODULE DOCUMENTATION:")
+help(math)
+print("\nUse help(module_name) to see documentation")
+
+# 12. Third-party modules (example with requests)
+print("\n12. THIRD-PARTY MODULES:")
+print("To install third-party modules:")
+print("  pip install requests")
+print("  pip install numpy")
+print("  pip install pandas")
+
+print("\nExample of using requests (if installed):")
+print("""
+import requests
+response = requests.get('https://api.github.com')
+print(response.status_code)
+""")
+
+# Clean up
+print("\nCleaning up created files...")
+import shutil
+os.remove("mymath.py")
+os.remove("useful_functions.py")
+shutil.rmtree("mypackage")
+print("Cleanup complete!")
+
+
 
