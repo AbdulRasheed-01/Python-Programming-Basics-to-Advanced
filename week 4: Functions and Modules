@@ -606,4 +606,269 @@ Rectangle area (5x3): 15
 Triangle area (base=4, height=6): 12.0
 Square area (side=4): 16
 
+Exercise 3: Lambda Functions
+# lambda_functions.py
+"""
+Lambda (anonymous) functions in Python
+"""
+
+print("="*60)
+print("LAMBDA FUNCTIONS")
+print("="*60)
+
+# 1. Basic lambda syntax
+print("\n1. BASIC LAMBDA SYNTAX:")
+# Regular function
+def square(x):
+    return x ** 2
+
+# Lambda equivalent
+square_lambda = lambda x: x ** 2
+
+print(f"Regular function: {square(5)}")
+print(f"Lambda function: {square_lambda(5)}")
+
+# 2. Lambda with multiple parameters
+add = lambda a, b: a + b
+multiply = lambda a, b, c: a * b * c
+
+print("\n2. LAMBDA WITH MULTIPLE PARAMETERS:")
+print(f"Add: {add(10, 5)}")
+print(f"Multiply: {multiply(2, 3, 4)}")
+
+# 3. Lambda with conditionals
+max_value = lambda a, b: a if a > b else b
+is_even = lambda x: x % 2 == 0
+grade = lambda score: 'A' if score >= 90 else 'B' if score >= 80 else 'C' if score >= 70 else 'D' if score >= 60 else 'F'
+
+print("\n3. LAMBDA WITH CONDITIONALS:")
+print(f"Max of 10 and 20: {max_value(10, 20)}")
+print(f"Is 7 even? {is_even(7)}")
+print(f"Grade for 85: {grade(85)}")
+print(f"Grade for 92: {grade(92)}")
+
+# 4. Lambda with map() - transform each element
+numbers = [1, 2, 3, 4, 5]
+squares = list(map(lambda x: x ** 2, numbers))
+cubes = list(map(lambda x: x ** 3, numbers))
+
+print("\n4. LAMBDA WITH MAP():")
+print(f"Original: {numbers}")
+print(f"Squares: {squares}")
+print(f"Cubes: {cubes}")
+
+# 5. Lambda with filter() - select elements
+numbers = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+evens = list(filter(lambda x: x % 2 == 0, numbers))
+odds = list(filter(lambda x: x % 2 == 1, numbers))
+greater_than_5 = list(filter(lambda x: x > 5, numbers))
+
+print("\n5. LAMBDA WITH FILTER():")
+print(f"Original: {numbers}")
+print(f"Evens: {evens}")
+print(f"Odds: {odds}")
+print(f">5: {greater_than_5}")
+
+# 6. Lambda with reduce() - cumulative operation
+from functools import reduce
+
+numbers = [1, 2, 3, 4, 5]
+sum_all = reduce(lambda a, b: a + b, numbers)
+product_all = reduce(lambda a, b: a * b, numbers)
+max_num = reduce(lambda a, b: a if a > b else b, numbers)
+
+print("\n6. LAMBDA WITH REDUCE():")
+print(f"Numbers: {numbers}")
+print(f"Sum: {sum_all}")
+print(f"Product: {product_all}")
+print(f"Max: {max_num}")
+
+# 7. Lambda with sorted() - custom sorting
+students = [
+    {"name": "Alice", "grade": 85, "age": 20},
+    {"name": "Bob", "grade": 92, "age": 22},
+    {"name": "Charlie", "grade": 78, "age": 19},
+    {"name": "Diana", "grade": 95, "age": 21}
+]
+
+# Sort by different criteria
+by_name = sorted(students, key=lambda s: s["name"])
+by_grade = sorted(students, key=lambda s: s["grade"], reverse=True)
+by_age = sorted(students, key=lambda s: s["age"])
+
+print("\n7. LAMBDA WITH SORTED():")
+print("Sorted by name:")
+for s in by_name:
+    print(f"  {s['name']}: {s['grade']} (age {s['age']})")
+
+print("\nSorted by grade (highest first):")
+for s in by_grade:
+    print(f"  {s['name']}: {s['grade']}")
+
+# 8. Lambda with max/min - custom comparison
+words = ["python", "java", "c", "javascript", "rust"]
+longest = max(words, key=lambda w: len(w))
+shortest = min(words, key=lambda w: len(w))
+most_vowels = max(words, key=lambda w: sum(1 for c in w if c in 'aeiou'))
+
+print("\n8. LAMBDA WITH MAX/MIN:")
+print(f"Words: {words}")
+print(f"Longest: {longest}")
+print(f"Shortest: {shortest}")
+print(f"Most vowels: {most_vowels}")
+
+# 9. Lambda with list comprehension vs map
+numbers = [1, 2, 3, 4, 5]
+
+# Using list comprehension
+squares_comp = [x ** 2 for x in numbers]
+
+# Using map with lambda
+squares_map = list(map(lambda x: x ** 2, numbers))
+
+print("\n9. LIST COMPREHENSION VS MAP:")
+print(f"List comp: {squares_comp}")
+print(f"Map + lambda: {squares_map}")
+
+# 10. Practical lambda examples
+print("\n10. PRACTICAL LAMBDA EXAMPLES:")
+
+# Example 1: Process order data
+orders = [
+    {"id": 1, "items": 3, "total": 45.50},
+    {"id": 2, "items": 5, "total": 89.99},
+    {"id": 3, "items": 2, "total": 23.50},
+    {"id": 4, "items": 7, "total": 156.75}
+]
+
+# Calculate average per item
+for order in orders:
+    order["avg_price"] = order["total"] / order["items"]
+
+# Filter orders
+large_orders = list(filter(lambda o: o["total"] > 50, orders))
+small_orders = list(filter(lambda o: o["items"] < 4, orders))
+
+print("Large orders (>$50):")
+for o in large_orders:
+    print(f"  Order {o['id']}: ${o['total']:.2f} ({o['items']} items)")
+
+# Example 2: Data cleaning
+data = ["  hello  ", "WORLD", None, "  python  ", "", "PROGRAMMING"]
+cleaned = list(filter(None, map(lambda s: s.strip().lower() if s else None, data)))
+print(f"\nCleaned data: {cleaned}")
+
+# Example 3: Calculator with lambda dictionary
+operations = {
+    "add": lambda a, b: a + b,
+    "subtract": lambda a, b: a - b,
+    "multiply": lambda a, b: a * b,
+    "divide": lambda a, b: a / b if b != 0 else "Error",
+    "power": lambda a, b: a ** b,
+    "mod": lambda a, b: a % b
+}
+
+print("\nLambda calculator:")
+a, b = 10, 3
+for op_name, op_func in operations.items():
+    result = op_func(a, b)
+    print(f"  {op_name}({a}, {b}) = {result}")
+
+# Example 4: Sorting log entries
+logs = [
+    "2024-01-15 10:23:45 - ERROR - Database connection failed",
+    "2024-01-15 09:15:22 - INFO - Server started",
+    "2024-01-14 23:45:12 - WARNING - High memory usage",
+    "2024-01-15 11:30:01 - ERROR - Timeout occurred"
+]
+
+# Sort by log level (ERROR first, then WARNING, then INFO)
+level_priority = {"ERROR": 0, "WARNING": 1, "INFO": 2}
+logs_sorted = sorted(logs, key=lambda l: level_priority.get(l.split(" - ")[1], 3))
+
+print("\nLogs sorted by severity:")
+for log in logs_sorted:
+    print(f"  {log}")
+
+Output:
+
+============================================================
+LAMBDA FUNCTIONS
+============================================================
+
+1. BASIC LAMBDA SYNTAX:
+Regular function: 25
+Lambda function: 25
+
+2. LAMBDA WITH MULTIPLE PARAMETERS:
+Add: 15
+Multiply: 24
+
+3. LAMBDA WITH CONDITIONALS:
+Max of 10 and 20: 20
+Is 7 even? False
+Grade for 85: B
+Grade for 92: A
+
+4. LAMBDA WITH MAP():
+Original: [1, 2, 3, 4, 5]
+Squares: [1, 4, 9, 16, 25]
+Cubes: [1, 8, 27, 64, 125]
+
+5. LAMBDA WITH FILTER():
+Original: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+Evens: [2, 4, 6, 8, 10]
+Odds: [1, 3, 5, 7, 9]
+>5: [6, 7, 8, 9, 10]
+
+6. LAMBDA WITH REDUCE():
+Numbers: [1, 2, 3, 4, 5]
+Sum: 15
+Product: 120
+Max: 5
+
+7. LAMBDA WITH SORTED():
+Sorted by name:
+  Alice: 85 (age 20)
+  Bob: 92 (age 22)
+  Charlie: 78 (age 19)
+  Diana: 95 (age 21)
+
+Sorted by grade (highest first):
+  Diana: 95
+  Bob: 92
+  Alice: 85
+  Charlie: 78
+
+8. LAMBDA WITH MAX/MIN:
+Words: ['python', 'java', 'c', 'javascript', 'rust']
+Longest: javascript
+Shortest: c
+Most vowels: javascript
+
+9. LIST COMPREHENSION VS MAP:
+List comp: [1, 4, 9, 16, 25]
+Map + lambda: [1, 4, 9, 16, 25]
+
+10. PRACTICAL LAMBDA EXAMPLES:
+Large orders (>$50):
+  Order 2: $89.99 (5 items)
+  Order 4: $156.75 (7 items)
+
+Cleaned data: ['hello', 'world', 'python', 'programming']
+
+Lambda calculator:
+  add(10, 3) = 13
+  subtract(10, 3) = 7
+  multiply(10, 3) = 30
+  divide(10, 3) = 3.3333333333333335
+  power(10, 3) = 1000
+  mod(10, 3) = 1
+
+Logs sorted by severity:
+  2024-01-15 10:23:45 - ERROR - Database connection failed
+  2024-01-15 11:30:01 - ERROR - Timeout occurred
+  2024-01-14 23:45:12 - WARNING - High memory usage
+  2024-01-15 09:15:22 - INFO - Server started
+
 
