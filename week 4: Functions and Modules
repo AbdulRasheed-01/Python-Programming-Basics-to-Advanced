@@ -508,5 +508,102 @@ print(f"Rectangle area (5x3): {calculate_area_shape('rectangle', 5, 3)}")
 print(f"Triangle area (base=4, height=6): {calculate_area_shape('triangle', 4, 6)}")
 print(f"Square area (side=4): {calculate_area_shape('square', 4)}")
 
+Output:
+
+============================================================
+FUNCTION PARAMETERS DEEP DIVE
+============================================================
+
+1. POSITIONAL ARGUMENTS:
+Alice is 30 years old and lives in New York
+Bob is 25 years old and lives in Los Angeles
+
+2. DEFAULT PARAMETERS:
+Using all defaults: {'name': 'Alice', 'age': 18, 'city': 'Unknown', 'active': True, 'member_type': 'Standard'}
+Override age: {'name': 'Bob', 'age': 25, 'city': 'Unknown', 'active': True, 'member_type': 'Premium'}
+Override multiple: {'name': 'Charlie', 'age': 18, 'city': 'Chicago', 'active': False, 'member_type': 'Standard'}
+
+3. KEYWORD ARGUMENTS:
+Positional only: 32.4
+Mixed: 33.0
+All keyword: 29.7
+
+4. VARIABLE POSITIONAL ARGUMENTS (*args):
+  Received 3 numbers: (1, 2, 3)
+Sum of 1,2,3: 6
+  Received 5 numbers: (1, 2, 3, 4, 5)
+Sum of 1,2,3,4,5: 15
+Average of grades: 86.6
+Unpacking list:   Received 3 numbers: (10, 20, 30)
+60
+
+5. VARIABLE KEYWORD ARGUMENTS (**kwargs):
+
+  Student Information:
+    name: Alice
+    age: 20
+    major: CS
+    year: 3
+
+  Student Information:
+    name: Bob
+    age: 22
+    major: Engineering
+    gpa: 3.8
+    sports: Soccer
+
+  Student Information:
+    name: Charlie
+    age: 21
+    major: Physics
+    year: 4
+    honors: True
+
+6. COMBINING PARAMETER TYPES:
+
+  pos1=1, pos2=2
+  pos_or_kwd=10
+  kwd1=5, kwd2=20
+  Result: 38
+
+  pos1=1, pos2=2
+  pos_or_kwd=3
+  kwd1=5, kwd2=20
+  Result: 31
+
+  pos1=1, pos2=2
+  pos_or_kwd=10
+  kwd1=5, kwd2=10
+  Result: 28
+
+7. PRACTICAL EXAMPLE - Robot Configuration:
+Default robot: {'name': 'Robot-1', 'speed': 1.0, 'color': 'red', 'sensors': ['camera', 'lidar'], 'battery': 100}
+Custom robot: {'name': 'R2D2', 'speed': 2.5, 'color': 'blue', 'sensors': ['camera', 'lidar'], 'battery': 100}
+Advanced robot: {'name': 'Wall-E', 'speed': 0.5, 'color': 'yellow', 'sensors': ['camera', 'gripper', 'compactor'], 'battery': 85, 'special_feature': 'Trash compactor'}
+
+8. MIXED ARGS AND KWARGS:
+
+  Positional args (4): (1, 2, 3, 4)
+  Keyword kwargs (1): {'operation': 'sum'}
+Sum: 10
+
+  Positional args (3): (10, 20, 30)
+  Keyword kwargs (1): {'operation': 'average'}
+Average: 20.0
+
+  Positional args (4): (2, 3, 4, 5)
+  Keyword kwargs (1): {'operation': 'multiply'}
+Multiply: 120
+
+9. PARAMETER VALIDATION:
+Temperature set to 25°C
+Temperature set to 98.6°F
+  Error: Temperature below absolute zero: -300°C
+
+10. SIMULATED FUNCTION OVERLOADING:
+Circle area (r=5): 78.54
+Rectangle area (5x3): 15
+Triangle area (base=4, height=6): 12.0
+Square area (side=4): 16
 
 
