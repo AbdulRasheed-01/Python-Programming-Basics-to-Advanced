@@ -870,5 +870,205 @@ Logs sorted by severity:
   2024-01-15 11:30:01 - ERROR - Timeout occurred
   2024-01-14 23:45:12 - WARNING - High memory usage
   2024-01-15 09:15:22 - INFO - Server started
+Exercise 4: Recursive Functions
+# recursion.py
+"""
+Recursive functions in Python
+"""
 
+print("="*60)
+print("RECURSIVE FUNCTIONS")
+print("="*60)
 
+# 1. Basic recursion - factorial
+def factorial(n):
+    """Calculate factorial recursively"""
+    print(f"  factorial({n}) called")
+    if n <= 1:
+        print(f"  factorial({n}) returns 1 (base case)")
+        return 1
+    result = n * factorial(n - 1)
+    print(f"  factorial({n}) returns {result}")
+    return result
+
+print("\n1. FACTORIAL RECURSION:")
+print(f"Factorial of 5: {factorial(5)}")
+
+# 2. Fibonacci sequence
+def fibonacci(n):
+    """Calculate nth Fibonacci number recursively"""
+    if n <= 1:
+        return n
+    return fibonacci(n - 1) + fibonacci(n - 2)
+
+print("\n2. FIBONACCI SEQUENCE:")
+for i in range(10):
+    print(f"  Fibonacci({i}) = {fibonacci(i)}")
+
+# 3. Sum of list recursively
+def sum_list(numbers):
+    """Sum all numbers in a list recursively"""
+    if not numbers:
+        return 0
+    return numbers[0] + sum_list(numbers[1:])
+
+print("\n3. SUM LIST RECURSIVELY:")
+numbers = [1, 2, 3, 4, 5]
+print(f"Sum of {numbers}: {sum_list(numbers)}")
+
+# 4. Find maximum in list recursively
+def find_max(numbers):
+    """Find maximum value in list recursively"""
+    if len(numbers) == 1:
+        return numbers[0]
+    max_rest = find_max(numbers[1:])
+    return numbers[0] if numbers[0] > max_rest else max_rest
+
+print("\n4. FIND MAX RECURSIVELY:")
+numbers = [3, 7, 2, 9, 1, 5, 8]
+print(f"Numbers: {numbers}")
+print(f"Maximum: {find_max(numbers)}")
+
+# 5. String reversal recursively
+def reverse_string(s):
+    """Reverse a string recursively"""
+    if len(s) <= 1:
+        return s
+    return reverse_string(s[1:]) + s[0]
+
+print("\n5. STRING REVERSAL RECURSIVELY:")
+test_str = "python"
+print(f"'{test_str}' reversed: '{reverse_string(test_str)}'")
+
+# 6. Check palindrome recursively
+def is_palindrome(s):
+    """Check if string is palindrome recursively"""
+    s = s.lower().replace(" ", "")
+    if len(s) <= 1:
+        return True
+    if s[0] != s[-1]:
+        return False
+    return is_palindrome(s[1:-1])
+
+print("\n6. PALINDROME CHECK RECURSIVELY:")
+test_strings = ["racecar", "hello", "A man a plan a canal Panama"]
+for s in test_strings:
+    print(f"'{s}' is palindrome: {is_palindrome(s)}")
+
+# 7. Power calculation recursively
+def power(base, exponent):
+    """Calculate base^exponent recursively"""
+    if exponent == 0:
+        return 1
+    if exponent < 0:
+        return 1 / power(base, -exponent)
+    return base * power(base, exponent - 1)
+
+print("\n7. POWER CALCULATION RECURSIVELY:")
+print(f"2^5 = {power(2, 5)}")
+print(f"3^3 = {power(3, 3)}")
+print(f"5^-2 = {power(5, -2)}")
+
+# 8. Binary search recursively
+def binary_search(sorted_list, target, low=0, high=None):
+    """Perform binary search recursively"""
+    if high is None:
+        high = len(sorted_list) - 1
+    
+    if low > high:
+        return -1
+    
+    mid = (low + high) // 2
+    
+    if sorted_list[mid] == target:
+        return mid
+    elif sorted_list[mid] > target:
+        return binary_search(sorted_list, target, low, mid - 1)
+    else:
+        return binary_search(sorted_list, target, mid + 1, high)
+
+print("\n8. BINARY SEARCH RECURSIVELY:")
+numbers = [1, 3, 5, 7, 9, 11, 13, 15, 17, 19]
+targets = [7, 8, 15]
+for target in targets:
+    index = binary_search(numbers, target)
+    if index != -1:
+        print(f"Found {target} at index {index}")
+    else:
+        print(f"{target} not found in list")
+
+# 9. Tree traversal recursively
+class TreeNode:
+    def __init__(self, value):
+        self.value = value
+        self.left = None
+        self.right = None
+
+def inorder_traversal(node):
+    """In-order traversal of binary tree"""
+    if node is None:
+        return []
+    result = []
+    result.extend(inorder_traversal(node.left))
+    result.append(node.value)
+    result.extend(inorder_traversal(node.right))
+    return result
+
+def tree_height(node):
+    """Calculate height of tree recursively"""
+    if node is None:
+        return 0
+    return 1 + max(tree_height(node.left), tree_height(node.right))
+
+print("\n9. TREE TRAVERSAL RECURSIVELY:")
+# Build a simple tree
+root = TreeNode(10)
+root.left = TreeNode(5)
+root.right = TreeNode(15)
+root.left.left = TreeNode(3)
+root.left.right = TreeNode(7)
+root.right.left = TreeNode(12)
+root.right.right = TreeNode(18)
+
+print(f"In-order traversal: {inorder_traversal(root)}")
+print(f"Tree height: {tree_height(root)}")
+
+# 10. Tower of Hanoi
+def tower_of_hanoi(n, source, target, auxiliary):
+    """Solve Tower of Hanoi recursively"""
+    if n == 1:
+        print(f"  Move disk 1 from {source} to {target}")
+        return
+    tower_of_hanoi(n - 1, source, auxiliary, target)
+    print(f"  Move disk {n} from {source} to {target}")
+    tower_of_hanoi(n - 1, auxiliary, target, source)
+
+print("\n10. TOWER OF HANOI (3 disks):")
+tower_of_hanoi(3, 'A', 'C', 'B')
+
+# 11. Memoization (optimization for recursion)
+from functools import lru_cache
+
+@lru_cache(maxsize=None)
+def fibonacci_memoized(n):
+    """Fibonacci with memoization (caching)"""
+    if n <= 1:
+        return n
+    return fibonacci_memoized(n - 1) + fibonacci_memoized(n - 2)
+
+print("\n11. MEMOIZED FIBONACCI:")
+import time
+
+n = 35
+start = time.time()
+result1 = fibonacci(n)  # Regular recursion
+time1 = time.time() - start
+
+start = time.time()
+result2 = fibonacci_memoized(n)  # Memoized recursion
+time2 = time.time() - start
+
+print(f"fibonacci({n}) = {result1}")
+print(f"Regular recursion time: {time1:.4f} seconds")
+print(f"Memoized recursion time: {time2:.4f} seconds")
+print(f"Speedup: {time1/time2:.1f}x faster!")
