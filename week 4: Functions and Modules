@@ -2153,4 +2153,169 @@ if __name__ == "__main__":
 Cleaning up created files...
 Cleanup complete!
 
+📊 Week 4 Quiz
+
+# week4_quiz.py
+"""
+Week 4 Quiz - Test your knowledge of Functions and Modules
+"""
+
+def quiz():
+    score = 0
+    total = 10
+    
+    print("\n" + "="*50)
+    print("WEEK 4 QUIZ - Functions and Modules")
+    print("="*50)
+    
+    # Question 1
+    print("\n1. What is the output of: (lambda x: x**2)(5)")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 25:
+            print("   ✅ Correct! Lambda function squares 5")
+            score += 1
+        else:
+            print("   ❌ Incorrect. Lambda returns 5^2 = 25")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 2
+    print("\n2. Which keyword is used to define a function?")
+    print("   a) func")
+    print("   b) define")
+    print("   c) def")
+    print("   d) function")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "c":
+        print("   ✅ Correct! Functions are defined with 'def'")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Use 'def' to define functions")
+    
+    # Question 3
+    print("\n3. What does *args allow in a function?")
+    print("   a) Keyword arguments")
+    print("   b) Variable number of positional arguments")
+    print("   c) Default arguments")
+    print("   d) No arguments")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("   ✅ Correct! *args collects extra positional arguments")
+        score += 1
+    else:
+        print("   ❌ Incorrect. *args is for variable positional arguments")
+    
+    # Question 4
+    print("\n4. What is the output of this recursive function?")
+    print("   def f(n):")
+    print("       if n <= 1: return 1")
+    print("       return n * f(n-1)")
+    print("   print(f(4))")
+    try:
+        answer = int(input("   Your answer: "))
+        if answer == 24:
+            print("   ✅ Correct! 4! = 24")
+            score += 1
+        else:
+            print("   ❌ Incorrect. This calculates factorial: 4! = 24")
+    except:
+        print("   ❌ Please enter a number")
+    
+    # Question 5
+    print("\n5. Which statement imports only the 'sqrt' function from math?")
+    print("   a) import math.sqrt")
+    print("   b) from math import sqrt")
+    print("   c) include math.sqrt")
+    print("   d) using math.sqrt")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("   ✅ Correct! 'from math import sqrt' imports only sqrt")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Use 'from math import sqrt'")
+    
+    # Question 6
+    print("\n6. What is a decorator in Python?")
+    print("   a) A function that modifies another function")
+    print("   b) A way to comment code")
+    print("   c) A type of loop")
+    print("   d) A data structure")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "a":
+        print("   ✅ Correct! Decorators modify/enhance functions")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Decorators are functions that modify other functions")
+    
+    # Question 7
+    print("\n7. What does the __name__ variable contain when a script is run directly?")
+    print("   a) The script filename")
+    print("   b) '__main__'")
+    print("   c) None")
+    print("   d) The module name")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("   ✅ Correct! __name__ == '__main__' when run directly")
+        score += 1
+    else:
+        print("   ❌ Incorrect. __name__ is '__main__' for direct execution")
+    
+    # Question 8
+    print("\n8. Which of these is NOT a valid way to pass arguments?")
+    print("   a) Positional arguments")
+    print("   b) Keyword arguments")
+    print("   c) Reference arguments")
+    print("   d) Default arguments")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "c":
+        print("   ✅ Correct! Python doesn't have reference arguments")
+        score += 1
+    else:
+        print("   ❌ Incorrect. Python doesn't have reference arguments")
+    
+    # Question 9
+    print("\n9. What does the 'return' statement do?")
+    print("   a) Exits the function and returns a value")
+    print("   b) Prints a value")
+    print("   c) Restarts the function")
+    print("   d) Does nothing")
+    answer = input("   Your answer (a/b/c/d): ").lower()
+    if answer == "a":
+        print("   ✅ Correct! return exits and returns value")
+        score += 1
+    else:
+        print("   ❌ Incorrect. return exits function with optional value")
+    
+    # Question 10
+    print("\n10. What is the purpose of a module's __init__.py file?")
+    print("    a) To initialize variables")
+    print("    b) To mark directory as Python package")
+    print("    c) To start the program")
+    print("    d) To document the module")
+    answer = input("    Your answer (a/b/c/d): ").lower()
+    if answer == "b":
+        print("    ✅ Correct! __init__.py makes a directory a package")
+        score += 1
+    else:
+        print("    ❌ Incorrect. __init__.py marks directory as Python package")
+    
+    # Final score
+    print("\n" + "="*50)
+    print(f"QUIZ COMPLETE! Your score: {score}/{total}")
+    print("="*50)
+    
+    if score == total:
+        print("🏆 Perfect! You're a functions master!")
+    elif score >= 8:
+        print("🌟 Great job! You understand functions well!")
+    elif score >= 6:
+        print("📚 Good effort! Review the topics you missed.")
+    else:
+        print("💪 Keep practicing! Functions are fundamental to Python.")
+
+if __name__ == "__main__":
+    quiz()
+
+
 
