@@ -277,5 +277,236 @@ Celsius to Fahrenheit:
     Reversed: amanaP lanac a nalp a nam A
     Vowels: 10
     Palindrome: True
+Exercise 2: Function Parameters Deep Dive
+
+# function_parameters.py
+"""
+Comprehensive guide to different parameter types
+"""
+
+print("="*60)
+print("FUNCTION PARAMETERS DEEP DIVE")
+print("="*60)
+
+# 1. Positional arguments (order matters)
+def describe_person(name, age, city):
+    """Describe a person using positional arguments"""
+    return f"{name} is {age} years old and lives in {city}"
+
+print("\n1. POSITIONAL ARGUMENTS:")
+print(describe_person("Alice", 30, "New York"))
+print(describe_person("Bob", 25, "Los Angeles"))  # Order matters!
+
+# 2. Default parameters
+def create_profile(name, age=18, city="Unknown", active=True):
+    """Create user profile with default values"""
+    return {
+        "name": name,
+        "age": age,
+        "city": city,
+        "active": active,
+        "member_type": "Premium" if age >= 21 else "Standard"
+    }
+
+print("\n2. DEFAULT PARAMETERS:")
+print("Using all defaults:", create_profile("Alice"))
+print("Override age:", create_profile("Bob", age=25))
+print("Override multiple:", create_profile("Charlie", city="Chicago", active=False))
+
+# 3. Keyword arguments (named parameters)
+def calculate_total(price, quantity, tax_rate=0.08, discount=0):
+    """Calculate total with optional tax and discount"""
+    subtotal = price * quantity
+    discount_amount = subtotal * discount
+    after_discount = subtotal - discount_amount
+    tax = after_discount * tax_rate
+    total = after_discount + tax
+    return total
+
+print("\n3. KEYWORD ARGUMENTS:")
+print("Positional only:", calculate_total(10, 3))
+print("Mixed:", calculate_total(10, 3, tax_rate=0.1))
+print("All keyword:", calculate_total(price=10, quantity=3, discount=0.1, tax_rate=0.08))
+
+# 4. Variable positional arguments (*args)
+def sum_all(*numbers):
+    """Sum any number of arguments"""
+    print(f"  Received {len(numbers)} numbers: {numbers}")
+    return sum(numbers)
+
+def calculate_average(*grades):
+    """Calculate average of any number of grades"""
+    if not grades:
+        return 0
+    return sum(grades) / len(grades)
+
+print("\n4. VARIABLE POSITIONAL ARGUMENTS (*args):")
+print("Sum of 1,2,3:", sum_all(1, 2, 3))
+print("Sum of 1,2,3,4,5:", sum_all(1, 2, 3, 4, 5))
+print("Average of grades:", calculate_average(85, 90, 78, 92, 88))
+
+# Unpacking lists into *args
+numbers = [10, 20, 30]
+print("Unpacking list:", sum_all(*numbers))
+
+# 5. Variable keyword arguments (**kwargs)
+def create_student(**info):
+    """Create student with any number of attributes"""
+    print("\n  Student Information:")
+    for key, value in info.items():
+        print(f"    {key}: {value}")
+    return info
+
+print("\n5. VARIABLE KEYWORD ARGUMENTS (**kwargs):")
+student1 = create_student(name="Alice", age=20, major="CS", year=3)
+student2 = create_student(name="Bob", age=22, major="Engineering", gpa=3.8, sports="Soccer")
+
+# Unpacking dictionaries into **kwargs
+student_data = {
+    "name": "Charlie",
+    "age": 21,
+    "major": "Physics",
+    "year": 4,
+    "honors": True
+}
+student3 = create_student(**student_data)
+
+# 6. Combining parameter types
+def complex_function(pos1, pos2, /, pos_or_kwd=10, *, kwd1, kwd2=20):
+    """
+    Demonstrates all parameter types:
+    - pos1, pos2: Positional-only (before /)
+    - pos_or_kwd: Positional or keyword (between / and *)
+    - kwd1, kwd2: Keyword-only (after *)
+    """
+    print(f"\n  pos1={pos1}, pos2={pos2}")
+    print(f"  pos_or_kwd={pos_or_kwd}")
+    print(f"  kwd1={kwd1}, kwd2={kwd2}")
+    return pos1 + pos2 + pos_or_kwd + kwd1 + kwd2
+
+print("\n6. COMBINING PARAMETER TYPES:")
+# Positional-only must be positional
+result = complex_function(1, 2, kwd1=5)
+print(f"  Result: {result}")
+
+# Positional-or-keyword can be either
+result = complex_function(1, 2, 3, kwd1=5)
+print(f"  Result: {result}")
+
+# Keyword-only must be keyword
+result = complex_function(1, 2, kwd1=5, kwd2=10)
+print(f"  Result: {result}")
+
+# 7. Practical example: Flexible configuration
+def configure_robot(**settings):
+    """Configure a robot with any settings"""
+    default_settings = {
+        "name": "Robot-1",
+        "speed": 1.0,
+        "color": "red",
+        "sensors": ["camera", "lidar"],
+        "battery": 100
+    }
+    
+    # Update defaults with provided settings
+    default_settings.update(settings)
+    return default_settings
+
+print("\n7. PRACTICAL EXAMPLE - Robot Configuration:")
+robot1 = configure_robot()
+print("Default robot:", robot1)
+
+robot2 = configure_robot(name="R2D2", speed=2.5, color="blue")
+print("Custom robot:", robot2)
+
+robot3 = configure_robot(
+    name="Wall-E",
+    speed=0.5,
+    color="yellow",
+    sensors=["camera", "gripper", "compactor"],
+    battery=85,
+    special_feature="Trash compactor"
+)
+print("Advanced robot:", robot3)
+
+# 8. Function with mixed args and kwargs
+def process_data(*args, **kwargs):
+    """Process data with both args and kwargs"""
+    print(f"\n  Positional args ({len(args)}): {args}")
+    print(f"  Keyword kwargs ({len(kwargs)}): {kwargs}")
+    
+    # Process based on operation type
+    operation = kwargs.get('operation', 'sum')
+    
+    if operation == 'sum':
+        return sum(args)
+    elif operation == 'average':
+        return sum(args) / len(args) if args else 0
+    elif operation == 'multiply':
+        result = 1
+        for num in args:
+            result *= num
+        return result
+    else:
+        return f"Unknown operation: {operation}"
+
+print("\n8. MIXED ARGS AND KWARGS:")
+print("Sum:", process_data(1, 2, 3, 4, operation='sum'))
+print("Average:", process_data(10, 20, 30, operation='average'))
+print("Multiply:", process_data(2, 3, 4, 5, operation='multiply'))
+
+# 9. Parameter validation
+def set_temperature(temp, unit='C'):
+    """Set temperature with validation"""
+    # Type checking
+    if not isinstance(temp, (int, float)):
+        raise TypeError(f"Temperature must be number, got {type(temp)}")
+    
+    # Range validation
+    if unit.upper() == 'C':
+        if temp < -273.15:
+            raise ValueError(f"Temperature below absolute zero: {temp}°C")
+    elif unit.upper() == 'F':
+        if temp < -459.67:
+            raise ValueError(f"Temperature below absolute zero: {temp}°F")
+    else:
+        raise ValueError(f"Unknown unit: {unit}")
+    
+    return f"Temperature set to {temp}°{unit.upper()}"
+
+print("\n9. PARAMETER VALIDATION:")
+print(set_temperature(25))
+print(set_temperature(98.6, 'F'))
+
+try:
+    print(set_temperature(-300, 'C'))
+except ValueError as e:
+    print(f"  Error: {e}")
+
+# 10. Function overloading simulation (with default params)
+def calculate_area_shape(shape, *dimensions):
+    """Calculate area of different shapes using single function"""
+    if shape == "circle":
+        radius = dimensions[0]
+        import math
+        return math.pi * radius ** 2
+    elif shape == "rectangle":
+        length, width = dimensions
+        return length * width
+    elif shape == "triangle":
+        base, height = dimensions
+        return 0.5 * base * height
+    elif shape == "square":
+        side = dimensions[0]
+        return side ** 2
+    else:
+        return f"Unknown shape: {shape}"
+
+print("\n10. SIMULATED FUNCTION OVERLOADING:")
+print(f"Circle area (r=5): {calculate_area_shape('circle', 5):.2f}")
+print(f"Rectangle area (5x3): {calculate_area_shape('rectangle', 5, 3)}")
+print(f"Triangle area (base=4, height=6): {calculate_area_shape('triangle', 4, 6)}")
+print(f"Square area (side=4): {calculate_area_shape('square', 4)}")
+
 
 
