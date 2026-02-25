@@ -34,3 +34,163 @@ Abstract details - Hide implementation complexity
 Test easily - Test functions independently
 
 Collaborate - Share functions with others
+
+🔧 Practical Exercises
+Exercise 1: Basic Functions
+
+# basic_functions.py
+"""
+Introduction to creating and using functions
+"""
+
+print("="*60)
+print("BASIC FUNCTIONS")
+print("="*60)
+
+# 1. Simple function with no parameters
+def greet():
+    """Simple greeting function"""
+    print("Hello! Welcome to Python functions!")
+
+print("\n1. Simple function:")
+greet()
+greet()  # Can call multiple times
+
+# 2. Function with parameters
+def greet_person(name):
+    """Greet a specific person"""
+    print(f"Hello, {name}! Nice to meet you!")
+
+print("\n2. Function with parameters:")
+greet_person("Alice")
+greet_person("Bob")
+
+# 3. Function with return value
+def add(a, b):
+    """Add two numbers and return result"""
+    result = a + b
+    return result
+
+print("\n3. Function with return value:")
+sum_result = add(5, 3)
+print(f"5 + 3 = {sum_result}")
+
+# 4. Multiple return values
+def get_min_max(numbers):
+    """Return both minimum and maximum"""
+    return min(numbers), max(numbers)
+
+print("\n4. Multiple return values:")
+nums = [4, 2, 9, 1, 7, 5]
+minimum, maximum = get_min_max(nums)
+print(f"Numbers: {nums}")
+print(f"Min: {minimum}, Max: {maximum}")
+
+# 5. Function with docstring
+def calculate_area(radius):
+    """
+    Calculate the area of a circle.
+    
+    Args:
+        radius (float): The radius of the circle
+        
+    Returns:
+        float: The area of the circle
+    """
+    import math
+    return math.pi * radius ** 2
+
+print("\n5. Function with docstring:")
+area = calculate_area(5)
+print(f"Area of circle with radius 5: {area:.2f}")
+print(f"Docstring: {calculate_area.__doc__}")
+
+# 6. Function as variable
+def square(x):
+    return x ** 2
+
+def cube(x):
+    return x ** 3
+
+print("\n6. Functions as variables:")
+operations = [square, cube]  # List of functions
+for i in range(1, 4):
+    print(f"\nNumber: {i}")
+    for func in operations:
+        result = func(i)
+        print(f"  {func.__name__}: {result}")
+
+# 7. Nested functions
+def outer_function(text):
+    """Function containing inner function"""
+    def inner_function():
+        print(f"Inner function says: {text}")
+    
+    print("Outer function calling inner...")
+    inner_function()
+
+print("\n7. Nested functions:")
+outer_function("Hello from inside!")
+
+# 8. Function with type hints (Python 3.5+)
+def process_data(name: str, age: int, scores: list) -> dict:
+    """
+    Process user data with type hints.
+    
+    Args:
+        name: Person's name
+        age: Person's age
+        scores: List of scores
+        
+    Returns:
+        Dictionary with processed data
+    """
+    return {
+        "name": name.upper(),
+        "age": age,
+        "average": sum(scores) / len(scores) if scores else 0,
+        "status": "Adult" if age >= 18 else "Minor"
+    }
+
+print("\n8. Function with type hints:")
+result = process_data("Alice", 25, [85, 90, 88, 92])
+print(f"Result: {result}")
+
+# 9. Practice: Temperature converter
+def celsius_to_fahrenheit(celsius):
+    """Convert Celsius to Fahrenheit"""
+    return (celsius * 9/5) + 32
+
+def fahrenheit_to_celsius(fahrenheit):
+    """Convert Fahrenheit to Celsius"""
+    return (fahrenheit - 32) * 5/9
+
+print("\n9. Temperature converter:")
+temps_c = [0, 25, 37, 100]
+print("Celsius to Fahrenheit:")
+for c in temps_c:
+    f = celsius_to_fahrenheit(c)
+    print(f"  {c}°C = {f:.1f}°F")
+
+# 10. Practice: String utilities
+def reverse_string(text):
+    """Reverse a string"""
+    return text[::-1]
+
+def count_vowels(text):
+    """Count vowels in a string"""
+    vowels = "aeiouAEIOU"
+    return sum(1 for char in text if char in vowels)
+
+def is_palindrome(text):
+    """Check if text is a palindrome"""
+    cleaned = text.lower().replace(" ", "")
+    return cleaned == cleaned[::-1]
+
+print("\n10. String utilities:")
+test_strings = ["hello", "racecar", "Python", "A man a plan a canal Panama"]
+for s in test_strings:
+    print(f"\n  '{s}':")
+    print(f"    Reversed: {reverse_string(s)}")
+    print(f"    Vowels: {count_vowels(s)}")
+    print(f"    Palindrome: {is_palindrome(s)}")
