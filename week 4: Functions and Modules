@@ -1480,6 +1480,676 @@ import requests
 response = requests.get('https://api.github.com')
 print(response.status_code)
 
+📝 Weekly Project: Task Manager Application
+# week4_project.py
+"""
+WEEK 4 PROJECT: Task Manager Application
+A comprehensive task management system using functions and modules
+"""
+
+import json
+import os
+import datetime
+import sys
+from typing import List, Dict, Optional
+from enum import Enum
+
+class Priority(Enum):
+    """Task priority levels"""
+    LOW = 1
+    MEDIUM = 2
+    HIGH = 3
+    CRITICAL = 4
+
+class Status(Enum):
+    """Task status"""
+    TODO = "todo"
+    IN_PROGRESS = "in_progress"
+    DONE = "done"
+    ARCHIVED = "archived"
+
+class Task:
+    """Task class to represent a single task"""
+    
+    def __init__(self, title: str, description: str = "", priority: Priority = Priority.MEDIUM):
+        self.id = None  # Will be set by manager
+        self.title = title
+        self.description = description
+        self.priority = priority
+        self.status = Status.TODO
+        self.created_at = datetime.datetime.now()
+        self.updated_at = self.created_at
+        self.completed_at = None
+        self.tags = []
+        self.estimated_hours = 0
+        self.actual_hours = 0
+    
+    def to_dict(self) -> Dict:
+        """Convert task to dictionary for JSON serialization"""
+        return {
+            "id": self.id,
+            "title": self.title,
+            "description": self.description,
+            "priority": self.priority.value,
+            "priority_name": self.priority.name,
+            "status": self.status.value,
+            "created_at": self.created_at.isoformat(),
+            "updated_at": self.updated_at.isoformat(),
+            "completed_at": self.completed_at.isoformat() if self.completed_at else None,
+            "tags": self.tags,
+            "estimated_hours": self.estimated_hours,
+            "actual_hours": self.actual_hours
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict) -> 'Task':
+        """Create task from dictionary"""
+        task = cls(data["title"], data.get("description", ""))
+        task.id = data["id"]
+        task.priority = Priority(data["priority"])
+        task.status = Status(data["status"])
+        task.created_at = datetime.datetime.fromisoformat(data["created_at"])
+        task.updated_at = datetime.datetime.fromisoformat(data["updated_at"])
+        task.completed_at = datetime.datetime.fromisoformat(data["completed_at"]) if data["completed_at"] else None
+        task.tags = data.get("tags", [])
+        task.estimated_hours = data.get("estimated_hours", 0)
+        task.actual_hours = data.get("actual_hours", 0)
+        return task
+    
+    def __str__(self) -> str:
+        """String representation"""
+        priority_icon = {
+            Priority.LOW: "🔹",
+            Priority.MEDIUM: "🔸",
+            Priority.HIGH: "⚠️",
+            Priority.CRITICAL: "🔥"
+        }.get(self.priority, "📌")
+        
+        status_icon = {
+            Status.TODO: "⭕",
+            Status.IN_PROGRESS: "🔄",
+            Status.DONE: "✅",
+            Status.ARCHIVED: "📦"
+        }.get(self.status, "❓")
+        
+        return f"{status_icon} {priority_icon} [{self.id:04d}] {self.title}"
+
+class TaskManager:
+    """Main task manager class"""
+    
+    def __init__(self, filename: str = "tasks.json"):
+        self.filename = filename
+        self.tasks: List[Task] = []
+        self.next_id = 1
+        self.load_tasks()
+    
+    def load_tasks(self):
+        """Load tasks from file"""
+        if os.path.exists(self.filename):
+            try:
+                with open(self.filename, 'r') as f:
+                    data = json.load(f)
+                    self.tasks = [Task.from_dict(task_data) for task_data in data.get("tasks", [])]
+                    self.next_id = data.get("next_id", 1)
+                print(f"✅ Loaded {len(self.tasks)} tasks from {self.filename}")
+            except Exception as e:
+                print(f"❌ Error loading tasks: {e}")
+                self.tasks = []
+                self.next_id = 1
+        else:
+            print(f"📁 No existing task file found. Starting fresh.")
+            self.create_sample_tasks()
+    
+    def save_tasks(self):
+        """Save tasks to file"""
+        try:
+            data = {
+                "tasks": [task.to_dict() for task in self.tasks],
+                "next_id": self.next_id,
+                "last_saved": datetime.datetime.now().isoformat()
+            }
+            with open(self.filename, 'w') as f:
+                json.dump(data, f, indent=2)
+            print(f"✅ Saved {len(self.tasks)} tasks to {self.filename}")
+        except Exception as e:
+            print(f"❌ Error saving tasks: {e}")
+    
+    def create_sample_tasks(self):
+        """Create sample tasks for demonstration"""
+        sample_tasks = [
+            ("Complete project proposal", "Write project proposal for client", Priority.HIGH),
+            ("Review pull requests", "Review team PRs and provide feedback", Priority.MEDIUM),
+            ("Update documentation", "Update API documentation with new endpoints", Priority.LOW),
+            ("Fix critical bug", "Fix authentication bug in production", Priority.CRITICAL),
+            ("Team meeting", "Weekly sync with development team", Priority.MEDIUM),
+            ("Code review", "Review code for new feature", Priority.MEDIUM),
+            ("Deploy to staging", "Deploy latest changes to staging environment", Priority.HIGH),
+        ]
+        
+        for title, desc, priority in sample_tasks:
+            self.add_task(title, desc, priority)
+        
+        print(f"📝 Created {len(sample_tasks)} sample tasks")
+    
+    def generate_id(self) -> int:
+        """Generate unique task ID"""
+        task_id = self.next_id
+        self.next_id += 1
+        return task_id
+    
+    def add_task(self, title: str, description: str = "", 
+                 priority: Priority = Priority.MEDIUM, 
+                 tags: List[str] = None,
+                 estimated_hours: float = 0) -> Task:
+        """Add a new task"""
+        task = Task(title, description, priority)
+        task.id = self.generate_id()
+        if tags:
+            task.tags = tags
+        task.estimated_hours = estimated_hours
+        self.tasks.append(task)
+        self.save_tasks()
+        return task
+    
+    def get_task(self, task_id: int) -> Optional[Task]:
+        """Get task by ID"""
+        for task in self.tasks:
+            if task.id == task_id:
+                return task
+        return None
+    
+    def update_task(self, task_id: int, **kwargs) -> bool:
+        """Update task attributes"""
+        task = self.get_task(task_id)
+        if not task:
+            return False
+        
+        for key, value in kwargs.items():
+            if hasattr(task, key):
+                setattr(task, key, value)
+        
+        task.updated_at = datetime.datetime.now()
+        
+        # If status changed to DONE, set completed_at
+        if kwargs.get('status') == Status.DONE and not task.completed_at:
+            task.completed_at = datetime.datetime.now()
+        
+        self.save_tasks()
+        return True
+    
+    def delete_task(self, task_id: int) -> bool:
+        """Delete a task"""
+        initial_count = len(self.tasks)
+        self.tasks = [task for task in self.tasks if task.id != task_id]
+        if len(self.tasks) < initial_count:
+            self.save_tasks()
+            return True
+        return False
+    
+    def get_tasks_by_status(self, status: Status) -> List[Task]:
+        """Get tasks by status"""
+        return [task for task in self.tasks if task.status == status]
+    
+    def get_tasks_by_priority(self, priority: Priority) -> List[Task]:
+        """Get tasks by priority"""
+        return [task for task in self.tasks if task.priority == priority]
+    
+    def get_tasks_by_tag(self, tag: str) -> List[Task]:
+        """Get tasks by tag"""
+        return [task for task in self.tasks if tag in task.tags]
+    
+    def search_tasks(self, query: str) -> List[Task]:
+        """Search tasks by title or description"""
+        query = query.lower()
+        return [task for task in self.tasks 
+                if query in task.title.lower() or query in task.description.lower()]
+    
+    def get_statistics(self) -> Dict:
+        """Get task statistics"""
+        total = len(self.tasks)
+        todo = len(self.get_tasks_by_status(Status.TODO))
+        in_progress = len(self.get_tasks_by_status(Status.IN_PROGRESS))
+        done = len(self.get_tasks_by_status(Status.DONE))
+        archived = len(self.get_tasks_by_status(Status.ARCHIVED))
+        
+        # Priority breakdown
+        critical = len(self.get_tasks_by_priority(Priority.CRITICAL))
+        high = len(self.get_tasks_by_priority(Priority.HIGH))
+        medium = len(self.get_tasks_by_priority(Priority.MEDIUM))
+        low = len(self.get_tasks_by_priority(Priority.LOW))
+        
+        # Time statistics
+        total_estimated = sum(t.estimated_hours for t in self.tasks)
+        total_actual = sum(t.actual_hours for t in self.tasks if t.status == Status.DONE)
+        
+        # Tag cloud
+        all_tags = {}
+        for task in self.tasks:
+            for tag in task.tags:
+                all_tags[tag] = all_tags.get(tag, 0) + 1
+        
+        return {
+            "total": total,
+            "by_status": {
+                "todo": todo,
+                "in_progress": in_progress,
+                "done": done,
+                "archived": archived
+            },
+            "by_priority": {
+                "critical": critical,
+                "high": high,
+                "medium": medium,
+                "low": low
+            },
+            "completion_rate": (done / total * 100) if total > 0 else 0,
+            "estimated_hours": total_estimated,
+            "actual_hours": total_actual,
+            "tags": all_tags
+        }
+    
+    def display_tasks(self, tasks: List[Task] = None, title: str = "Tasks"):
+        """Display a list of tasks"""
+        if tasks is None:
+            tasks = self.tasks
+        
+        if not tasks:
+            print(f"\n📭 No {title.lower()}")
+            return
+        
+        print(f"\n{'='*60}")
+        print(f"📋 {title} ({len(tasks)})")
+        print(f"{'='*60}")
+        
+        # Sort by priority (highest first) and status
+        sorted_tasks = sorted(tasks, 
+                            key=lambda t: (-t.priority.value, t.status.value, t.title))
+        
+        for task in sorted_tasks:
+            print(f"\n{task}")
+            if task.description:
+                print(f"   📝 {task.description[:50]}{'...' if len(task.description) > 50 else ''}")
+            if task.tags:
+                tags = " ".join(f"#{tag}" for tag in task.tags)
+                print(f"   🏷️  {tags}")
+            if task.estimated_hours > 0:
+                progress = f"⏱️  Est: {task.estimated_hours}h"
+                if task.actual_hours > 0:
+                    progress += f" | Act: {task.actual_hours}h"
+                print(f"   {progress}")
+    
+    def export_report(self, filename: str = "task_report.txt"):
+        """Export task report to text file"""
+        stats = self.get_statistics()
+        
+        with open(filename, 'w') as f:
+            f.write("="*60 + "\n")
+            f.write("TASK MANAGER REPORT\n")
+            f.write(f"Generated: {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')}\n")
+            f.write("="*60 + "\n\n")
+            
+            f.write("📊 STATISTICS\n")
+            f.write("-"*40 + "\n")
+            f.write(f"Total Tasks: {stats['total']}\n")
+            f.write(f"  ✅ Done: {stats['by_status']['done']}\n")
+            f.write(f"  🔄 In Progress: {stats['by_status']['in_progress']}\n")
+            f.write(f"  ⭕ Todo: {stats['by_status']['todo']}\n")
+            f.write(f"  📦 Archived: {stats['by_status']['archived']}\n")
+            f.write(f"Completion Rate: {stats['completion_rate']:.1f}%\n\n")
+            
+            f.write("🔥 PRIORITY BREAKDOWN\n")
+            f.write("-"*40 + "\n")
+            f.write(f"  CRITICAL: {stats['by_priority']['critical']}\n")
+            f.write(f"  HIGH: {stats['by_priority']['high']}\n")
+            f.write(f"  MEDIUM: {stats['by_priority']['medium']}\n")
+            f.write(f"  LOW: {stats['by_priority']['low']}\n\n")
+            
+            f.write("⏱️  TIME TRACKING\n")
+            f.write("-"*40 + "\n")
+            f.write(f"Total Estimated: {stats['estimated_hours']:.1f} hours\n")
+            f.write(f"Total Actual: {stats['actual_hours']:.1f} hours\n\n")
+            
+            f.write("🏷️  TAGS\n")
+            f.write("-"*40 + "\n")
+            for tag, count in sorted(stats['tags'].items(), key=lambda x: -x[1]):
+                f.write(f"  #{tag}: {count}\n")
+            
+            f.write("\n📋 ALL TASKS\n")
+            f.write("-"*40 + "\n")
+            for task in sorted(self.tasks, key=lambda t: (-t.priority.value, t.title)):
+                f.write(f"{task}\n")
+                if task.description:
+                    f.write(f"  {task.description}\n")
+                f.write("\n")
+        
+        print(f"✅ Report exported to {filename}")
+
+def clear_screen():
+    """Clear the terminal screen"""
+    os.system('cls' if os.name == 'nt' else 'clear')
+
+def print_header(title):
+    """Print formatted header"""
+    print("\n" + "="*60)
+    print(f"  {title}")
+    print("="*60)
+
+def get_priority_input():
+    """Get priority from user input"""
+    print("\nPriority:")
+    print("1. 🔹 LOW")
+    print("2. 🔸 MEDIUM")
+    print("3. ⚠️  HIGH")
+    print("4. 🔥 CRITICAL")
+    
+    choice = input("Select priority (1-4) [2]: ").strip()
+    
+    priority_map = {
+        '1': Priority.LOW,
+        '2': Priority.MEDIUM,
+        '3': Priority.HIGH,
+        '4': Priority.CRITICAL
+    }
+    
+    return priority_map.get(choice, Priority.MEDIUM)
+
+def get_status_input():
+    """Get status from user input"""
+    print("\nStatus:")
+    print("1. ⭕ TODO")
+    print("2. 🔄 IN PROGRESS")
+    print("3. ✅ DONE")
+    print("4. 📦 ARCHIVED")
+    
+    choice = input("Select status (1-4) [1]: ").strip()
+    
+    status_map = {
+        '1': Status.TODO,
+        '2': Status.IN_PROGRESS,
+        '3': Status.DONE,
+        '4': Status.ARCHIVED
+    }
+    
+    return status_map.get(choice, Status.TODO)
+
+def main():
+    """Main application function"""
+    manager = TaskManager()
+    
+    while True:
+        clear_screen()
+        print_header("TASK MANAGER")
+        
+        stats = manager.get_statistics()
+        print(f"\n📊 Summary: {stats['total']} total | "
+              f"✅ {stats['by_status']['done']} done | "
+              f"🔄 {stats['by_status']['in_progress']} in progress | "
+              f"⭕ {stats['by_status']['todo']} todo")
+        print(f"📈 Completion: {stats['completion_rate']:.1f}%")
+        
+        print("\n" + "-"*60)
+        print("MAIN MENU:")
+        print("1. 📋 View All Tasks")
+        print("2. ➕ Add New Task")
+        print("3. 🔍 Search Tasks")
+        print("4. ✏️  Update Task")
+        print("5. ❌ Delete Task")
+        print("6. 📊 View Statistics")
+        print("7. 🏷️  Filter by Tag")
+        print("8. 📤 Export Report")
+        print("9. 🚪 Exit")
+        print("-"*60)
+        
+        choice = input("\nSelect option (1-9): ").strip()
+        
+        if choice == "1":
+            clear_screen()
+            print_header("ALL TASKS")
+            
+            print("\nFilter by status:")
+            print("1. All tasks")
+            print("2. ⭕ Todo")
+            print("3. 🔄 In Progress")
+            print("4. ✅ Done")
+            print("5. 📦 Archived")
+            
+            filter_choice = input("\nSelect filter (1-5) [1]: ").strip() or "1"
+            
+            if filter_choice == "1":
+                manager.display_tasks(title="All Tasks")
+            elif filter_choice == "2":
+                manager.display_tasks(manager.get_tasks_by_status(Status.TODO), "Todo Tasks")
+            elif filter_choice == "3":
+                manager.display_tasks(manager.get_tasks_by_status(Status.IN_PROGRESS), "In Progress Tasks")
+            elif filter_choice == "4":
+                manager.display_tasks(manager.get_tasks_by_status(Status.DONE), "Completed Tasks")
+            elif filter_choice == "5":
+                manager.display_tasks(manager.get_tasks_by_status(Status.ARCHIVED), "Archived Tasks")
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "2":
+            clear_screen()
+            print_header("ADD NEW TASK")
+            
+            title = input("Task title: ").strip()
+            if not title:
+                print("❌ Title cannot be empty!")
+                input("Press Enter to continue...")
+                continue
+            
+            description = input("Description (optional): ").strip()
+            priority = get_priority_input()
+            
+            tags_input = input("Tags (comma-separated, optional): ").strip()
+            tags = [tag.strip() for tag in tags_input.split(',')] if tags_input else []
+            
+            est_hours = input("Estimated hours (optional): ").strip()
+            estimated_hours = float(est_hours) if est_hours else 0
+            
+            task = manager.add_task(title, description, priority, tags, estimated_hours)
+            print(f"\n✅ Task added successfully!")
+            print(f"   {task}")
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "3":
+            clear_screen()
+            print_header("SEARCH TASKS")
+            
+            query = input("Enter search term: ").strip()
+            if query:
+                results = manager.search_tasks(query)
+                manager.display_tasks(results, f"Search Results for '{query}'")
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "4":
+            clear_screen()
+            print_header("UPDATE TASK")
+            
+            manager.display_tasks()
+            
+            try:
+                task_id = int(input("\nEnter task ID to update: "))
+                task = manager.get_task(task_id)
+                
+                if not task:
+                    print(f"❌ Task with ID {task_id} not found!")
+                    input("Press Enter to continue...")
+                    continue
+                
+                print(f"\nUpdating: {task}")
+                print("(Leave blank to keep current value)")
+                
+                title = input(f"Title [{task.title}]: ").strip()
+                if title:
+                    task.title = title
+                
+                description = input(f"Description: ").strip()
+                if description:
+                    task.description = description
+                
+                # Update priority
+                print(f"\nCurrent priority: {task.priority.name}")
+                new_priority = get_priority_input()
+                if new_priority != task.priority:
+                    task.priority = new_priority
+                
+                # Update status
+                print(f"\nCurrent status: {task.status.value}")
+                new_status = get_status_input()
+                if new_status != task.status:
+                    task.status = new_status
+                    if new_status == Status.DONE and not task.completed_at:
+                        task.completed_at = datetime.datetime.now()
+                
+                # Update tags
+                tags_input = input(f"\nTags (comma-separated) [{','.join(task.tags)}]: ").strip()
+                if tags_input:
+                    task.tags = [tag.strip() for tag in tags_input.split(',')]
+                
+                # Update hours
+                est_hours = input(f"Estimated hours [{task.estimated_hours}]: ").strip()
+                if est_hours:
+                    task.estimated_hours = float(est_hours)
+                
+                act_hours = input(f"Actual hours [{task.actual_hours}]: ").strip()
+                if act_hours:
+                    task.actual_hours = float(act_hours)
+                
+                task.updated_at = datetime.datetime.now()
+                manager.save_tasks()
+                
+                print(f"\n✅ Task updated successfully!")
+                
+            except ValueError:
+                print("❌ Invalid input!")
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "5":
+            clear_screen()
+            print_header("DELETE TASK")
+            
+            manager.display_tasks()
+            
+            try:
+                task_id = int(input("\nEnter task ID to delete: "))
+                task = manager.get_task(task_id)
+                
+                if not task:
+                    print(f"❌ Task with ID {task_id} not found!")
+                else:
+                    print(f"\nTask to delete: {task}")
+                    confirm = input("Are you sure? (yes/no): ").strip().lower()
+                    
+                    if confirm == "yes":
+                        if manager.delete_task(task_id):
+                            print("✅ Task deleted successfully!")
+                        else:
+                            print("❌ Failed to delete task!")
+                    else:
+                        print("Deletion cancelled.")
+                
+            except ValueError:
+                print("❌ Invalid task ID!")
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "6":
+            clear_screen()
+            print_header("TASK STATISTICS")
+            
+            stats = manager.get_statistics()
+            
+            print(f"\n📊 OVERALL STATISTICS")
+            print("-"*40)
+            print(f"Total Tasks: {stats['total']}")
+            print(f"\nBy Status:")
+            print(f"  ✅ Done: {stats['by_status']['done']}")
+            print(f"  🔄 In Progress: {stats['by_status']['in_progress']}")
+            print(f"  ⭕ Todo: {stats['by_status']['todo']}")
+            print(f"  📦 Archived: {stats['by_status']['archived']}")
+            print(f"\nCompletion Rate: {stats['completion_rate']:.1f}%")
+            
+            print(f"\n🔥 By Priority:")
+            print(f"  CRITICAL: {stats['by_priority']['critical']}")
+            print(f"  HIGH: {stats['by_priority']['high']}")
+            print(f"  MEDIUM: {stats['by_priority']['medium']}")
+            print(f"  LOW: {stats['by_priority']['low']}")
+            
+            print(f"\n⏱️  Time Tracking:")
+            print(f"  Total Estimated: {stats['estimated_hours']:.1f} hours")
+            print(f"  Total Actual: {stats['actual_hours']:.1f} hours")
+            
+            if stats['tags']:
+                print(f"\n🏷️  Top Tags:")
+                for tag, count in sorted(stats['tags'].items(), key=lambda x: -x[1])[:5]:
+                    print(f"  #{tag}: {count}")
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "7":
+            clear_screen()
+            print_header("FILTER BY TAG")
+            
+            # Collect all tags
+            all_tags = set()
+            for task in manager.tasks:
+                all_tags.update(task.tags)
+            
+            if not all_tags:
+                print("\nNo tags found.")
+                input("Press Enter to continue...")
+                continue
+            
+            print("\nAvailable tags:")
+            tags_list = sorted(all_tags)
+            for i, tag in enumerate(tags_list, 1):
+                print(f"{i}. #{tag}")
+            
+            try:
+                tag_choice = int(input("\nSelect tag number: ")) - 1
+                if 0 <= tag_choice < len(tags_list):
+                    selected_tag = tags_list[tag_choice]
+                    tagged_tasks = manager.get_tasks_by_tag(selected_tag)
+                    manager.display_tasks(tagged_tasks, f"Tasks tagged #{selected_tag}")
+                else:
+                    print("❌ Invalid selection!")
+            except ValueError:
+                print("❌ Invalid input!")
+            
+            input("\nPress Enter to continue...")
+        
+        elif choice == "8":
+            clear_screen()
+            print_header("EXPORT REPORT")
+            
+            filename = input("Enter filename (default: task_report.txt): ").strip()
+            if not filename:
+                filename = "task_report.txt"
+            
+            manager.export_report(filename)
+            input("\nPress Enter to continue...")
+        
+        elif choice == "9":
+            print("\n👋 Goodbye! Thanks for using Task Manager!")
+            break
+        
+        else:
+            print("\n❌ Invalid option!")
+            input("Press Enter to continue...")
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print("\n\n👋 Goodbye!")
+        sys.exit(0)
+
+
+
 Cleaning up created files...
 Cleanup complete!
 
