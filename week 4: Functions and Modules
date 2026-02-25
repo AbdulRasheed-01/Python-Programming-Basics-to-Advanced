@@ -20,3 +20,17 @@ By the end of this week, you will be able to:
 ✅ Write recursive functions
 
 ✅ Use decorators to enhance functions
+
+📚 Theory Content
+4.1 Why Functions?
+Functions help you:
+
+Reuse code - Write once, use many times
+
+Organize code - Break complex problems into smaller pieces
+
+Abstract details - Hide implementation complexity
+
+Test easily - Test functions independently
+
+Collaborate - Share functions with others
