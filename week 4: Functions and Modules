@@ -194,3 +194,88 @@ for s in test_strings:
     print(f"    Reversed: {reverse_string(s)}")
     print(f"    Vowels: {count_vowels(s)}")
     print(f"    Palindrome: {is_palindrome(s)}")
+
+Output:
+
+============================================================
+BASIC FUNCTIONS
+============================================================
+
+1. Simple function:
+Hello! Welcome to Python functions!
+Hello! Welcome to Python functions!
+
+2. Function with parameters:
+Hello, Alice! Nice to meet you!
+Hello, Bob! Nice to meet you!
+
+3. Function with return value:
+5 + 3 = 8
+
+4. Multiple return values:
+Numbers: [4, 2, 9, 1, 7, 5]
+Min: 1, Max: 9
+
+5. Function with docstring:
+Area of circle with radius 5: 78.54
+Docstring: 
+    Calculate the area of a circle.
+    
+    Args:
+        radius (float): The radius of the circle
+        
+    Returns:
+        float: The area of the circle
+    
+
+6. Functions as variables:
+
+Number: 1
+  square: 1
+  cube: 1
+
+Number: 2
+  square: 4
+  cube: 8
+
+Number: 3
+  square: 9
+  cube: 27
+
+7. Nested functions:
+Outer function calling inner...
+Inner function says: Hello from inside!
+
+8. Function with type hints:
+Result: {'name': 'ALICE', 'age': 25, 'average': 88.75, 'status': 'Adult'}
+
+9. Temperature converter:
+Celsius to Fahrenheit:
+  0°C = 32.0°F
+  25°C = 77.0°F
+  37°C = 98.6°F
+  100°C = 212.0°F
+
+10. String utilities:
+
+  'hello':
+    Reversed: olleh
+    Vowels: 2
+    Palindrome: False
+
+  'racecar':
+    Reversed: racecar
+    Vowels: 3
+    Palindrome: True
+
+  'Python':
+    Reversed: nohtyP
+    Vowels: 1
+    Palindrome: False
+
+  'A man a plan a canal Panama':
+    Reversed: amanaP lanac a nalp a nam A
+    Vowels: 10
+    Palindrome: True
+
+
