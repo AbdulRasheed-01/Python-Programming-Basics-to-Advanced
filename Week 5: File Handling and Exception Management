@@ -658,3 +658,73 @@ if os.path.exists("errors.log"):
 
 Sample Output:
 
+============================================================
+EXCEPTION HANDLING
+============================================================
+
+1. BASIC TRY-EXCEPT:
+----------------------------------------
+Enter a number: 0
+❌ Cannot divide by zero!
+
+2. MULTIPLE EXCEPTIONS:
+----------------------------------------
+Enter index: 5
+❌ Error: list index out of range - Invalid input or index
+
+3. TRY-EXCEPT-ELSE:
+----------------------------------------
+Enter a positive number: -5
+❌ Error: Number must be positive
+
+4. TRY-EXCEPT-FINALLY:
+----------------------------------------
+❌ File not found!
+🔄 This always executes
+
+5. RAISING EXCEPTIONS:
+----------------------------------------
+✅ Age 25 is valid
+❌ Age -5: Age cannot be negative
+❌ Age twenty: Age must be a number
+❌ Age 200: Age cannot be > 150
+
+6. CUSTOM EXCEPTION CLASSES:
+----------------------------------------
+✅ Withdrew $500. New balance: $500
+❌ Insufficient funds: balance $500, tried to withdraw $700
+❌ Cannot deposit negative amount
+
+7. EXCEPTION CHAINING:
+----------------------------------------
+Error: Could not process nonexistent.txt
+Caused by: [Errno 2] No such file or directory: 'nonexistent.txt'
+
+8. ASSERTIONS:
+----------------------------------------
+Price $100, 20% discount: $80.00
+❌ Assertion failed: Price must be positive
+❌ Assertion failed: Discount must be between 0 and 100
+
+9. CONTEXT MANAGERS:
+----------------------------------------
+✅ Error logged to errors.log
+Program continues after suppressed exception
+
+10. BEST PRACTICES:
+----------------------------------------
+DO:
+✅ Be specific with exception types
+✅ Use finally for cleanup
+✅ Create custom exceptions for application-specific errors
+✅ Log exceptions for debugging
+✅ Use context managers for resource management
+
+DON'T:
+❌ Catch bare 'Exception' unless necessary
+❌ Swallow exceptions silently
+❌ Use exceptions for flow control
+❌ Ignore return codes when exceptions are better
+❌ Raise generic exceptions
+
+
