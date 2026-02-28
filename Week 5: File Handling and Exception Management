@@ -1301,5 +1301,118 @@ for f in ["data.json", "complex.json", "special.json", "config.json", "sales_ana
         os.remove(f)
         print(f"Removed {f}")
 
+Output:
+
+============================================================
+JSON DATA HANDLING
+============================================================
+
+1. BASIC JSON SERIALIZATION:
+----------------------------------------
+Python dictionary:
+{'name': 'Alice', 'age': 30, 'city': 'New York', 'hobbies': ['reading', 'cycling', 'photography'], 'married': False, 'salary': 75000.5, 'projects': None}
+
+JSON string:
+{
+  "name": "Alice",
+  "age": 30,
+  "city": "New York",
+  "hobbies": [
+    "reading",
+    "cycling",
+    "photography"
+  ],
+  "married": false,
+  "salary": 75000.5,
+  "projects": null
+}
+
+Parsed back to Python:
+{'name': 'Alice', 'age': 30, 'city': 'New York', 'hobbies': ['reading', 'cycling', 'photography'], 'married': False, 'salary': 75000.5, 'projects': None}
+Type after parsing: <class 'dict'>
+
+2. WRITING JSON TO FILE:
+----------------------------------------
+✅ Data written to data.json
+
+3. READING JSON FROM FILE:
+----------------------------------------
+✅ Data loaded from data.json
+Loaded: {'name': 'Alice', 'age': 30, 'city': 'New York', 'hobbies': ['reading', 'cycling', 'photography'], 'married': False, 'salary': 75000.5, 'projects': None}
+
+4. COMPLEX DATA STRUCTURES:
+----------------------------------------
+✅ Complex data saved to complex.json
+
+Processing complex data:
+  Alice: average score = 85.0
+  Bob: average score = 91.0
+  Charlie: average score = 82.3
+
+5. HANDLING SPECIAL TYPES:
+----------------------------------------
+Serialized with custom encoder:
+{
+  "timestamp": "2024-01-16T15:30:45.123456",
+  "date": "2024-01-16",
+  "unique_ids": [1, 2, 3, 4, 5],
+  "file_path": "/home/user/data.txt",
+  "name": "Special Data"
+}
+✅ Special data saved to special.json
+
+6. PRETTY PRINTING:
+----------------------------------------
+Ugly JSON: {"name":"Alice","age":30,"city":"New York","hobbies":["reading","cycling"]}
+Pretty printed:
+{
+    "age": 30,
+    "city": "New York",
+    "hobbies": [
+        "reading",
+        "cycling"
+    ],
+    "name": "Alice"
+}
+
+7. JSON VALIDATION:
+----------------------------------------
+Valid JSON: True - Valid JSON
+Invalid JSON: False - Expecting property name enclosed in double quotes: line 1 column 30 (char 29)
+
+8. JSON MINIFY:
+----------------------------------------
+Minified JSON:
+{"name":"Alice","age":30,"city":"New York","hobbies":["reading","cycling"]}
+Length: original=98, minified=64
+
+9. CONFIGURATION FILE EXAMPLE:
+----------------------------------------
+✅ Configuration saved to config.json
+
+Configuration loaded:
+App: Task Manager v2.1.0
+Database: localhost:5432
+Debug mode: False
+
+10. JSON DATA ANALYSIS:
+----------------------------------------
+Total Revenue: $10975
+
+Revenue by Product:
+  Laptop: $8400
+  Mouse: $875
+  Keyboard: $800
+  Monitor: $1050
+
+✅ Analysis saved to sales_analysis.json
+
+Cleaning up JSON files...
+Removed data.json
+Removed complex.json
+Removed special.json
+Removed config.json
+Removed sales_analysis.json
+
 
 
