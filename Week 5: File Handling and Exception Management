@@ -1414,5 +1414,271 @@ Removed special.json
 Removed config.json
 Removed sales_analysis.json
 
+Exercise 4: Working with CSV Files
+# csv_handling.py
+"""
+CSV file handling in Python
+"""
+
+print("="*60)
+print("CSV FILE HANDLING")
+print("="*60)
+
+import csv
+import os
+
+# 1. Writing CSV files
+print("\n1. WRITING CSV FILES:")
+print("-"*40)
+
+# Simple list of lists
+data = [
+    ["Name", "Age", "City", "Salary"],
+    ["Alice", 30, "New York", 75000],
+    ["Bob", 25, "Los Angeles", 65000],
+    ["Charlie", 35, "Chicago", 80000],
+    ["Diana", 28, "Houston", 70000]
+]
+
+with open("employees.csv", "w", newline="") as f:
+    writer = csv.writer(f)
+    writer.writerows(data)
+print("✅ employees.csv created")
+
+# 2. Reading CSV files
+print("\n2. READING CSV FILES:")
+print("-"*40)
+
+with open("employees.csv", "r") as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(f"  {row}")
+
+# 3. CSV with dictionaries
+print("\n3. CSV WITH DICTIONARIES:")
+print("-"*40)
+
+# Using DictWriter
+employees = [
+    {"name": "Alice", "age": 30, "department": "Engineering", "salary": 75000},
+    {"name": "Bob", "age": 25, "department": "Marketing", "salary": 65000},
+    {"name": "Charlie", "age": 35, "department": "Sales", "salary": 80000},
+    {"name": "Diana", "age": 28, "department": "HR", "salary": 70000}
+]
+
+with open("employees_dict.csv", "w", newline="") as f:
+    fieldnames = ["name", "age", "department", "salary"]
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    
+    writer.writeheader()
+    writer.writerows(employees)
+print("✅ employees_dict.csv created")
+
+# Read with DictReader
+with open("employees_dict.csv", "r") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        print(f"  {row['name']}: {row['age']} years, {row['department']}, ${row['salary']}")
+
+# 4. CSV with different delimiters
+print("\n4. CSV WITH DIFFERENT DELIMITERS:")
+print("-"*40)
+
+# Tab-separated
+with open("employees.tsv", "w", newline="") as f:
+    writer = csv.writer(f, delimiter="\t")
+    writer.writerows(data)
+print("✅ employees.tsv (tab-separated) created")
+
+# Semicolon-separated (common in some regions)
+with open("employees_europe.csv", "w", newline="") as f:
+    writer = csv.writer(f, delimiter=";")
+    writer.writerows(data)
+print("✅ employees_europe.csv (semicolon-separated) created")
+
+# Read with custom delimiter
+with open("employees.tsv", "r") as f:
+    reader = csv.reader(f, delimiter="\t")
+    print("TSV file content:")
+    for row in reader:
+        print(f"  {row}")
+
+# 5. Handling headers
+print("\n5. HANDLING HEADERS:")
+print("-"*40)
+
+def read_csv_with_header(filename):
+    """Read CSV and return data without header"""
+    with open(filename, "r") as f:
+        reader = csv.reader(f)
+        header = next(reader)  # Get header
+        data = list(reader)    # Get rest
+    return header, data
+
+header, data = read_csv_with_header("employees.csv")
+print(f"Header: {header}")
+print(f"First data row: {data[0]}")
+
+# 6. CSV data analysis
+print("\n6. CSV DATA ANALYSIS:")
+print("-"*40)
+
+# Calculate statistics
+with open("employees.csv", "r") as f:
+    reader = csv.DictReader(f)
+    salaries = []
+    ages = []
+    
+    for row in reader:
+        salaries.append(float(row["Salary"]))
+        ages.append(int(row["Age"]))
+    
+    print(f"Salary statistics:")
+    print(f"  Average: ${sum(salaries)/len(salaries):.2f}")
+    print(f"  Max: ${max(salaries)}")
+    print(f"  Min: ${min(salaries)}")
+    
+    print(f"\nAge statistics:")
+    print(f"  Average: {sum(ages)/len(ages):.1f} years")
+    print(f"  Max: {max(ages)} years")
+    print(f"  Min: {min(ages)} years")
+
+# 7. Large CSV processing
+print("\n7. LARGE CSV PROCESSING:")
+print("-"*40)
+
+# Generate large CSV
+import random
+
+def generate_large_csv(filename, num_rows):
+    """Generate a large CSV file for testing"""
+    with open(filename, "w", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["ID", "Name", "Value", "Category", "Date"])
+        
+        categories = ["A", "B", "C", "D"]
+        names = ["Item" + str(i) for i in range(1, 101)]
+        
+        for i in range(num_rows):
+            row = [
+                i + 1,
+                random.choice(names),
+                round(random.uniform(10, 1000), 2),
+                random.choice(categories),
+                f"2024-01-{random.randint(1, 31):02d}"
+            ]
+            writer.writerow(row)
+
+print("Generating large CSV with 10000 rows...")
+generate_large_csv("large_data.csv", 10000)
+print("✅ large_data.csv created")
+
+# Process in chunks (memory efficient)
+print("\nProcessing large file in chunks:")
+total_value = 0
+row_count = 0
+category_totals = {}
+
+with open("large_data.csv", "r") as f:
+    reader = csv.DictReader(f)
+    for row in reader:
+        value = float(row["Value"])
+        total_value += value
+        row_count += 1
+        
+        cat = row["Category"]
+        category_totals[cat] = category_totals.get(cat, 0) + value
+        
+        # Process in chunks of 1000
+        if row_count % 1000 == 0:
+            print(f"  Processed {row_count} rows...")
+
+print(f"\nProcessed {row_count} rows")
+print(f"Total value: ${total_value:,.2f}")
+print(f"Average value: ${total_value/row_count:.2f}")
+print("\nCategory totals:")
+for cat, total in category_totals.items():
+    print(f"  Category {cat}: ${total:,.2f}")
+
+# 8. CSV with quotes and special characters
+print("\n8. CSV WITH QUOTES AND SPECIAL CHARACTERS:")
+print("-"*40)
+
+special_data = [
+    ["Name", "Description", "Tags"],
+    ["Product A", "This product has, a comma in description", "tag1,tag2,tag3"],
+    ['Product B', 'Contains "quotes" in text', "special"],
+    ["Product C", "Has\nnewline\ncharacters", "multi-line"]
+]
+
+with open("special.csv", "w", newline="") as f:
+    writer = csv.writer(f, quoting=csv.QUOTE_ALL)
+    writer.writerows(special_data)
+print("✅ special.csv created with quotes")
+
+# Read back
+with open("special.csv", "r") as f:
+    reader = csv.reader(f)
+    for row in reader:
+        print(f"  {row}")
+
+# 9. CSV dialect
+print("\n9. CSV DIALECT:")
+print("-"*40)
+
+# Register custom dialect
+csv.register_dialect("pipes", delimiter="|", quoting=csv.QUOTE_NONE)
+
+with open("piped_data.csv", "w", newline="") as f:
+    writer = csv.writer(f, dialect="pipes")
+    writer.writerow(["Name", "Age", "City"])
+    writer.writerow(["Alice", 30, "New York"])
+    writer.writerow(["Bob", 25, "Los Angeles"])
+print("✅ piped_data.csv created with | delimiter")
+
+with open("piped_data.csv", "r") as f:
+    reader = csv.reader(f, dialect="pipes")
+    for row in reader:
+        print(f"  {row}")
+
+# 10. CSV to JSON conversion
+print("\n10. CSV TO JSON CONVERSION:")
+print("-"*40)
+
+import json
+
+def csv_to_json(csv_filename, json_filename):
+    """Convert CSV to JSON"""
+    data = []
+    with open(csv_filename, "r") as f:
+        reader = csv.DictReader(f)
+        for row in reader:
+            # Convert numeric fields
+            for key in row:
+                if key in ["Age", "ID", "Value"]:
+                    try:
+                        row[key] = float(row[key]) if "." in row[key] else int(row[key])
+                    except:
+                        pass
+            data.append(row)
+    
+    with open(json_filename, "w") as f:
+        json.dump(data, f, indent=2)
+    return data
+
+converted = csv_to_json("employees_dict.csv", "employees.json")
+print(f"✅ Converted to employees.json ({len(converted)} records)")
+print("First record:")
+print(json.dumps(converted[0], indent=2))
+
+# Clean up
+print("\nCleaning up CSV files...")
+for f in ["employees.csv", "employees_dict.csv", "employees.tsv", 
+          "employees_europe.csv", "large_data.csv", "special.csv", 
+          "piped_data.csv", "employees.json"]:
+    if os.path.exists(f):
+        os.remove(f)
+        print(f"Removed {f}")
+
 
 
