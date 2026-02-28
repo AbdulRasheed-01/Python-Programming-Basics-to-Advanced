@@ -3145,6 +3145,11 @@ if __name__ == "__main__":
         except KeyboardInterrupt:
             print("\n\nGoodbye!")
             sys.exit(0)
+🎉 Congratulations!
+You've completed Week 5! You now have a solid understanding of file handling and exception management, which are crucial for building robust real-world applications.
+
+Next Week: Week 6 - Object-Oriented Programming (OOP)
+
 
 
 
