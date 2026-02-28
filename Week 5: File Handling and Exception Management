@@ -1014,5 +1014,292 @@ for f in ["data.json", "complex.json", "special.json", "config.json", "sales_ana
     if os.path.exists(f):
         os.remove(f)
         print(f"Removed {f}")
+# json_handling.py
+"""
+JSON data handling in Python
+"""
+
+print("="*60)
+print("JSON DATA HANDLING")
+print("="*60)
+
+import json
+import datetime
+from pathlib import Path
+
+# 1. Basic JSON serialization
+print("\n1. BASIC JSON SERIALIZATION:")
+print("-"*40)
+
+# Python dictionary
+data = {
+    "name": "Alice",
+    "age": 30,
+    "city": "New York",
+    "hobbies": ["reading", "cycling", "photography"],
+    "married": False,
+    "salary": 75000.50,
+    "projects": None
+}
+
+print("Python dictionary:")
+print(data)
+
+# Convert to JSON string
+json_string = json.dumps(data, indent=2)
+print("\nJSON string:")
+print(json_string)
+
+# Convert back to Python
+parsed_data = json.loads(json_string)
+print("\nParsed back to Python:")
+print(parsed_data)
+print(f"Type after parsing: {type(parsed_data)}")
+
+# 2. Writing JSON to file
+print("\n2. WRITING JSON TO FILE:")
+print("-"*40)
+
+# Write to file
+with open("data.json", "w") as f:
+    json.dump(data, f, indent=4)
+print("✅ Data written to data.json")
+
+# 3. Reading JSON from file
+print("\n3. READING JSON FROM FILE:")
+print("-"*40)
+
+with open("data.json", "r") as f:
+    loaded_data = json.load(f)
+print("✅ Data loaded from data.json")
+print(f"Loaded: {loaded_data}")
+
+# 4. Complex data structures
+print("\n4. COMPLEX DATA STRUCTURES:")
+print("-"*40)
+
+complex_data = {
+    "users": [
+        {"id": 1, "name": "Alice", "scores": [85, 92, 78]},
+        {"id": 2, "name": "Bob", "scores": [90, 88, 95]},
+        {"id": 3, "name": "Charlie", "scores": [76, 89, 82]}
+    ],
+    "metadata": {
+        "version": "1.0",
+        "last_updated": "2024-01-15",
+        "total_users": 3
+    },
+    "settings": {
+        "theme": "dark",
+        "notifications": True,
+        "language": "en"
+    }
+}
+
+with open("complex.json", "w") as f:
+    json.dump(complex_data, f, indent=2)
+print("✅ Complex data saved to complex.json")
+
+# Read and process
+with open("complex.json", "r") as f:
+    data = json.load(f)
+    
+print("\nProcessing complex data:")
+for user in data["users"]:
+    avg_score = sum(user["scores"]) / len(user["scores"])
+    print(f"  {user['name']}: average score = {avg_score:.1f}")
+
+# 5. Handling special types
+print("\n5. HANDLING SPECIAL TYPES:")
+print("-"*40)
+
+class CustomEncoder(json.JSONEncoder):
+    """Custom JSON encoder for special types"""
+    
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            return obj.isoformat()
+        if isinstance(obj, datetime.date):
+            return obj.isoformat()
+        if isinstance(obj, set):
+            return list(obj)
+        if isinstance(obj, Path):
+            return str(obj)
+        return super().default(obj)
+
+# Data with special types
+special_data = {
+    "timestamp": datetime.datetime.now(),
+    "date": datetime.date.today(),
+    "unique_ids": {1, 2, 3, 4, 5},
+    "file_path": Path("/home/user/data.txt"),
+    "name": "Special Data"
+}
+
+# Serialize with custom encoder
+json_str = json.dumps(special_data, cls=CustomEncoder, indent=2)
+print("Serialized with custom encoder:")
+print(json_str)
+
+# Save to file
+with open("special.json", "w") as f:
+    json.dump(special_data, f, cls=CustomEncoder, indent=2)
+print("✅ Special data saved to special.json")
+
+# 6. Pretty printing
+print("\n6. PRETTY PRINTING:")
+print("-"*40)
+
+ugly_json = '{"name":"Alice","age":30,"city":"New York","hobbies":["reading","cycling"]}'
+print("Ugly JSON:", ugly_json)
+
+# Pretty print
+parsed = json.loads(ugly_json)
+pretty = json.dumps(parsed, indent=4, sort_keys=True)
+print("Pretty printed:")
+print(pretty)
+
+# 7. JSON validation
+print("\n7. JSON VALIDATION:")
+print("-"*40)
+
+def validate_json(json_string):
+    """Validate JSON string"""
+    try:
+        json.loads(json_string)
+        return True, "Valid JSON"
+    except json.JSONDecodeError as e:
+        return False, str(e)
+
+# Test valid JSON
+valid_json = '{"name": "Alice", "age": 30}'
+is_valid, message = validate_json(valid_json)
+print(f"Valid JSON: {is_valid} - {message}")
+
+# Test invalid JSON
+invalid_json = '{"name": "Alice", "age": 30,}'  # Trailing comma
+is_valid, message = validate_json(invalid_json)
+print(f"Invalid JSON: {is_valid} - {message}")
+
+# 8. JSON minify (remove whitespace)
+print("\n8. JSON MINIFY:")
+print("-"*40)
+
+def minify_json(json_string):
+    """Remove unnecessary whitespace from JSON"""
+    parsed = json.loads(json_string)
+    return json.dumps(parsed, separators=(',', ':'))
+
+verbose_json = """
+{
+    "name": "Alice",
+    "age": 30,
+    "city": "New York",
+    "hobbies": [
+        "reading",
+        "cycling"
+    ]
+}
+"""
+
+minified = minify_json(verbose_json)
+print("Minified JSON:")
+print(minified)
+print(f"Length: original={len(verbose_json)}, minified={len(minified)}")
+
+# 9. JSON configuration file example
+print("\n9. CONFIGURATION FILE EXAMPLE:")
+print("-"*40)
+
+config = {
+    "app_name": "Task Manager",
+    "version": "2.1.0",
+    "debug": False,
+    "database": {
+        "host": "localhost",
+        "port": 5432,
+        "name": "taskdb",
+        "user": "admin",
+        "password": "secret123"
+    },
+    "logging": {
+        "level": "INFO",
+        "file": "app.log",
+        "max_size": 10485760,
+        "backup_count": 5
+    },
+    "features": {
+        "dark_mode": True,
+        "notifications": True,
+        "auto_save": True,
+        "sync_interval": 300
+    }
+}
+
+# Save config
+with open("config.json", "w") as f:
+    json.dump(config, f, indent=2)
+print("✅ Configuration saved to config.json")
+
+# Load and use config
+with open("config.json", "r") as f:
+    loaded_config = json.load(f)
+    
+print("\nConfiguration loaded:")
+print(f"App: {loaded_config['app_name']} v{loaded_config['version']}")
+print(f"Database: {loaded_config['database']['host']}:{loaded_config['database']['port']}")
+print(f"Debug mode: {loaded_config['debug']}")
+
+# 10. JSON data analysis
+print("\n10. JSON DATA ANALYSIS:")
+print("-"*40)
+
+# Sample sales data
+sales_data = {
+    "sales": [
+        {"product": "Laptop", "price": 1200, "quantity": 5, "date": "2024-01-15"},
+        {"product": "Mouse", "price": 25, "quantity": 20, "date": "2024-01-15"},
+        {"product": "Keyboard", "price": 80, "quantity": 10, "date": "2024-01-16"},
+        {"product": "Monitor", "price": 350, "quantity": 3, "date": "2024-01-16"},
+        {"product": "Laptop", "price": 1200, "quantity": 2, "date": "2024-01-17"},
+        {"product": "Mouse", "price": 25, "quantity": 15, "date": "2024-01-17"}
+    ]
+}
+
+# Analyze sales
+total_revenue = 0
+product_sales = {}
+
+for sale in sales_data["sales"]:
+    revenue = sale["price"] * sale["quantity"]
+    total_revenue += revenue
+    
+    product = sale["product"]
+    if product not in product_sales:
+        product_sales[product] = 0
+    product_sales[product] += revenue
+
+print(f"Total Revenue: ${total_revenue}")
+print("\nRevenue by Product:")
+for product, revenue in sorted(product_sales.items(), key=lambda x: -x[1]):
+    print(f"  {product}: ${revenue}")
+
+# Save analysis
+with open("sales_analysis.json", "w") as f:
+    analysis = {
+        "total_revenue": total_revenue,
+        "product_breakdown": product_sales,
+        "timestamp": datetime.datetime.now().isoformat()
+    }
+    json.dump(analysis, f, indent=2)
+print("\n✅ Analysis saved to sales_analysis.json")
+
+# Clean up
+print("\nCleaning up JSON files...")
+for f in ["data.json", "complex.json", "special.json", "config.json", "sales_analysis.json"]:
+    if os.path.exists(f):
+        os.remove(f)
+        print(f"Removed {f}")
+
 
 
