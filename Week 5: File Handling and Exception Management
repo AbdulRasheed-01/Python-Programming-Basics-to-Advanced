@@ -35,3 +35,257 @@ XML	       |       Legacy systems	        |      Schema validation	       |   Ve
 YAML	     |       Configuration	        |      Very readable	         |     Whitespace sensitive
 
 Binary	   |       Performance	          |      Compact, fast	         |     Not human-readable
+
+🔧 Practical Exercises
+
+Exercise 1: Basic File Operations
+  # file_basics.py
+  """
+  Basic file reading and writing operations
+  """
+  
+  print("="*60)
+  print("BASIC FILE OPERATIONS")
+  print("="*60)
+  
+  import os
+  
+  # 1. Writing to a file
+  print("\n1. WRITING TO A FILE:")
+  print("-"*40)
+  
+  # Using write() method
+  with open("sample.txt", "w") as file:
+      file.write("Hello, World!\n")
+      file.write("This is line 2.\n")
+      file.write("This is line 3.\n")
+  print("✅ File 'sample.txt' created and written")
+  
+  # Writing multiple lines
+  lines = ["First line", "Second line", "Third line", "Fourth line"]
+  with open("multiple.txt", "w") as file:
+      for line in lines:
+          file.write(line + "\n")
+  print("✅ File 'multiple.txt' created with multiple lines")
+  
+  # 2. Reading from a file
+  print("\n2. READING FROM A FILE:")
+  print("-"*40)
+  
+  # Read entire file
+  with open("sample.txt", "r") as file:
+      content = file.read()
+      print("Full content:")
+      print(content)
+  
+  # Read line by line
+  print("\nReading line by line:")
+  with open("sample.txt", "r") as file:
+      for line in file:
+          print(f"  Line: {line.strip()}")
+  
+  # Read all lines into list
+  with open("multiple.txt", "r") as file:
+      lines = file.readlines()
+      print(f"\nLines as list: {lines}")
+      print(f"Number of lines: {len(lines)}")
+  
+  # 3. Appending to a file
+  print("\n3. APPENDING TO A FILE:")
+  print("-"*40)
+  
+  with open("sample.txt", "a") as file:
+      file.write("This line is appended.\n")
+      file.write("Another appended line.\n")
+  print("✅ Content appended to 'sample.txt'")
+  
+  # Verify append worked
+  with open("sample.txt", "r") as file:
+      print("Updated content:")
+      print(file.read())
+  
+  # 4. File modes demonstration
+  print("\n4. FILE MODES:")
+  print("-"*40)
+  
+  # 'r' - read (default)
+  try:
+      with open("nonexistent.txt", "r") as file:
+          content = file.read()
+  except FileNotFoundError as e:
+      print(f"'r' mode: File not found error - {e}")
+  
+  # 'w' - write (creates new or truncates)
+  with open("new_file.txt", "w") as file:
+      file.write("This file was created with 'w' mode")
+  print("'w' mode: Created new_file.txt")
+  
+  # 'x' - exclusive creation (fails if exists)
+  try:
+      with open("new_file.txt", "x") as file:
+          file.write("This will fail")
+  except FileExistsError as e:
+      print(f"'x' mode: File exists error - {e}")
+  
+  # 'a' - append
+  with open("new_file.txt", "a") as file:
+      file.write("\nThis line was appended")
+  print("'a' mode: Appended to new_file.txt")
+  
+  # 'r+' - read and write
+  with open("new_file.txt", "r+") as file:
+      content = file.read()
+      file.seek(0)  # Go back to beginning
+      file.write("MODIFIED: " + content)
+  print("'r+' mode: Read and modified file")
+  
+  # 5. File positioning
+  print("\n5. FILE POSITIONING (seek/tell):")
+  print("-"*40)
+  
+  with open("sample.txt", "r") as file:
+      print(f"Initial position: {file.tell()}")
+      
+      content = file.read(10)
+      print(f"Read 10 chars: '{content}'")
+      print(f"Position after read: {file.tell()}")
+      
+      file.seek(0)
+      print(f"After seek(0): {file.tell()}")
+      
+      file.seek(5)
+      print(f"After seek(5): {file.tell()}")
+      content = file.read(5)
+      print(f"Read from position 5: '{content}'")
+  
+  # 6. Working with file paths
+  print("\n6. FILE PATHS:")
+  print("-"*40)
+  
+  import os.path
+  
+  # Get current directory
+  current_dir = os.getcwd()
+  print(f"Current directory: {current_dir}")
+  
+  # Join paths
+  file_path = os.path.join(current_dir, "sample.txt")
+  print(f"Full path: {file_path}")
+  
+  # Check if file exists
+  print(f"File exists: {os.path.exists('sample.txt')}")
+  print(f"Is file: {os.path.isfile('sample.txt')}")
+  print(f"Is directory: {os.path.isdir('sample.txt')}")
+  
+  # File info
+  file_size = os.path.getsize("sample.txt")
+  print(f"File size: {file_size} bytes")
+  print(f"Last modified: {os.path.getmtime('sample.txt')}")
+  
+  # 7. Working with directories
+  print("\n7. DIRECTORY OPERATIONS:")
+  print("-"*40)
+  
+  # Create directory
+  os.makedirs("test_dir/sub_dir", exist_ok=True)
+  print("✅ Created test_dir/sub_dir")
+  
+  # List directory contents
+  print("\nFiles in current directory:")
+  for item in os.listdir("."):
+      if os.path.isfile(item):
+          print(f"  📄 {item}")
+      elif os.path.isdir(item):
+          print(f"  📁 {item}/")
+  
+  # Walk through directory tree
+  print("\nDirectory tree:")
+  for root, dirs, files in os.walk("test_dir"):
+      level = root.count(os.sep)
+      indent = "  " * level
+      print(f"{indent}📁 {os.path.basename(root)}/")
+      for file in files:
+          print(f"{indent}  📄 {file}")
+  
+  # 8. Temporary files
+  print("\n8. TEMPORARY FILES:")
+  print("-"*40)
+  
+  import tempfile
+  
+  # Create temporary file
+  with tempfile.NamedTemporaryFile(mode='w', delete=False) as temp:
+      temp.write("Temporary data")
+      temp_name = temp.name
+      print(f"Created temp file: {temp_name}")
+  
+  # Read temp file
+  with open(temp_name, 'r') as f:
+      print(f"Temp file content: {f.read()}")
+  
+  # Clean up
+  os.unlink(temp_name)
+  print("Temp file deleted")
+  
+  # 9. File encoding
+  print("\n9. FILE ENCODING:")
+  print("-"*40)
+  
+  # Write with different encoding
+  text = "Café Müller 北京 東京"
+  
+  with open("utf8.txt", "w", encoding="utf-8") as f:
+      f.write(text)
+  print("✅ Written with UTF-8 encoding")
+  
+  with open("utf16.txt", "w", encoding="utf-16") as f:
+      f.write(text)
+  print("✅ Written with UTF-16 encoding")
+  
+  # Read back
+  with open("utf8.txt", "r", encoding="utf-8") as f:
+      content = f.read()
+      print(f"UTF-8 read: {content}")
+  
+  # 10. Context manager custom class
+  print("\n10. CUSTOM CONTEXT MANAGER:")
+  print("-"*40)
+  
+  class FileManager:
+      """Custom context manager for file handling"""
+      
+      def __init__(self, filename, mode):
+          self.filename = filename
+          self.mode = mode
+          self.file = None
+      
+      def __enter__(self):
+          print(f"Opening {self.filename} in {self.mode} mode")
+          self.file = open(self.filename, self.mode)
+          return self.file
+      
+      def __exit__(self, exc_type, exc_val, exc_tb):
+          print(f"Closing {self.filename}")
+          if self.file:
+              self.file.close()
+          if exc_type:
+              print(f"An exception occurred: {exc_val}")
+          return True  # Suppress exceptions
+  
+  # Use custom context manager
+  with FileManager("test_custom.txt", "w") as f:
+      f.write("Testing custom context manager")
+      print("File written")
+  
+  # Clean up
+  print("\nCleaning up test files...")
+  for f in ["sample.txt", "multiple.txt", "new_file.txt", "utf8.txt", "utf16.txt", "test_custom.txt"]:
+      if os.path.exists(f):
+          os.remove(f)
+          print(f"Removed {f}")
+  
+  # Remove test directory
+  import shutil
+  if os.path.exists("test_dir"):
+      shutil.rmtree("test_dir")
+      print("Removed test_dir")
