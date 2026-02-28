@@ -393,3 +393,268 @@ Removed utf8.txt
 Removed utf16.txt
 Removed test_custom.txt
 Removed test_dir
+
+Exercise 2: Exception Handling
+# exceptions.py
+"""
+Comprehensive exception handling in Python
+"""
+
+print("="*60)
+print("EXCEPTION HANDLING")
+print("="*60)
+
+# 1. Basic try-except
+print("\n1. BASIC TRY-EXCEPT:")
+print("-"*40)
+
+try:
+    number = int(input("Enter a number: "))
+    result = 10 / number
+    print(f"10 / {number} = {result}")
+except ValueError:
+    print("❌ That's not a valid number!")
+except ZeroDivisionError:
+    print("❌ Cannot divide by zero!")
+except Exception as e:
+    print(f"❌ An unexpected error occurred: {e}")
+
+# 2. Multiple exceptions in one block
+print("\n2. MULTIPLE EXCEPTIONS:")
+print("-"*40)
+
+try:
+    num = int(input("Enter index: "))
+    my_list = [1, 2, 3]
+    print(f"Element at index {num}: {my_list[num]}")
+except (ValueError, IndexError) as e:
+    print(f"❌ Error: {e} - Invalid input or index")
+
+# 3. try-except-else
+print("\n3. TRY-EXCEPT-ELSE:")
+print("-"*40)
+
+try:
+    num = int(input("Enter a positive number: "))
+    if num <= 0:
+        raise ValueError("Number must be positive")
+except ValueError as e:
+    print(f"❌ Error: {e}")
+else:
+    print(f"✅ Success! You entered {num}")
+    print(f"   Square root: {num ** 0.5:.2f}")
+
+# 4. try-except-finally
+print("\n4. TRY-EXCEPT-FINALLY:")
+print("-"*40)
+
+file = None
+try:
+    file = open("test_file.txt", "r")
+    content = file.read()
+    print(f"File content: {content}")
+except FileNotFoundError:
+    print("❌ File not found!")
+finally:
+    if file:
+        file.close()
+        print("✅ File closed in finally block")
+    print("🔄 This always executes")
+
+# 5. Raising exceptions
+print("\n5. RAISING EXCEPTIONS:")
+print("-"*40)
+
+def validate_age(age):
+    """Validate age with custom exceptions"""
+    if not isinstance(age, (int, float)):
+        raise TypeError("Age must be a number")
+    if age < 0:
+        raise ValueError("Age cannot be negative")
+    if age > 150:
+        raise ValueError("Age cannot be > 150")
+    return True
+
+# Test validation
+test_ages = [25, -5, "twenty", 200]
+for age in test_ages:
+    try:
+        validate_age(age)
+        print(f"✅ Age {age} is valid")
+    except (TypeError, ValueError) as e:
+        print(f"❌ Age {age}: {e}")
+
+# 6. Custom exception classes
+print("\n6. CUSTOM EXCEPTION CLASSES:")
+print("-"*40)
+
+class InsufficientFundsError(Exception):
+    """Raised when account has insufficient funds"""
+    def __init__(self, balance, amount):
+        self.balance = balance
+        self.amount = amount
+        self.message = f"Insufficient funds: balance ${balance}, tried to withdraw ${amount}"
+        super().__init__(self.message)
+
+class NegativeAmountError(Exception):
+    """Raised when transaction amount is negative"""
+    pass
+
+class AccountClosedError(Exception):
+    """Raised when account is closed"""
+    pass
+
+class BankAccount:
+    """Simple bank account with custom exceptions"""
+    
+    def __init__(self, owner, initial_balance=0):
+        self.owner = owner
+        self.balance = initial_balance
+        self.closed = False
+    
+    def withdraw(self, amount):
+        """Withdraw money from account"""
+        if self.closed:
+            raise AccountClosedError(f"Account for {self.owner} is closed")
+        
+        if amount < 0:
+            raise NegativeAmountError("Withdrawal amount cannot be negative")
+        
+        if amount > self.balance:
+            raise InsufficientFundsError(self.balance, amount)
+        
+        self.balance -= amount
+        print(f"✅ Withdrew ${amount}. New balance: ${self.balance}")
+    
+    def deposit(self, amount):
+        """Deposit money to account"""
+        if self.closed:
+            raise AccountClosedError(f"Account for {self.owner} is closed")
+        
+        if amount < 0:
+            raise NegativeAmountError("Deposit amount cannot be negative")
+        
+        self.balance += amount
+        print(f"✅ Deposited ${amount}. New balance: ${self.balance}")
+    
+    def close(self):
+        """Close the account"""
+        self.closed = True
+        print(f"✅ Account for {self.owner} closed")
+
+# Test bank account
+print("\nTesting BankAccount with custom exceptions:")
+account = BankAccount("Alice", 1000)
+
+try:
+    account.withdraw(500)
+    account.withdraw(700)  # This should fail
+except InsufficientFundsError as e:
+    print(f"❌ {e}")
+except NegativeAmountError:
+    print("❌ Cannot withdraw negative amount")
+except AccountClosedError as e:
+    print(f"❌ {e}")
+
+try:
+    account.deposit(-50)  # This should fail
+except NegativeAmountError:
+    print("❌ Cannot deposit negative amount")
+
+# 7. Exception chaining
+print("\n7. EXCEPTION CHAINING:")
+print("-"*40)
+
+def process_data(filename):
+    """Process data with exception chaining"""
+    try:
+        with open(filename, 'r') as f:
+            data = f.read()
+            return int(data)
+    except FileNotFoundError as e:
+        raise ValueError(f"Could not process {filename}") from e
+
+try:
+    result = process_data("nonexistent.txt")
+except ValueError as e:
+    print(f"Error: {e}")
+    print(f"Caused by: {e.__cause__}")
+
+# 8. Assertions for debugging
+print("\n8. ASSERTIONS:")
+print("-"*40)
+
+def calculate_discount(price, discount_percent):
+    """Calculate discounted price with assertions"""
+    assert price > 0, "Price must be positive"
+    assert 0 <= discount_percent <= 100, "Discount must be between 0 and 100"
+    
+    discount = price * discount_percent / 100
+    return price - discount
+
+# Test assertions
+test_cases = [(100, 20), (-50, 10), (100, 150)]
+for price, discount in test_cases:
+    try:
+        result = calculate_discount(price, discount)
+        print(f"Price ${price}, {discount}% discount: ${result:.2f}")
+    except AssertionError as e:
+        print(f"❌ Assertion failed: {e}")
+
+# 9. Context managers for exception handling
+print("\n9. CONTEXT MANAGERS:")
+print("-"*40)
+
+class ErrorLogger:
+    """Context manager for logging errors"""
+    
+    def __init__(self, filename):
+        self.filename = filename
+    
+    def __enter__(self):
+        self.log_file = open(self.filename, 'a')
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            import datetime
+            timestamp = datetime.datetime.now().isoformat()
+            self.log_file.write(f"[{timestamp}] {exc_type.__name__}: {exc_val}\n")
+            print(f"✅ Error logged to {self.filename}")
+        self.log_file.close()
+        return True  # Suppress exception
+
+# Use error logger
+with ErrorLogger("errors.log") as logger:
+    x = 1 / 0  # This will cause ZeroDivisionError
+
+print("Program continues after suppressed exception")
+
+# 10. Best practices
+print("\n10. BEST PRACTICES:")
+print("-"*40)
+
+print("""
+DO:
+✅ Be specific with exception types
+✅ Use finally for cleanup
+✅ Create custom exceptions for application-specific errors
+✅ Log exceptions for debugging
+✅ Use context managers for resource management
+
+DON'T:
+❌ Catch bare 'Exception' unless necessary
+❌ Swallow exceptions silently
+❌ Use exceptions for flow control
+❌ Ignore return codes when exceptions are better
+❌ Raise generic exceptions
+""")
+
+# Clean up
+if os.path.exists("test_file.txt"):
+    os.remove("test_file.txt")
+if os.path.exists("errors.log"):
+    os.remove("errors.log")
+
+Sample Output:
+
