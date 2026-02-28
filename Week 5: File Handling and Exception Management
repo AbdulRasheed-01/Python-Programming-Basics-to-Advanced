@@ -2501,6 +2501,651 @@ Removed exceptions.log
 Removed configured.log
 Removed app.json
 
+📝 Weekly Project: Data Backup System
+
+# week5_project.py
+"""
+WEEK 5 PROJECT: Data Backup System
+A comprehensive backup system with file handling, error management, and logging
+"""
+
+import os
+import shutil
+import json
+import csv
+import logging
+import hashlib
+import datetime
+import zipfile
+import tarfile
+from pathlib import Path
+from typing import Dict, List, Optional, Tuple
+import time
+
+class BackupError(Exception):
+    """Custom exception for backup operations"""
+    pass
+
+class BackupSystem:
+    """Main backup system class"""
+    
+    def __init__(self, config_file: str = "backup_config.json"):
+        self.config_file = config_file
+        self.config = self.load_config()
+        self.setup_logging()
+        self.backup_history = self.load_history()
+        
+    def setup_logging(self):
+        """Setup logging for backup system"""
+        self.logger = logging.getLogger('BackupSystem')
+        self.logger.setLevel(logging.DEBUG)
+        
+        # Console handler
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        console_format = logging.Formatter('%(levelname)s: %(message)s')
+        console.setFormatter(console_format)
+        
+        # File handler
+        log_file = f"backup_{datetime.datetime.now().strftime('%Y%m%d')}.log"
+        file_handler = logging.FileHandler(log_file)
+        file_handler.setLevel(logging.DEBUG)
+        file_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(file_format)
+        
+        self.logger.addHandler(console)
+        self.logger.addHandler(file_handler)
+    
+    def load_config(self) -> Dict:
+        """Load backup configuration"""
+        default_config = {
+            "backup_dir": "backups",
+            "max_backups": 10,
+            "compress": True,
+            "verify_after_backup": True,
+            "sources": [],
+            "exclude_patterns": [".tmp", ".log", "__pycache__", ".git"],
+            "schedule": {
+                "enabled": False,
+                "interval_hours": 24
+            }
+        }
+        
+        if os.path.exists(self.config_file):
+            try:
+                with open(self.config_file, 'r') as f:
+                    config = json.load(f)
+                    self.logger.info(f"Loaded configuration from {self.config_file}")
+                    return config
+            except Exception as e:
+                self.logger.error(f"Error loading config: {e}")
+                return default_config
+        else:
+            # Create default config
+            with open(self.config_file, 'w') as f:
+                json.dump(default_config, f, indent=2)
+            self.logger.info(f"Created default configuration at {self.config_file}")
+            return default_config
+    
+    def save_config(self):
+        """Save current configuration"""
+        try:
+            with open(self.config_file, 'w') as f:
+                json.dump(self.config, f, indent=2)
+            self.logger.info("Configuration saved")
+        except Exception as e:
+            self.logger.error(f"Error saving config: {e}")
+    
+    def load_history(self) -> List[Dict]:
+        """Load backup history"""
+        history_file = "backup_history.json"
+        if os.path.exists(history_file):
+            try:
+                with open(history_file, 'r') as f:
+                    return json.load(f)
+            except:
+                return []
+        return []
+    
+    def save_history(self):
+        """Save backup history"""
+        history_file = "backup_history.json"
+        try:
+            with open(history_file, 'w') as f:
+                json.dump(self.backup_history, f, indent=2)
+        except Exception as e:
+            self.logger.error(f"Error saving history: {e}")
+    
+    def calculate_file_hash(self, filepath: str) -> str:
+        """Calculate MD5 hash of a file"""
+        hash_md5 = hashlib.md5()
+        try:
+            with open(filepath, "rb") as f:
+                for chunk in iter(lambda: f.read(4096), b""):
+                    hash_md5.update(chunk)
+            return hash_md5.hexdigest()
+        except Exception as e:
+            self.logger.error(f"Error calculating hash for {filepath}: {e}")
+            return ""
+    
+    def get_file_info(self, filepath: str) -> Dict:
+        """Get file metadata"""
+        stat = os.stat(filepath)
+        return {
+            "name": os.path.basename(filepath),
+            "path": filepath,
+            "size": stat.st_size,
+            "modified": datetime.datetime.fromtimestamp(stat.st_mtime).isoformat(),
+            "hash": self.calculate_file_hash(filepath)
+        }
+    
+    def should_exclude(self, filepath: str) -> bool:
+        """Check if file should be excluded"""
+        for pattern in self.config["exclude_patterns"]:
+            if pattern in filepath:
+                return True
+        return False
+    
+    def add_source(self, source_path: str):
+        """Add a source to backup"""
+        if not os.path.exists(source_path):
+            raise BackupError(f"Source path does not exist: {source_path}")
+        
+        if source_path not in self.config["sources"]:
+            self.config["sources"].append(source_path)
+            self.save_config()
+            self.logger.info(f"Added source: {source_path}")
+        else:
+            self.logger.warning(f"Source already exists: {source_path}")
+    
+    def remove_source(self, source_path: str):
+        """Remove a source from backup list"""
+        if source_path in self.config["sources"]:
+            self.config["sources"].remove(source_path)
+            self.save_config()
+            self.logger.info(f"Removed source: {source_path}")
+    
+    def create_backup(self, source_path: str, backup_name: str = None) -> Optional[str]:
+        """Create a backup of a source"""
+        try:
+            if not os.path.exists(source_path):
+                raise BackupError(f"Source does not exist: {source_path}")
+            
+            # Create backup directory
+            backup_dir = self.config["backup_dir"]
+            os.makedirs(backup_dir, exist_ok=True)
+            
+            # Generate backup name
+            if not backup_name:
+                timestamp = datetime.datetime.now().strftime("%Y%m%d_%H%M%S")
+                base_name = os.path.basename(source_path.rstrip('/\\'))
+                backup_name = f"{base_name}_{timestamp}"
+            
+            backup_path = os.path.join(backup_dir, backup_name)
+            
+            self.logger.info(f"Starting backup of {source_path} to {backup_path}")
+            
+            # Track backup statistics
+            stats = {
+                "files": 0,
+                "directories": 0,
+                "total_size": 0,
+                "errors": 0
+            }
+            
+            if self.config["compress"]:
+                backup_path += ".zip"
+                with zipfile.ZipFile(backup_path, 'w', zipfile.ZIP_DEFLATED) as zipf:
+                    for root, dirs, files in os.walk(source_path):
+                        # Remove excluded directories
+                        dirs[:] = [d for d in dirs if not self.should_exclude(os.path.join(root, d))]
+                        
+                        for file in files:
+                            filepath = os.path.join(root, file)
+                            if self.should_exclude(filepath):
+                                continue
+                            
+                            try:
+                                arcname = os.path.relpath(filepath, os.path.dirname(source_path))
+                                zipf.write(filepath, arcname)
+                                stats["files"] += 1
+                                stats["total_size"] += os.path.getsize(filepath)
+                            except Exception as e:
+                                self.logger.error(f"Error backing up {filepath}: {e}")
+                                stats["errors"] += 1
+            else:
+                # Simple copy
+                shutil.copytree(source_path, backup_path, 
+                              ignore=shutil.ignore_patterns(*self.config["exclude_patterns"]))
+                
+                # Count files
+                for root, dirs, files in os.walk(backup_path):
+                    stats["directories"] += len(dirs)
+                    stats["files"] += len(files)
+                    for file in files:
+                        stats["total_size"] += os.path.getsize(os.path.join(root, file))
+            
+            # Verify backup
+            if self.config["verify_after_backup"]:
+                if self.verify_backup(source_path, backup_path):
+                    self.logger.info("Backup verification passed")
+                else:
+                    self.logger.error("Backup verification failed")
+                    raise BackupError("Backup verification failed")
+            
+            # Record backup in history
+            backup_record = {
+                "timestamp": datetime.datetime.now().isoformat(),
+                "source": source_path,
+                "backup_path": backup_path,
+                "size": stats["total_size"],
+                "files": stats["files"],
+                "directories": stats["directories"],
+                "errors": stats["errors"],
+                "compressed": self.config["compress"]
+            }
+            self.backup_history.append(backup_record)
+            self.save_history()
+            
+            self.logger.info(f"Backup completed: {stats['files']} files, "
+                           f"{stats['total_size']} bytes, {stats['errors']} errors")
+            
+            # Clean old backups
+            self.cleanup_old_backups()
+            
+            return backup_path
+            
+        except Exception as e:
+            self.logger.error(f"Backup failed: {e}")
+            return None
+    
+    def verify_backup(self, source_path: str, backup_path: str) -> bool:
+        """Verify backup integrity"""
+        self.logger.info("Verifying backup integrity...")
+        
+        if backup_path.endswith('.zip'):
+            try:
+                with zipfile.ZipFile(backup_path, 'r') as zipf:
+                    # Test zip integrity
+                    if zipf.testzip():
+                        self.logger.error("ZIP file is corrupted")
+                        return False
+                    
+                    # Get list of files in zip
+                    zip_files = set(zipf.namelist())
+                    
+                    # Get list of source files
+                    source_files = set()
+                    for root, dirs, files in os.walk(source_path):
+                        for file in files:
+                            filepath = os.path.join(root, file)
+                            if not self.should_exclude(filepath):
+                                relpath = os.path.relpath(filepath, os.path.dirname(source_path))
+                                source_files.add(relpath)
+                    
+                    # Compare
+                    missing = source_files - zip_files
+                    extra = zip_files - source_files
+                    
+                    if missing:
+                        self.logger.warning(f"Missing files in backup: {missing}")
+                        return False
+                    
+                    if extra:
+                        self.logger.warning(f"Extra files in backup: {extra}")
+                    
+                    return True
+                    
+            except Exception as e:
+                self.logger.error(f"Verification failed: {e}")
+                return False
+        else:
+            # Compare directories
+            return self.compare_directories(source_path, backup_path)
+    
+    def compare_directories(self, dir1: str, dir2: str) -> bool:
+        """Compare two directories"""
+        try:
+            # Get file lists
+            files1 = set()
+            for root, dirs, files in os.walk(dir1):
+                for file in files:
+                    if not self.should_exclude(os.path.join(root, file)):
+                        relpath = os.path.relpath(os.path.join(root, file), dir1)
+                        files1.add(relpath)
+            
+            files2 = set()
+            for root, dirs, files in os.walk(dir2):
+                for file in files:
+                    relpath = os.path.relpath(os.path.join(root, file), dir2)
+                    files2.add(relpath)
+            
+            return files1 == files2
+            
+        except Exception as e:
+            self.logger.error(f"Directory comparison failed: {e}")
+            return False
+    
+    def restore_backup(self, backup_path: str, restore_path: str) -> bool:
+        """Restore from a backup"""
+        try:
+            if not os.path.exists(backup_path):
+                raise BackupError(f"Backup does not exist: {backup_path}")
+            
+            self.logger.info(f"Restoring {backup_path} to {restore_path}")
+            
+            # Create restore directory
+            os.makedirs(restore_path, exist_ok=True)
+            
+            if backup_path.endswith('.zip'):
+                with zipfile.ZipFile(backup_path, 'r') as zipf:
+                    zipf.extractall(restore_path)
+            else:
+                # Copy directory contents
+                for item in os.listdir(backup_path):
+                    src = os.path.join(backup_path, item)
+                    dst = os.path.join(restore_path, item)
+                    
+                    if os.path.isdir(src):
+                        shutil.copytree(src, dst, dirs_exist_ok=True)
+                    else:
+                        shutil.copy2(src, dst)
+            
+            self.logger.info("Restore completed successfully")
+            return True
+            
+        except Exception as e:
+            self.logger.error(f"Restore failed: {e}")
+            return False
+    
+    def cleanup_old_backups(self):
+        """Remove old backups exceeding max_backups"""
+        max_backups = self.config["max_backups"]
+        
+        # Group backups by source
+        backups_by_source = {}
+        for record in self.backup_history:
+            source = record["source"]
+            if source not in backups_by_source:
+                backups_by_source[source] = []
+            backups_by_source[source].append(record)
+        
+        # Remove old backups
+        for source, backups in backups_by_source.items():
+            if len(backups) > max_backups:
+                # Sort by timestamp
+                backups.sort(key=lambda x: x["timestamp"])
+                
+                # Remove oldest
+                to_remove = backups[:-max_backups]
+                for record in to_remove:
+                    try:
+                        backup_path = record["backup_path"]
+                        if os.path.exists(backup_path):
+                            if os.path.isdir(backup_path):
+                                shutil.rmtree(backup_path)
+                            else:
+                                os.remove(backup_path)
+                            self.logger.info(f"Removed old backup: {backup_path}")
+                            
+                            # Remove from history
+                            self.backup_history.remove(record)
+                    except Exception as e:
+                        self.logger.error(f"Error removing old backup: {e}")
+        
+        self.save_history()
+    
+    def list_backups(self, source: str = None) -> List[Dict]:
+        """List all backups"""
+        if source:
+            return [b for b in self.backup_history if b["source"] == source]
+        return self.backup_history
+    
+    def backup_report(self) -> str:
+        """Generate backup report"""
+        report = []
+        report.append("="*60)
+        report.append("BACKUP SYSTEM REPORT")
+        report.append("="*60)
+        report.append(f"Generated: {datetime.datetime.now().isoformat()}")
+        report.append("")
+        
+        # Configuration
+        report.append("CONFIGURATION:")
+        report.append(f"  Backup directory: {self.config['backup_dir']}")
+        report.append(f"  Max backups: {self.config['max_backups']}")
+        report.append(f"  Compression: {self.config['compress']}")
+        report.append(f"  Verify after backup: {self.config['verify_after_backup']}")
+        report.append("")
+        
+        # Sources
+        report.append("SOURCES:")
+        for source in self.config["sources"]:
+            if os.path.exists(source):
+                size = sum(os.path.getsize(os.path.join(root, f)) 
+                          for root, dirs, files in os.walk(source) 
+                          for f in files)
+                report.append(f"  ✅ {source} ({self.format_size(size)})")
+            else:
+                report.append(f"  ❌ {source} (NOT FOUND)")
+        report.append("")
+        
+        # Backup history
+        report.append("BACKUP HISTORY:")
+        if self.backup_history:
+            for backup in sorted(self.backup_history, key=lambda x: x["timestamp"], reverse=True)[:10]:
+                report.append(f"  {backup['timestamp']}")
+                report.append(f"    Source: {backup['source']}")
+                report.append(f"    Path: {backup['backup_path']}")
+                report.append(f"    Size: {self.format_size(backup['size'])}")
+                report.append(f"    Files: {backup['files']}")
+                report.append(f"    Errors: {backup['errors']}")
+                report.append("")
+        else:
+            report.append("  No backups yet")
+        
+        # Statistics
+        if self.backup_history:
+            total_backups = len(self.backup_history)
+            total_size = sum(b["size"] for b in self.backup_history)
+            total_files = sum(b["files"] for b in self.backup_history)
+            total_errors = sum(b["errors"] for b in self.backup_history)
+            
+            report.append("STATISTICS:")
+            report.append(f"  Total backups: {total_backups}")
+            report.append(f"  Total data backed up: {self.format_size(total_size)}")
+            report.append(f"  Total files backed up: {total_files}")
+            report.append(f"  Total errors: {total_errors}")
+        
+        report.append("="*60)
+        
+        return "\n".join(report)
+    
+    @staticmethod
+    def format_size(size_bytes: int) -> str:
+        """Format file size in human-readable format"""
+        for unit in ['B', 'KB', 'MB', 'GB']:
+            if size_bytes < 1024:
+                return f"{size_bytes:.1f} {unit}"
+            size_bytes /= 1024
+        return f"{size_bytes:.1f} TB"
+    
+    def interactive_menu(self):
+        """Interactive menu for backup system"""
+        while True:
+            print("\n" + "="*60)
+            print("BACKUP SYSTEM - INTERACTIVE MENU")
+            print("="*60)
+            print("1. 📋 View Configuration")
+            print("2. ➕ Add Backup Source")
+            print("3. ❌ Remove Backup Source")
+            print("4. 💾 Create Backup")
+            print("5. 📂 List Backups")
+            print("6. 🔄 Restore Backup")
+            print("7. 📊 Generate Report")
+            print("8. ⚙️  Edit Configuration")
+            print("9. 🚪 Exit")
+            print("-"*60)
+            
+            choice = input("Select option (1-9): ").strip()
+            
+            if choice == "1":
+                print("\nCURRENT CONFIGURATION:")
+                print(json.dumps(self.config, indent=2))
+            
+            elif choice == "2":
+                source = input("Enter source path to backup: ").strip()
+                try:
+                    self.add_source(source)
+                except BackupError as e:
+                    print(f"Error: {e}")
+            
+            elif choice == "3":
+                print("\nCurrent sources:")
+                for i, src in enumerate(self.config["sources"], 1):
+                    print(f"{i}. {src}")
+                try:
+                    idx = int(input("Enter source number to remove: ")) - 1
+                    if 0 <= idx < len(self.config["sources"]):
+                        self.remove_source(self.config["sources"][idx])
+                except (ValueError, IndexError):
+                    print("Invalid selection")
+            
+            elif choice == "4":
+                if not self.config["sources"]:
+                    print("No sources configured. Add a source first.")
+                else:
+                    print("\nSelect source to backup:")
+                    for i, src in enumerate(self.config["sources"], 1):
+                        print(f"{i}. {src}")
+                    try:
+                        idx = int(input("Enter source number: ")) - 1
+                        if 0 <= idx < len(self.config["sources"]):
+                            name = input("Backup name (optional): ").strip() or None
+                            backup_path = self.create_backup(self.config["sources"][idx], name)
+                            if backup_path:
+                                print(f"✅ Backup created: {backup_path}")
+                    except (ValueError, IndexError):
+                        print("Invalid selection")
+            
+            elif choice == "5":
+                backups = self.list_backups()
+                if backups:
+                    print("\nBACKUP HISTORY:")
+                    for i, backup in enumerate(backups, 1):
+                        print(f"{i}. {backup['timestamp']} - {backup['source']} - {self.format_size(backup['size'])}")
+                else:
+                    print("No backups found")
+            
+            elif choice == "6":
+                backups = self.list_backups()
+                if not backups:
+                    print("No backups available")
+                else:
+                    print("\nSelect backup to restore:")
+                    for i, backup in enumerate(backups, 1):
+                        print(f"{i}. {backup['timestamp']} - {backup['source']}")
+                    
+                    try:
+                        idx = int(input("Enter backup number: ")) - 1
+                        if 0 <= idx < len(backups):
+                            backup = backups[idx]
+                            restore_path = input(f"Enter restore path [default: ./restore]: ").strip() or "./restore"
+                            if self.restore_backup(backup["backup_path"], restore_path):
+                                print(f"✅ Restored to {restore_path}")
+                    except (ValueError, IndexError):
+                        print("Invalid selection")
+            
+            elif choice == "7":
+                report = self.backup_report()
+                print(report)
+                
+                # Save report to file
+                filename = f"backup_report_{datetime.datetime.now().strftime('%Y%m%d')}.txt"
+                with open(filename, 'w') as f:
+                    f.write(report)
+                print(f"\n✅ Report saved to {filename}")
+            
+            elif choice == "8":
+                print("\nEDIT CONFIGURATION (press Enter to keep current value):")
+                
+                backup_dir = input(f"Backup directory [{self.config['backup_dir']}]: ").strip()
+                if backup_dir:
+                    self.config['backup_dir'] = backup_dir
+                
+                max_backups = input(f"Max backups [{self.config['max_backups']}]: ").strip()
+                if max_backups:
+                    self.config['max_backups'] = int(max_backups)
+                
+                compress = input(f"Compress backups? (True/False) [{self.config['compress']}]: ").strip()
+                if compress:
+                    self.config['compress'] = compress.lower() == 'true'
+                
+                verify = input(f"Verify after backup? (True/False) [{self.config['verify_after_backup']}]: ").strip()
+                if verify:
+                    self.config['verify_after_backup'] = verify.lower() == 'true'
+                
+                self.save_config()
+                print("✅ Configuration updated")
+            
+            elif choice == "9":
+                print("Goodbye!")
+                break
+            
+            input("\nPress Enter to continue...")
+
+# Run the backup system
+if __name__ == "__main__":
+    import sys
+    
+    # Create backup system
+    backup_system = BackupSystem()
+    
+    # Command line mode
+    if len(sys.argv) > 1:
+        command = sys.argv[1].lower()
+        
+        if command == "backup":
+            if len(sys.argv) > 2:
+                source = sys.argv[2]
+                name = sys.argv[3] if len(sys.argv) > 3 else None
+                backup_system.create_backup(source, name)
+            else:
+                print("Usage: python backup_system.py backup <source_path> [backup_name]")
+        
+        elif command == "restore":
+            if len(sys.argv) > 3:
+                backup_path = sys.argv[2]
+                restore_path = sys.argv[3]
+                backup_system.restore_backup(backup_path, restore_path)
+            else:
+                print("Usage: python backup_system.py restore <backup_path> <restore_path>")
+        
+        elif command == "list":
+            backups = backup_system.list_backups()
+            for backup in backups:
+                print(f"{backup['timestamp']} - {backup['source']} - {backup['backup_path']}")
+        
+        elif command == "report":
+            print(backup_system.backup_report())
+        
+        elif command == "add":
+            if len(sys.argv) > 2:
+                backup_system.add_source(sys.argv[2])
+            else:
+                print("Usage: python backup_system.py add <source_path>")
+        
+        else:
+            print(f"Unknown command: {command}")
+    
+    else:
+        # Interactive mode
+        try:
+            backup_system.interactive_menu()
+        except KeyboardInterrupt:
+            print("\n\nGoodbye!")
+            sys.exit(0)
+
 
 
 
