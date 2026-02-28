@@ -1,1 +1,19 @@
+Week 5: File Handling and Exception Management
+📋 Learning Objectives
+By the end of this week, you will be able to:
 
+✅ Read from and write to files in various formats
+
+✅ Handle exceptions gracefully to prevent crashes
+
+✅ Work with JSON data for configuration and storage
+
+✅ Process CSV files for data analysis
+
+✅ Use context managers (with statement) for resource management
+
+✅ Create custom exception classes
+
+✅ Implement logging for debugging and monitoring
+
+✅ Work with binary files and different encodings
