@@ -289,3 +289,107 @@ Exercise 1: Basic File Operations
   if os.path.exists("test_dir"):
       shutil.rmtree("test_dir")
       print("Removed test_dir")
+Output:
+
+============================================================
+BASIC FILE OPERATIONS
+============================================================
+
+1. WRITING TO A FILE:
+----------------------------------------
+✅ File 'sample.txt' created and written
+✅ File 'multiple.txt' created with multiple lines
+
+2. READING FROM A FILE:
+----------------------------------------
+Full content:
+Hello, World!
+This is line 2.
+This is line 3.
+
+Reading line by line:
+  Line: Hello, World!
+  Line: This is line 2.
+  Line: This is line 3.
+
+Lines as list: ['First line\n', 'Second line\n', 'Third line\n', 'Fourth line\n']
+Number of lines: 4
+
+3. APPENDING TO A FILE:
+----------------------------------------
+✅ Content appended to 'sample.txt'
+Updated content:
+Hello, World!
+This is line 2.
+This is line 3.
+This line is appended.
+Another appended line.
+
+4. FILE MODES:
+----------------------------------------
+'r' mode: File not found error - [Errno 2] No such file or directory: 'nonexistent.txt'
+'w' mode: Created new_file.txt
+'x' mode: File exists error - [Errno 17] File exists: 'new_file.txt'
+'a' mode: Appended to new_file.txt
+'r+' mode: Read and modified file
+
+5. FILE POSITIONING (seek/tell):
+----------------------------------------
+Initial position: 0
+Read 10 chars: 'Hello, Wor'
+Position after read: 10
+After seek(0): 0
+After seek(5): 5
+Read from position 5: ', Wor'
+
+6. FILE PATHS:
+----------------------------------------
+Current directory: /home/user/ros2_ws
+Full path: /home/user/ros2_ws/sample.txt
+File exists: True
+Is file: True
+Is directory: False
+File size: 98 bytes
+Last modified: 1705412345.6789
+
+7. DIRECTORY OPERATIONS:
+----------------------------------------
+✅ Created test_dir/sub_dir
+
+Files in current directory:
+  📄 file_basics.py
+  📄 sample.txt
+  📄 multiple.txt
+  📄 new_file.txt
+  📁 test_dir/
+
+Directory tree:
+📁 test_dir/
+  📁 sub_dir/
+
+8. TEMPORARY FILES:
+----------------------------------------
+Created temp file: /tmp/tmpabcdefg
+Temp file content: Temporary data
+Temp file deleted
+
+9. FILE ENCODING:
+----------------------------------------
+✅ Written with UTF-8 encoding
+✅ Written with UTF-16 encoding
+UTF-8 read: Café Müller 北京 東京
+
+10. CUSTOM CONTEXT MANAGER:
+----------------------------------------
+Opening test_custom.txt in w mode
+File written
+Closing test_custom.txt
+
+Cleaning up test files...
+Removed sample.txt
+Removed multiple.txt
+Removed new_file.txt
+Removed utf8.txt
+Removed utf16.txt
+Removed test_custom.txt
+Removed test_dir
