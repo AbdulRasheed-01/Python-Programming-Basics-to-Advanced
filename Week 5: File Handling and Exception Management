@@ -2060,5 +2060,447 @@ Removed special.csv
 Removed piped_data.csv
 Removed employees.json
 
+Exercise 5: Logging System
+
+# logging_system.py
+"""
+Comprehensive logging system in Python
+"""
+
+print("="*60)
+print("LOGGING SYSTEM")
+print("="*60)
+
+import logging
+import logging.handlers
+import datetime
+import time
+import os
+
+# 1. Basic logging
+print("\n1. BASIC LOGGING:")
+print("-"*40)
+
+# Configure basic logging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+# Log messages at different levels
+logging.debug("This is a DEBUG message (detailed information)")
+logging.info("This is an INFO message (general information)")
+logging.warning("This is a WARNING message (potential issue)")
+logging.error("This is an ERROR message (problem occurred)")
+logging.critical("This is a CRITICAL message (serious problem)")
+
+# 2. Logging to file
+print("\n2. LOGGING TO FILE:")
+print("-"*40)
+
+# Create file handler
+file_handler = logging.FileHandler('app.log')
+file_handler.setLevel(logging.DEBUG)
+
+# Create formatter
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+file_handler.setFormatter(formatter)
+
+# Add handler to logger
+logger = logging.getLogger('my_app')
+logger.addHandler(file_handler)
+logger.setLevel(logging.DEBUG)
+
+# Test logging
+logger.info("Application started")
+logger.debug("Loading configuration...")
+logger.warning("Configuration file not found, using defaults")
+logger.error("Failed to connect to database")
+logger.info("Application shutting down")
+
+print("✅ Logs written to app.log")
+
+# 3. Multiple handlers
+print("\n3. MULTIPLE HANDLERS:")
+print("-"*40)
+
+# Create different handlers
+console_handler = logging.StreamHandler()
+console_handler.setLevel(logging.INFO)
+
+error_handler = logging.FileHandler('errors.log')
+error_handler.setLevel(logging.ERROR)
+
+debug_handler = logging.FileHandler('debug.log')
+debug_handler.setLevel(logging.DEBUG)
+
+# Create formatters
+console_format = logging.Formatter('%(levelname)s: %(message)s')
+file_format = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+
+console_handler.setFormatter(console_format)
+error_handler.setFormatter(file_format)
+debug_handler.setFormatter(file_format)
+
+# Create logger and add handlers
+multi_logger = logging.getLogger('multi')
+multi_logger.setLevel(logging.DEBUG)
+multi_logger.addHandler(console_handler)
+multi_logger.addHandler(error_handler)
+multi_logger.addHandler(debug_handler)
+
+# Test multiple handlers
+multi_logger.debug("Debug message (goes to debug.log only)")
+multi_logger.info("Info message (goes to console and debug.log)")
+multi_logger.error("Error message (goes to all handlers)")
+
+# 4. Rotating file handler
+print("\n4. ROTATING FILE HANDLER:")
+print("-"*40)
+
+# Create rotating file handler (1KB max, keep 3 backups)
+rotating_handler = logging.handlers.RotatingFileHandler(
+    'rotating.log',
+    maxBytes=1024,  # 1KB
+    backupCount=3
+)
+rotating_handler.setLevel(logging.DEBUG)
+rotating_handler.setFormatter(file_format)
+
+rotating_logger = logging.getLogger('rotating')
+rotating_logger.addHandler(rotating_handler)
+
+# Write enough to trigger rotation
+for i in range(100):
+    rotating_logger.info(f"This is log message number {i}")
+print("✅ Rotating log files created (check rotating.log, rotating.log.1, etc.)")
+
+# 5. Timed rotating handler
+print("\n5. TIMED ROTATING HANDLER:")
+print("-"*40)
+
+# Rotate every minute (for demo)
+timed_handler = logging.handlers.TimedRotatingFileHandler(
+    'timed.log',
+    when='M',  # Minutes
+    interval=1,
+    backupCount=3
+)
+timed_handler.setLevel(logging.DEBUG)
+timed_handler.setFormatter(file_format)
+
+timed_logger = logging.getLogger('timed')
+timed_logger.addHandler(timed_handler)
+
+# Write logs over time
+for i in range(5):
+    timed_logger.info(f"Log at {datetime.datetime.now()}")
+    time.sleep(10)  # Sleep 10 seconds between logs
+print("✅ Timed rotating logs created")
+
+# 6. Custom logger class
+print("\n6. CUSTOM LOGGER CLASS:")
+print("-"*40)
+
+class CustomLogger:
+    """Custom logger with additional features"""
+    
+    def __init__(self, name, log_file=None):
+        self.logger = logging.getLogger(name)
+        self.logger.setLevel(logging.DEBUG)
+        
+        # Create formatter
+        self.formatter = logging.Formatter(
+            '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        )
+        
+        # Console handler
+        console = logging.StreamHandler()
+        console.setLevel(logging.INFO)
+        console.setFormatter(self.formatter)
+        self.logger.addHandler(console)
+        
+        # File handler (if specified)
+        if log_file:
+            file_handler = logging.FileHandler(log_file)
+            file_handler.setLevel(logging.DEBUG)
+            file_handler.setFormatter(self.formatter)
+            self.logger.addHandler(file_handler)
+    
+    def debug(self, msg):
+        self.logger.debug(msg)
+    
+    def info(self, msg):
+        self.logger.info(msg)
+    
+    def warning(self, msg):
+        self.logger.warning(msg)
+    
+    def error(self, msg):
+        self.logger.error(msg)
+    
+    def critical(self, msg):
+        self.logger.critical(msg)
+    
+    def log_function_call(self, func):
+        """Decorator to log function calls"""
+        def wrapper(*args, **kwargs):
+            self.logger.debug(f"Calling {func.__name__} with args={args}, kwargs={kwargs}")
+            result = func(*args, **kwargs)
+            self.logger.debug(f"{func.__name__} returned {result}")
+            return result
+        return wrapper
+
+# Use custom logger
+custom_logger = CustomLogger("custom_app", "custom.log")
+
+@custom_logger.log_function_call
+def add(a, b):
+    return a + b
+
+@custom_logger.log_function_call
+def divide(a, b):
+    if b == 0:
+        custom_logger.error("Division by zero attempted")
+        return None
+    return a / b
+
+# Test custom logger
+custom_logger.info("Starting application")
+result = add(5, 3)
+custom_logger.info(f"Add result: {result}")
+result = divide(10, 2)
+result = divide(10, 0)
+custom_logger.warning("This is a warning")
+custom_logger.error("This is an error")
+
+# 7. Logging exceptions
+print("\n7. LOGGING EXCEPTIONS:")
+print("-"*40)
+
+exception_logger = logging.getLogger('exceptions')
+exception_logger.setLevel(logging.DEBUG)
+
+# Add file handler
+fh = logging.FileHandler('exceptions.log')
+fh.setFormatter(file_format)
+exception_logger.addHandler(fh)
+
+try:
+    x = 1 / 0
+except Exception as e:
+    exception_logger.exception("An error occurred: %s", e)
+    print("✅ Exception logged to exceptions.log")
+
+# 8. Logging configuration from dictionary
+print("\n8. LOGGING CONFIGURATION DICTIONARY:")
+print("-"*40)
+
+import logging.config
+
+LOGGING_CONFIG = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'simple': {
+            'format': '%(levelname)s - %(message)s'
+        },
+        'detailed': {
+            'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'level': 'INFO',
+            'formatter': 'simple',
+            'stream': 'ext://sys.stdout'
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'level': 'DEBUG',
+            'formatter': 'detailed',
+            'filename': 'configured.log'
+        },
+    },
+    'loggers': {
+        'my_app': {
+            'level': 'DEBUG',
+            'handlers': ['console', 'file'],
+            'propagate': False
+        },
+    },
+    'root': {
+        'level': 'WARNING',
+        'handlers': ['console']
+    }
+}
+
+logging.config.dictConfig(LOGGING_CONFIG)
+
+app_logger = logging.getLogger('my_app')
+app_logger.debug("This debug message goes to file only")
+app_logger.info("This info message goes to both console and file")
+app_logger.warning("This warning goes to both")
+
+# 9. JSON logging
+print("\n9. JSON LOGGING:")
+print("-"*40)
+
+import json
+
+class JsonFormatter(logging.Formatter):
+    """Custom formatter for JSON logs"""
+    
+    def format(self, record):
+        log_record = {
+            'timestamp': datetime.datetime.fromtimestamp(record.created).isoformat(),
+            'name': record.name,
+            'level': record.levelname,
+            'message': record.getMessage(),
+            'module': record.module,
+            'function': record.funcName,
+            'line': record.lineno
+        }
+        
+        if hasattr(record, 'extra_data'):
+            log_record['extra'] = record.extra_data
+        
+        if record.exc_info:
+            log_record['exception'] = self.formatException(record.exc_info)
+        
+        return json.dumps(log_record)
+
+# Create JSON logger
+json_handler = logging.FileHandler('app.json')
+json_handler.setFormatter(JsonFormatter())
+
+json_logger = logging.getLogger('json_logger')
+json_logger.addHandler(json_handler)
+json_logger.setLevel(logging.DEBUG)
+
+# Add extra data
+extra = {'user': 'alice', 'session_id': '12345'}
+json_logger.info("User logged in", extra={'extra_data': extra})
+json_logger.error("Database connection failed", extra={'extra_data': {'db': 'main'}})
+
+print("✅ JSON logs written to app.json")
+
+# 10. Logging best practices
+print("\n10. LOGGING BEST PRACTICES:")
+print("-"*40)
+
+print("""
+DO:
+✅ Use appropriate log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+✅ Include context in log messages
+✅ Use structured logging for machine parsing
+✅ Rotate logs to manage disk space
+✅ Log exceptions with traceback
+
+DON'T:
+❌ Log sensitive information (passwords, tokens)
+❌ Log too much in production (use appropriate level)
+❌ Ignore log files (monitor them!)
+❌ Use print() for production logging
+❌ Let logs grow indefinitely
+""")
+
+# Clean up
+print("\nCleaning up log files...")
+for f in ['app.log', 'errors.log', 'debug.log', 'rotating.log', 
+          'rotating.log.1', 'rotating.log.2', 'rotating.log.3',
+          'timed.log', 'timed.log.1', 'timed.log.2', 'timed.log.3',
+          'custom.log', 'exceptions.log', 'configured.log', 'app.json']:
+    if os.path.exists(f):
+        os.remove(f)
+        print(f"Removed {f}")
+
+Output:
+
+============================================================
+LOGGING SYSTEM
+============================================================
+
+1. BASIC LOGGING:
+----------------------------------------
+2024-01-16 15:30:45 - DEBUG - This is a DEBUG message (detailed information)
+2024-01-16 15:30:45 - INFO - This is an INFO message (general information)
+2024-01-16 15:30:45 - WARNING - This is a WARNING message (potential issue)
+2024-01-16 15:30:45 - ERROR - This is an ERROR message (problem occurred)
+2024-01-16 15:30:45 - CRITICAL - This is a CRITICAL message (serious problem)
+
+2. LOGGING TO FILE:
+----------------------------------------
+✅ Logs written to app.log
+
+3. MULTIPLE HANDLERS:
+----------------------------------------
+INFO: Info message (goes to console and debug.log)
+ERROR: Error message (goes to all handlers)
+
+4. ROTATING FILE HANDLER:
+----------------------------------------
+✅ Rotating log files created (check rotating.log, rotating.log.1, etc.)
+
+5. TIMED ROTATING HANDLER:
+----------------------------------------
+✅ Timed rotating logs created
+
+6. CUSTOM LOGGER CLASS:
+----------------------------------------
+INFO: Starting application
+INFO: Add result: 8
+WARNING: This is a warning
+ERROR: This is an error
+
+7. LOGGING EXCEPTIONS:
+----------------------------------------
+✅ Exception logged to exceptions.log
+
+8. LOGGING CONFIGURATION DICTIONARY:
+----------------------------------------
+INFO - This info message goes to both console and file
+WARNING - This warning goes to both
+
+9. JSON LOGGING:
+----------------------------------------
+✅ JSON logs written to app.json
+
+10. LOGGING BEST PRACTICES:
+----------------------------------------
+DO:
+✅ Use appropriate log levels (DEBUG, INFO, WARNING, ERROR, CRITICAL)
+✅ Include context in log messages
+✅ Use structured logging for machine parsing
+✅ Rotate logs to manage disk space
+✅ Log exceptions with traceback
+
+DON'T:
+❌ Log sensitive information (passwords, tokens)
+❌ Log too much in production (use appropriate level)
+❌ Ignore log files (monitor them!)
+❌ Use print() for production logging
+❌ Let logs grow indefinitely
+
+Cleaning up log files...
+Removed app.log
+Removed errors.log
+Removed debug.log
+Removed rotating.log
+Removed rotating.log.1
+Removed rotating.log.2
+Removed rotating.log.3
+Removed timed.log
+Removed timed.log.1
+Removed timed.log.2
+Removed timed.log.3
+Removed custom.log
+Removed exceptions.log
+Removed configured.log
+Removed app.json
+
+
 
 
