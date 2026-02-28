@@ -22,10 +22,16 @@ By the end of this week, you will be able to:
 
 5.1 File Formats Comparison
 
-Format	          Use Case	                    Pros	              Cons
-TXT	Simple text	Universal, simple	No structure
-CSV	Tabular data	Excel compatible, small	Limited data types
-JSON	Configuration, APIs	Human-readable, nested	Verbose
-XML	Legacy systems	Schema validation	Verbose, complex
-YAML	Configuration	Very readable	Whitespace sensitive
-Binary	Performance	Compact, fast	Not human-readable
+Format	   |       Use Case	              |      Pros	                   |   Cons
+
+TXT	       |       Simple text	          |      Universal,            |       simple	No structure
+
+CSV	       |       Tabular data	          |      Excel compatible,small	 |     Limited data types
+
+JSON	     |       Configuration, APIs	  |      Human-readable, nested	|      Verbose
+
+XML	       |       Legacy systems	        |      Schema validation	       |   Verbose, complex
+
+YAML	     |       Configuration	        |      Very readable	         |     Whitespace sensitive
+
+Binary	   |       Performance	          |      Compact, fast	         |     Not human-readable
