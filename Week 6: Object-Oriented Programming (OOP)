@@ -1252,3 +1252,351 @@ Car is subclass of Vehicle: True
 Bicycle is subclass of Vehicle: True
 Car is subclass of Bicycle: False
 
+Exercise 4: Encapsulation and Property Decorators
+# encapsulation.py
+"""
+Encapsulation and Property Decorators in Python
+"""
+
+print("="*60)
+print("ENCAPSULATION AND PROPERTIES")
+print("="*60)
+
+# 1. Private attributes (by convention)
+print("\n1. PRIVATE ATTRIBUTES (BY CONVENTION):")
+print("-"*40)
+
+class BankAccount:
+    def __init__(self, owner, balance):
+        self.owner = owner          # Public
+        self._balance = balance      # "Protected" (convention)
+        self.__pin = "1234"          # "Private" (name mangling)
+    
+    def get_balance(self):
+        """Getter method"""
+        return self._balance
+    
+    def deposit(self, amount):
+        if amount > 0:
+            self._balance += amount
+    
+    def __str__(self):
+        return f"Account of {self.owner}: ${self._balance}"
+
+account = BankAccount("Alice", 1000)
+print(f"Public attribute: {account.owner}")
+print(f"Protected attribute (accessible but convention says don't): {account._balance}")
+
+# Name mangling - private attributes are renamed
+print(f"Private attribute name mangling: {account._BankAccount__pin}")
+
+try:
+    print(account.__pin)  # This will fail
+except AttributeError as e:
+    print(f"❌ Cannot access __pin directly: {e}")
+
+# 2. Properties with getters/setters
+print("\n2. PROPERTIES WITH GETTERS/SETTERS:")
+print("-"*40)
+
+class Temperature:
+    def __init__(self, celsius=0):
+        self._celsius = celsius
+    
+    @property
+    def celsius(self):
+        """Getter for celsius"""
+        print("  Getting celsius value")
+        return self._celsius
+    
+    @celsius.setter
+    def celsius(self, value):
+        """Setter for celsius with validation"""
+        print(f"  Setting celsius to {value}")
+        if value < -273.15:
+            raise ValueError("Temperature below absolute zero!")
+        self._celsius = value
+    
+    @property
+    def fahrenheit(self):
+        """Computed property (read-only)"""
+        return (self._celsius * 9/5) + 32
+    
+    @fahrenheit.setter
+    def fahrenheit(self, value):
+        """Setter for fahrenheit (converts to celsius)"""
+        self.celsius = (value - 32) * 5/9
+    
+    @property
+    def kelvin(self):
+        """Computed property"""
+        return self._celsius + 273.15
+
+# Use properties
+temp = Temperature(25)
+print(f"Initial celsius: {temp.celsius}")
+print(f"In fahrenheit: {temp.fahrenheit}")
+print(f"In kelvin: {temp.kelvin}")
+
+# Set using property setter
+temp.celsius = 30
+print(f"New celsius: {temp.celsius}")
+print(f"New fahrenheit: {temp.fahrenheit}")
+
+# Set fahrenheit (converts to celsius)
+temp.fahrenheit = 100
+print(f"After setting fahrenheit to 100:")
+print(f"  Celsius: {temp.celsius}")
+print(f"  Fahrenheit: {temp.fahrenheit}")
+
+try:
+    temp.celsius = -300  # This should fail
+except ValueError as e:
+    print(f"\n❌ Error: {e}")
+
+# 3. Computed properties with caching
+print("\n3. COMPUTED PROPERTIES WITH CACHING:")
+print("-"*40)
+
+import time
+
+class DataProcessor:
+    def __init__(self, data):
+        self.data = data
+        self._cached_result = None
+        self._cache_time = None
+    
+    @property
+    def processed_data(self):
+        """Expensive computation with caching"""
+        if self._cached_result is None or time.time() - self._cache_time > 5:
+            print("  Computing processed data (expensive operation)...")
+            time.sleep(1)  # Simulate expensive computation
+            self._cached_result = [x * 2 for x in self.data]
+            self._cache_time = time.time()
+        else:
+            print("  Returning cached result")
+        return self._cached_result
+
+processor = DataProcessor([1, 2, 3, 4, 5])
+print(f"First access: {processor.processed_data}")
+print(f"Second access (cached): {processor.processed_data}")
+
+# 4. Read-only properties
+print("\n4. READ-ONLY PROPERTIES:")
+print("-"*40)
+
+class Person:
+    def __init__(self, name, birth_year):
+        self.name = name
+        self._birth_year = birth_year
+    
+    @property
+    def age(self):
+        """Read-only computed property"""
+        import datetime
+        current_year = datetime.datetime.now().year
+        return current_year - self._birth_year
+    
+    @property
+    def birth_year(self):
+        """Read-only property"""
+        return self._birth_year
+    
+    @property
+    def info(self):
+        """Read-only property returning formatted string"""
+        return f"{self.name} ({self.age} years old)"
+
+person = Person("Alice", 1990)
+print(f"Name: {person.name}")
+print(f"Birth year: {person.birth_year}")
+print(f"Age: {person.age}")
+print(f"Info: {person.info}")
+
+# Try to modify read-only property (will fail)
+try:
+    person.birth_year = 1995
+except AttributeError as e:
+    print(f"❌ Cannot modify read-only property: {e}")
+
+# 5. Property with validation
+print("\n5. PROPERTY WITH VALIDATION:")
+print("-"*40)
+
+class Product:
+    def __init__(self, name, price, quantity):
+        self.name = name
+        self._price = price
+        self._quantity = quantity
+    
+    @property
+    def price(self):
+        return self._price
+    
+    @price.setter
+    def price(self, value):
+        if value <= 0:
+            raise ValueError("Price must be positive")
+        if value > 10000:
+            raise ValueError("Price too high")
+        self._price = value
+    
+    @property
+    def quantity(self):
+        return self._quantity
+    
+    @quantity.setter
+    def quantity(self, value):
+        if value < 0:
+            raise ValueError("Quantity cannot be negative")
+        self._quantity = value
+    
+    @property
+    def total_value(self):
+        """Computed property"""
+        return self._price * self._quantity
+
+product = Product("Laptop", 1000, 5)
+print(f"Product: {product.name}")
+print(f"Price: ${product.price}")
+print(f"Quantity: {product.quantity}")
+print(f"Total value: ${product.total_value}")
+
+# Update with validation
+product.price = 1200
+product.quantity = 10
+print(f"\nAfter update:")
+print(f"Total value: ${product.total_value}")
+
+try:
+    product.price = -500  # This should fail
+except ValueError as e:
+    print(f"\n❌ Error: {e}")
+
+# 6. Property with deletion
+print("\n6. PROPERTY WITH DELETION:")
+print("-"*40)
+
+class SecretVault:
+    def __init__(self):
+        self._secrets = []
+    
+    @property
+    def secrets(self):
+        """Getter for secrets"""
+        return self._secrets.copy()  # Return a copy to prevent modification
+    
+    @secrets.setter
+    def secrets(self, value):
+        """Setter - not allowed"""
+        raise AttributeError("Cannot set secrets directly. Use add_secret()")
+    
+    @secrets.deleter
+    def secrets(self):
+        """Delete all secrets"""
+        print("  Deleting all secrets!")
+        self._secrets.clear()
+    
+    def add_secret(self, secret):
+        """Add a secret"""
+        self._secrets.append(secret)
+        print(f"  Secret added: {secret}")
+
+vault = SecretVault()
+vault.add_secret("password123")
+vault.add_secret("pin: 1234")
+
+print(f"Secrets: {vault.secrets}")
+
+try:
+    vault.secrets = ["new secret"]  # This will fail
+except AttributeError as e:
+    print(f"❌ {e}")
+
+# Delete secrets
+del vault.secrets
+print(f"After deletion: {vault.secrets}")
+
+# 7. Class properties
+print("\n7. CLASS PROPERTIES:")
+print("-"*40)
+
+class Configuration:
+    _instance = None
+    _settings = {}
+    
+    @classmethod
+    @property
+    def instance(cls):
+        """Singleton pattern with property"""
+        if cls._instance is None:
+            cls._instance = cls()
+        return cls._instance
+    
+    @classmethod
+    def get_setting(cls, key, default=None):
+        return cls._settings.get(key, default)
+    
+    @classmethod
+    def set_setting(cls, key, value):
+        cls._settings[key] = value
+
+# Use class property
+config1 = Configuration.instance
+config2 = Configuration.instance
+print(f"config1 is config2: {config1 is config2}")
+
+Configuration.set_setting("debug", True)
+print(f"Debug mode: {Configuration.get_setting('debug')}")
+
+# 8. Property decorator chain
+print("\n8. PROPERTY DECORATOR CHAIN:")
+print("-"*40)
+
+class User:
+    def __init__(self, first_name, last_name):
+        self._first_name = first_name
+        self._last_name = last_name
+    
+    @property
+    def first_name(self):
+        return self._first_name
+    
+    @first_name.setter
+    def first_name(self, value):
+        if not value:
+            raise ValueError("First name cannot be empty")
+        self._first_name = value
+        # Invalidate cached full name
+        if hasattr(self, '_full_name'):
+            del self._full_name
+    
+    @property
+    def last_name(self):
+        return self._last_name
+    
+    @last_name.setter
+    def last_name(self, value):
+        if not value:
+            raise ValueError("Last name cannot be empty")
+        self._last_name = value
+        # Invalidate cached full name
+        if hasattr(self, '_full_name'):
+            del self._full_name
+    
+    @property
+    def full_name(self):
+        """Cached computed property"""
+        if not hasattr(self, '_full_name'):
+            print("  Computing full name...")
+            self._full_name = f"{self._first_name} {self._last_name}"
+        return self._full_name
+
+user = User("John", "Doe")
+print(f"First access: {user.full_name}")
+print(f"Second access (cached): {user.full_name}")
+
+# Change name - cache is invalidated
+user.first_name = "Jane"
+print(f"After name change: {user.full_name}")
