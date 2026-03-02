@@ -1680,4 +1680,370 @@ First access: John Doe
 Second access (cached): John Doe
   Computing full name...
 After name change: Jane Doe
+Exercise 5: Special Methods (Magic Methods)
+# special_methods.py
+"""
+Special/Magic Methods in Python
+"""
+
+print("="*60)
+print("SPECIAL METHODS (MAGIC METHODS)")
+print("="*60)
+
+# 1. Basic special methods
+print("\n1. BASIC SPECIAL METHODS:")
+print("-"*40)
+
+class Book:
+    def __init__(self, title, author, pages, price):
+        self.title = title
+        self.author = author
+        self.pages = pages
+        self.price = price
+    
+    def __str__(self):
+        """String representation for users"""
+        return f"'{self.title}' by {self.author}"
+    
+    def __repr__(self):
+        """String representation for developers"""
+        return f"Book('{self.title}', '{self.author}', {self.pages}, {self.price})"
+    
+    def __len__(self):
+        """Return length (number of pages)"""
+        return self.pages
+    
+    def __abs__(self):
+        """Absolute value (doesn't make sense for books, but for demo)"""
+        return abs(self.price)
+    
+    def __bool__(self):
+        """Boolean value - book is True if it has pages"""
+        return self.pages > 0
+
+book = Book("Python Programming", "John Doe", 500, 39.99)
+print(f"__str__: {book}")
+print(f"__repr__: {repr(book)}")
+print(f"__len__: {len(book)} pages")
+print(f"__abs__: ${abs(book)}")
+print(f"__bool__: {bool(book)}")
+
+# 2. Comparison methods
+print("\n2. COMPARISON METHODS:")
+print("-"*40)
+
+class Rectangle:
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+    
+    def area(self):
+        return self.width * self.height
+    
+    def __eq__(self, other):
+        """Equality: == """
+        if not isinstance(other, Rectangle):
+            return False
+        return self.area() == other.area()
+    
+    def __ne__(self, other):
+        """Inequality: != """
+        return not self.__eq__(other)
+    
+    def __lt__(self, other):
+        """Less than: < """
+        return self.area() < other.area()
+    
+    def __le__(self, other):
+        """Less than or equal: <= """
+        return self.area() <= other.area()
+    
+    def __gt__(self, other):
+        """Greater than: > """
+        return self.area() > other.area()
+    
+    def __ge__(self, other):
+        """Greater than or equal: >= """
+        return self.area() >= other.area()
+    
+    def __str__(self):
+        return f"Rectangle({self.width}×{self.height}, area={self.area()})"
+
+r1 = Rectangle(4, 5)
+r2 = Rectangle(5, 4)
+r3 = Rectangle(3, 6)
+r4 = Rectangle(2, 8)
+
+print(f"r1: {r1}")
+print(f"r2: {r2}")
+print(f"r3: {r3}")
+print(f"r4: {r4}")
+
+print(f"\nr1 == r2: {r1 == r2}")  # Same area
+print(f"r1 == r3: {r1 == r3}")
+print(f"r1 != r2: {r1 != r2}")
+print(f"r1 < r3: {r1 < r3}")
+print(f"r1 > r3: {r1 > r3}")
+print(f"r1 <= r2: {r1 <= r2}")
+print(f"r1 >= r3: {r1 >= r3}")
+
+# 3. Container methods
+print("\n3. CONTAINER METHODS:")
+print("-"*40)
+
+class Playlist:
+    def __init__(self, name):
+        self.name = name
+        self.songs = []
+    
+    def __getitem__(self, index):
+        """Get song by index: playlist[i]"""
+        return self.songs[index]
+    
+    def __setitem__(self, index, song):
+        """Set song at index: playlist[i] = song"""
+        self.songs[index] = song
+    
+    def __delitem__(self, index):
+        """Delete song at index: del playlist[i]"""
+        del self.songs[index]
+    
+    def __len__(self):
+        """Number of songs: len(playlist)"""
+        return len(self.songs)
+    
+    def __contains__(self, song):
+        """Check if song is in playlist: song in playlist"""
+        return song in self.songs
+    
+    def __iter__(self):
+        """Iterator: for song in playlist"""
+        return iter(self.songs)
+    
+    def __reversed__(self):
+        """Reverse iterator: reversed(playlist)"""
+        return reversed(self.songs)
+    
+    def add_song(self, song):
+        self.songs.append(song)
+
+# Create playlist
+playlist = Playlist("My Favorites")
+playlist.add_song("Bohemian Rhapsody")
+playlist.add_song("Stairway to Heaven")
+playlist.add_song("Hotel California")
+playlist.add_song("Imagine")
+
+print(f"Playlist: {playlist.name}")
+print(f"First song: {playlist[0]}")
+print(f"Last song: {playlist[-1]}")
+
+playlist[1] = "Hey Jude"
+print(f"After change: {playlist[1]}")
+
+print(f"\nNumber of songs: {len(playlist)}")
+print(f"'Imagine' in playlist: {'Imagine' in playlist}")
+print(f"'Yesterday' in playlist: {'Yesterday' in playlist}")
+
+print("\nAll songs:")
+for song in playlist:
+    print(f"  ♪ {song}")
+
+print("\nReversed:")
+for song in reversed(playlist):
+    print(f"  ♪ {song}")
+
+del playlist[0]
+print(f"\nAfter deletion: {len(playlist)} songs")
+
+# 4. Numeric methods
+print("\n4. NUMERIC METHODS:")
+print("-"*40)
+
+class Money:
+    def __init__(self, amount):
+        self.amount = amount
+    
+    def __add__(self, other):
+        """Addition: m1 + m2"""
+        if isinstance(other, Money):
+            return Money(self.amount + other.amount)
+        return Money(self.amount + other)
+    
+    def __sub__(self, other):
+        """Subtraction: m1 - m2"""
+        if isinstance(other, Money):
+            return Money(self.amount - other.amount)
+        return Money(self.amount - other)
+    
+    def __mul__(self, other):
+        """Multiplication: m1 * m2"""
+        if isinstance(other, Money):
+            return Money(self.amount * other.amount)
+        return Money(self.amount * other)
+    
+    def __truediv__(self, other):
+        """Division: m1 / m2"""
+        if isinstance(other, Money):
+            return Money(self.amount / other.amount)
+        return Money(self.amount / other)
+    
+    def __floordiv__(self, other):
+        """Floor division: m1 // m2"""
+        if isinstance(other, Money):
+            return Money(self.amount // other.amount)
+        return Money(self.amount // other)
+    
+    def __mod__(self, other):
+        """Modulo: m1 % m2"""
+        if isinstance(other, Money):
+            return Money(self.amount % other.amount)
+        return Money(self.amount % other)
+    
+    def __pow__(self, other):
+        """Power: m1 ** m2"""
+        if isinstance(other, Money):
+            return Money(self.amount ** other.amount)
+        return Money(self.amount ** other)
+    
+    def __neg__(self):
+        """Unary negative: -m"""
+        return Money(-self.amount)
+    
+    def __pos__(self):
+        """Unary positive: +m"""
+        return Money(+self.amount)
+    
+    def __abs__(self):
+        """Absolute value: abs(m)"""
+        return Money(abs(self.amount))
+    
+    def __str__(self):
+        return f"${self.amount:.2f}"
+
+m1 = Money(100)
+m2 = Money(50)
+
+print(f"m1 = {m1}")
+print(f"m2 = {m2}")
+print(f"m1 + m2 = {m1 + m2}")
+print(f"m1 - m2 = {m1 - m2}")
+print(f"m1 * m2 = {m1 * m2}")
+print(f"m1 / m2 = {m1 / m2}")
+print(f"m1 // 3 = {m1 // 3}")
+print(f"m1 % 30 = {m1 % 30}")
+print(f"m2 ** 2 = {m2 ** 2}")
+print(f"-m1 = {-m1}")
+print(f"abs(-m1) = {abs(-m1)}")
+
+# 5. Callable objects
+print("\n5. CALLABLE OBJECTS:")
+print("-"*40)
+
+class Multiplier:
+    def __init__(self, factor):
+        self.factor = factor
+    
+    def __call__(self, x):
+        """Make object callable: obj(x)"""
+        return x * self.factor
+
+double = Multiplier(2)
+triple = Multiplier(3)
+
+print(f"double(5): {double(5)}")
+print(f"triple(5): {triple(5)}")
+print(f"double(10): {double(10)}")
+
+# 6. Context manager methods
+print("\n6. CONTEXT MANAGER METHODS:")
+print("-"*40)
+
+class ManagedFile:
+    def __init__(self, filename, mode='r'):
+        self.filename = filename
+        self.mode = mode
+        self.file = None
+    
+    def __enter__(self):
+        """Enter the context"""
+        print(f"  Opening {self.filename}")
+        self.file = open(self.filename, self.mode)
+        return self.file
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """Exit the context"""
+        print(f"  Closing {self.filename}")
+        if self.file:
+            self.file.close()
+        if exc_type:
+            print(f"  Exception occurred: {exc_val}")
+        return True  # Suppress exceptions
+
+# Use custom context manager
+with ManagedFile("test.txt", "w") as f:
+    f.write("Hello, World!")
+    print("  File written")
+
+print("\nReading file:")
+with ManagedFile("test.txt", "r") as f:
+    content = f.read()
+    print(f"  Content: {content}")
+
+# 7. Attribute access methods
+print("\n7. ATTRIBUTE ACCESS METHODS:")
+print("-"*40)
+
+class DynamicAttributes:
+    def __init__(self):
+        self._data = {}
+    
+    def __getattr__(self, name):
+        """Called when attribute doesn't exist"""
+        print(f"  __getattr__ called for '{name}'")
+        if name in self._data:
+            return self._data[name]
+        raise AttributeError(f"'{self.__class__.__name__}' has no attribute '{name}'")
+    
+    def __setattr__(self, name, value):
+        """Called when setting any attribute"""
+        if name == '_data':
+            # Allow setting _data normally
+            super().__setattr__(name, value)
+        else:
+            print(f"  __setattr__ called: {name} = {value}")
+            self._data[name] = value
+    
+    def __delattr__(self, name):
+        """Called when deleting attribute"""
+        print(f"  __delattr__ called for '{name}'")
+        if name in self._data:
+            del self._data[name]
+        else:
+            super().__delattr__(name)
+    
+    def __dir__(self):
+        """Custom dir() output"""
+        return list(self._data.keys()) + super().__dir__()
+
+obj = DynamicAttributes()
+obj.name = "Alice"
+obj.age = 30
+
+print(f"obj.name: {obj.name}")
+print(f"obj.age: {obj.age}")
+
+try:
+    print(obj.city)
+except AttributeError as e:
+    print(f"  Error: {e}")
+
+del obj.age
+print(f"After deletion, 'age' in obj: {'age' in dir(obj)}")
+print(f"dir(obj): {dir(obj)}")
+
+# Clean up
+import os
+if os.path.exists("test.txt"):
+    os.remove("test.txt")
 
