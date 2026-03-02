@@ -37,6 +37,337 @@ Static Method	       |     @staticmethod   |     	 None	               |       E
 Property	           |     @property	     |       self	               |       Instance (as attribute)
 
 🔧 Practical Exercises
+Exercise 1: Basic Classes and Objects
+
+# basic_classes.py
+"""
+Introduction to classes and objects in Python
+"""
+
+print("="*60)
+print("BASIC CLASSES AND OBJECTS")
+print("="*60)
+
+# 1. Defining a simple class
+print("\n1. DEFINING A SIMPLE CLASS:")
+print("-"*40)
+
+class Dog:
+    """A simple Dog class"""
+    
+    # Class attribute (shared by all instances)
+    species = "Canis familiaris"
+    
+    # Constructor (initializer)
+    def __init__(self, name, age):
+        """Initialize a new Dog instance"""
+        self.name = name    # Instance attribute
+        self.age = age      # Instance attribute
+        print(f"  🐕 {self.name} created!")
+    
+    # Instance method
+    def bark(self):
+        """Make the dog bark"""
+        return f"{self.name} says Woof!"
+    
+    def describe(self):
+        """Describe the dog"""
+        return f"{self.name} is {self.age} years old"
+
+# Create instances (objects)
+print("\nCreating dogs:")
+dog1 = Dog("Buddy", 3)
+dog2 = Dog("Lucy", 5)
+
+# Access attributes
+print(f"\n{dog1.name} is a {dog1.species}")
+print(f"{dog2.name} is a {dog2.species}")
+
+# Call methods
+print(f"\n{dog1.bark()}")
+print(dog2.describe())
+
+# 2. Class with more features
+print("\n2. CLASS WITH MORE FEATURES:")
+print("-"*40)
+
+class Student:
+    """Student class with more features"""
+    
+    # Class attributes
+    school = "Python University"
+    total_students = 0
+    
+    def __init__(self, name, age, grade):
+        self.name = name
+        self.age = age
+        self.grade = grade
+        self.subjects = []
+        Student.total_students += 1
+        print(f"  📚 Student {name} enrolled. Total: {Student.total_students}")
+    
+    def add_subject(self, subject):
+        """Add a subject to student's schedule"""
+        self.subjects.append(subject)
+        print(f"  {self.name} added {subject}")
+    
+    def get_info(self):
+        """Get student information"""
+        info = f"Name: {self.name}, Age: {self.age}, Grade: {self.grade}"
+        if self.subjects:
+            info += f"\n  Subjects: {', '.join(self.subjects)}"
+        return info
+    
+    def __str__(self):
+        """String representation (user-friendly)"""
+        return f"Student: {self.name} (Grade {self.grade})"
+    
+    def __repr__(self):
+        """String representation (developer-friendly)"""
+        return f"Student('{self.name}', {self.age}, '{self.grade}')"
+
+# Create students
+alice = Student("Alice", 15, "10th")
+bob = Student("Bob", 16, "11th")
+charlie = Student("Charlie", 14, "9th")
+
+# Add subjects
+alice.add_subject("Math")
+alice.add_subject("Science")
+bob.add_subject("History")
+bob.add_subject("Literature")
+
+# Display information
+print(f"\n{alice.get_info()}")
+print(bob.get_info())
+
+# Test special methods
+print(f"\n__str__: {alice}")
+print(f"__repr__: {repr(alice)}")
+
+# 3. Class with validation
+print("\n3. CLASS WITH VALIDATION:")
+print("-"*40)
+
+class BankAccount:
+    """Bank account with validation"""
+    
+    def __init__(self, owner, balance=0):
+        self.owner = owner
+        self._balance = 0  # Private attribute (by convention)
+        self.deposit(balance)  # Use method for validation
+        self.transactions = []
+    
+    def deposit(self, amount):
+        """Deposit money with validation"""
+        if amount <= 0:
+            raise ValueError("Deposit amount must be positive")
+        self._balance += amount
+        self.transactions.append(f"Deposit: +${amount}")
+        return self._balance
+    
+    def withdraw(self, amount):
+        """Withdraw money with validation"""
+        if amount <= 0:
+            raise ValueError("Withdrawal amount must be positive")
+        if amount > self._balance:
+            raise ValueError("Insufficient funds")
+        self._balance -= amount
+        self.transactions.append(f"Withdrawal: -${amount}")
+        return self._balance
+    
+    def get_balance(self):
+        """Get current balance"""
+        return self._balance
+    
+    def get_transaction_history(self):
+        """Get all transactions"""
+        return self.transactions
+    
+    def __str__(self):
+        return f"Account of {self.owner}: ${self._balance}"
+
+# Use the class
+account = BankAccount("Alice", 1000)
+print(f"Initial: {account}")
+
+account.deposit(500)
+print(f"After deposit: {account}")
+
+account.withdraw(200)
+print(f"After withdrawal: {account}")
+
+print("\nTransaction history:")
+for transaction in account.get_transaction_history():
+    print(f"  {transaction}")
+
+try:
+    account.withdraw(2000)  # This should fail
+except ValueError as e:
+    print(f"\n❌ Error: {e}")
+
+# 4. Class with properties
+print("\n4. CLASS WITH PROPERTIES:")
+print("-"*40)
+
+class Circle:
+    """Circle class with properties"""
+    
+    def __init__(self, radius):
+        self._radius = radius
+    
+    @property
+    def radius(self):
+        """Getter for radius"""
+        return self._radius
+    
+    @radius.setter
+    def radius(self, value):
+        """Setter for radius with validation"""
+        if value <= 0:
+            raise ValueError("Radius must be positive")
+        self._radius = value
+    
+    @property
+    def diameter(self):
+        """Calculate diameter (read-only property)"""
+        return self._radius * 2
+    
+    @property
+    def area(self):
+        """Calculate area (read-only property)"""
+        import math
+        return math.pi * self._radius ** 2
+    
+    @property
+    def circumference(self):
+        """Calculate circumference (read-only property)"""
+        import math
+        return 2 * math.pi * self._radius
+
+# Use properties
+circle = Circle(5)
+print(f"Circle with radius: {circle.radius}")
+print(f"Diameter: {circle.diameter}")
+print(f"Area: {circle.area:.2f}")
+print(f"Circumference: {circle.circumference:.2f}")
+
+# Change radius using property setter
+circle.radius = 10
+print(f"\nAfter changing radius to 10:")
+print(f"New area: {circle.area:.2f}")
+
+try:
+    circle.radius = -5  # This should fail
+except ValueError as e:
+    print(f"\n❌ Error: {e}")
+
+# 5. Class methods and static methods
+print("\n5. CLASS METHODS AND STATIC METHODS:")
+print("-"*40)
+
+class Employee:
+    """Employee class with class and static methods"""
+    
+    # Class attributes
+    company = "Tech Corp"
+    raise_amount = 1.04
+    
+    def __init__(self, first, last, salary):
+        self.first = first
+        self.last = last
+        self.salary = salary
+        self.email = f"{first}.{last}@company.com"
+    
+    def fullname(self):
+        """Instance method"""
+        return f"{self.first} {self.last}"
+    
+    def apply_raise(self):
+        """Apply raise to salary"""
+        self.salary = int(self.salary * self.raise_amount)
+    
+    @classmethod
+    def set_raise_amount(cls, amount):
+        """Class method to change raise amount"""
+        cls.raise_amount = amount
+        print(f"Raise amount set to {amount}")
+    
+    @classmethod
+    def from_string(cls, emp_string):
+        """Alternative constructor using class method"""
+        first, last, salary = emp_string.split('-')
+        return cls(first, last, int(salary))
+    
+    @staticmethod
+    def is_workday(day):
+        """Static method - doesn't depend on class or instance"""
+        # 0 = Monday, 6 = Sunday
+        return day.weekday() < 5
+    
+    def __str__(self):
+        return f"{self.fullname()} - ${self.salary}"
+
+# Create employees
+emp1 = Employee("John", "Doe", 50000)
+emp2 = Employee("Jane", "Smith", 60000)
+
+print(f"emp1: {emp1}")
+print(f"emp2: {emp2}")
+
+# Use class method
+Employee.set_raise_amount(1.05)
+emp1.apply_raise()
+emp2.apply_raise()
+print(f"\nAfter raise:")
+print(f"emp1: {emp1}")
+print(f"emp2: {emp2}")
+
+# Use class method as alternative constructor
+emp3 = Employee.from_string("Bob-Johnson-55000")
+print(f"\nCreated from string: {emp3}")
+
+# Use static method
+import datetime
+today = datetime.date.today()
+print(f"\nIs today ({today}) a workday? {Employee.is_workday(today)}")
+
+sunday = datetime.date(2024, 1, 21)  # A Sunday
+print(f"Is Sunday a workday? {Employee.is_workday(sunday)}")
+
+# 6. Counting instances
+print("\n6. COUNTING INSTANCES:")
+print("-"*40)
+
+class InstanceCounter:
+    """Class that counts its instances"""
+    
+    instance_count = 0
+    
+    def __init__(self):
+        InstanceCounter.instance_count += 1
+        self.instance_number = InstanceCounter.instance_count
+        print(f"  Instance #{self.instance_number} created")
+    
+    def __del__(self):
+        """Destructor - called when instance is deleted"""
+        InstanceCounter.instance_count -= 1
+        print(f"  Instance #{self.instance_number} deleted. {InstanceCounter.instance_count} remaining")
+
+# Create instances
+print("\nCreating instances:")
+c1 = InstanceCounter()
+c2 = InstanceCounter()
+c3 = InstanceCounter()
+
+print(f"\nTotal instances: {InstanceCounter.instance_count}")
+
+# Delete an instance
+print("\nDeleting c2...")
+del c2
+
+print(f"Total instances: {InstanceCounter.instance_count}")
+
 
 
 
