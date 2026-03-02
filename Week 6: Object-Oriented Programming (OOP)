@@ -2146,3 +2146,4 @@ obj.age: 30
 After deletion, 'age' in obj: False
 dir(obj): ['name', '__class__', '__delattr__', ...]
 
+📝 Weekly Project: Library Management System
