@@ -1600,3 +1600,84 @@ print(f"Second access (cached): {user.full_name}")
 # Change name - cache is invalidated
 user.first_name = "Jane"
 print(f"After name change: {user.full_name}")
+
+Output:
+
+============================================================
+ENCAPSULATION AND PROPERTIES
+============================================================
+
+1. PRIVATE ATTRIBUTES (BY CONVENTION):
+----------------------------------------
+Public attribute: Alice
+Protected attribute (accessible but convention says don't): 1000
+Private attribute name mangling: 1234
+❌ Cannot access __pin directly: 'BankAccount' object has no attribute '__pin'
+
+2. PROPERTIES WITH GETTERS/SETTERS:
+----------------------------------------
+  Getting celsius value
+Initial celsius: 25
+In fahrenheit: 77.0
+In kelvin: 298.15
+  Setting celsius to 30
+  Getting celsius value
+New celsius: 30
+New fahrenheit: 86.0
+  Setting celsius to 37.77777777777778
+After setting fahrenheit to 100:
+  Getting celsius value
+  Celsius: 37.77777777777778
+  Fahrenheit: 100.0
+
+❌ Error: Temperature below absolute zero!
+
+3. COMPUTED PROPERTIES WITH CACHING:
+----------------------------------------
+  Computing processed data (expensive operation)...
+First access: [2, 4, 6, 8, 10]
+  Returning cached result
+Second access (cached): [2, 4, 6, 8, 10]
+
+4. READ-ONLY PROPERTIES:
+----------------------------------------
+Name: Alice
+Birth year: 1990
+Age: 34
+Info: Alice (34 years old)
+❌ Cannot modify read-only property: can't set attribute
+
+5. PROPERTY WITH VALIDATION:
+----------------------------------------
+Product: Laptop
+Price: $1000
+Quantity: 5
+Total value: $5000
+
+After update:
+Total value: $12000
+
+❌ Error: Price must be positive
+
+6. PROPERTY WITH DELETION:
+----------------------------------------
+  Secret added: password123
+  Secret added: pin: 1234
+Secrets: ['password123', 'pin: 1234']
+❌ Cannot set secrets directly. Use add_secret()
+  Deleting all secrets!
+After deletion: []
+
+7. CLASS PROPERTIES:
+----------------------------------------
+config1 is config2: True
+Debug mode: True
+
+8. PROPERTY DECORATOR CHAIN:
+----------------------------------------
+  Computing full name...
+First access: John Doe
+Second access (cached): John Doe
+  Computing full name...
+After name change: Jane Doe
+
