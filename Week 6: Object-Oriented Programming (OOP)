@@ -1,1 +1,23 @@
 Week 6: Object-Oriented Programming (OOP)
+📋 Learning Objectives
+By the end of this week, you will be able to:
+
+✅ Understand OOP concepts and principles
+
+✅ Create classes and instantiate objects
+
+✅ Use constructors (__init__) and destructors (__del__)
+
+✅ Implement inheritance and method overriding
+
+✅ Understand polymorphism and duck typing
+
+✅ Use encapsulation with private attributes
+
+✅ Work with special methods (__str__, __repr__, etc.)
+
+✅ Create abstract base classes
+
+✅ Use class methods, static methods, and properties
+
+✅ Implement multiple inheritance and MRO
