@@ -367,6 +367,100 @@ print("\nDeleting c2...")
 del c2
 
 print(f"Total instances: {InstanceCounter.instance_count}")
+Output:
+
+============================================================
+BASIC CLASSES AND OBJECTS
+============================================================
+
+1. DEFINING A SIMPLE CLASS:
+----------------------------------------
+
+Creating dogs:
+  🐕 Buddy created!
+  🐕 Lucy created!
+
+Buddy is a Canis familiaris
+Lucy is a Canis familiaris
+
+Buddy says Woof!
+Lucy is 5 years old
+
+2. CLASS WITH MORE FEATURES:
+----------------------------------------
+  📚 Student Alice enrolled. Total: 1
+  📚 Student Bob enrolled. Total: 2
+  📚 Student Charlie enrolled. Total: 3
+  Alice added Math
+  Alice added Science
+  Bob added History
+  Bob added Literature
+
+Alice's info:
+Name: Alice, Age: 15, Grade: 10th
+  Subjects: Math, Science
+
+Bob's info:
+Name: Bob, Age: 16, Grade: 11th
+  Subjects: History, Literature
+
+__str__: Student: Alice (Grade 10th)
+__repr__: Student('Alice', 15, '10th')
+
+3. CLASS WITH VALIDATION:
+----------------------------------------
+Initial: Account of Alice: $1000
+After deposit: Account of Alice: $1500
+After withdrawal: Account of Alice: $1300
+
+Transaction history:
+  Deposit: +$1000
+  Deposit: +$500
+  Withdrawal: -$200
+
+❌ Error: Insufficient funds
+
+4. CLASS WITH PROPERTIES:
+----------------------------------------
+Circle with radius: 5
+Diameter: 10
+Area: 78.54
+Circumference: 31.42
+
+After changing radius to 10:
+New area: 314.16
+
+❌ Error: Radius must be positive
+
+5. CLASS METHODS AND STATIC METHODS:
+----------------------------------------
+emp1: John Doe - $50000
+emp2: Jane Smith - $60000
+Raise amount set to 1.05
+
+After raise:
+emp1: John Doe - $52500
+emp2: Jane Smith - $63000
+
+Created from string: Bob Johnson - $55000
+
+Is today (2024-01-16) a workday? True
+Is Sunday a workday? False
+
+6. COUNTING INSTANCES:
+----------------------------------------
+
+Creating instances:
+  Instance #1 created
+  Instance #2 created
+  Instance #3 created
+
+Total instances: 3
+
+Deleting c2...
+  Instance #2 deleted. 2 remaining
+Total instances: 2
+
 
 
 
