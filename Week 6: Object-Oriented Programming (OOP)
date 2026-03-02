@@ -1179,3 +1179,76 @@ print(f"bike is Car: {isinstance(bike, Car)}")
 print(f"\nCar is subclass of Vehicle: {issubclass(Car, Vehicle)}")
 print(f"Bicycle is subclass of Vehicle: {issubclass(Bicycle, Vehicle)}")
 print(f"Car is subclass of Bicycle: {issubclass(Car, Bicycle)}")
+
+Output:
+
+============================================================
+POLYMORPHISM AND DUCK TYPING
+============================================================
+
+1. POLYMORPHISM WITH INHERITANCE:
+----------------------------------------
+Animal sounds:
+  Woof!
+  Meow!
+  Moo!
+
+2. DUCK TYPING:
+----------------------------------------
+Making things quack:
+  Quack!
+  Flying like a duck
+  I'm quacking like a duck!
+  I'm flapping my arms!
+  Beep boop quack simulation
+  Activating flight mode
+
+3. OPERATOR OVERLOADING:
+----------------------------------------
+v1 = Vector(2, 3)
+v2 = Vector(4, 5)
+v1 + v2 = Vector(6, 8)
+v1 - v2 = Vector(-2, -2)
+v1 * 3 = Vector(6, 9)
+2 * v2 = Vector(8, 10)
+v1 == v2? False
+|v1| = 3.61
+
+4. METHOD OVERLOADING (SIMULATED):
+----------------------------------------
+add(2, 3): 5
+add(1, 2, 3, 4): 10
+multiply(2, 3): 6
+multiply(2, 3, 4): 24
+
+5. POLYMORPHISM WITH FUNCTIONS:
+----------------------------------------
+List: [2, 4, 6]
+Dict: {'a': 2, 'b': 4}
+String: HELLO
+Number: 10
+
+6. PROTOCOL-BASED POLYMORPHISM:
+----------------------------------------
+  ○ Drawing circle with radius 5
+  □ Drawing square with side 10
+  ✎ Drawing text: 'Hello'
+
+7. POLYMORPHISM WITH DEPENDENCY INJECTION:
+----------------------------------------
+Processing $100 via Credit Card
+Processing $100 via PayPal
+Processing $100 via Cryptocurrency
+
+8. ISINSTANCE() AND ISSUBCLASS():
+----------------------------------------
+car is Car: True
+car is Vehicle: True
+bike is Bicycle: True
+bike is Vehicle: True
+bike is Car: False
+
+Car is subclass of Vehicle: True
+Bicycle is subclass of Vehicle: True
+Car is subclass of Bicycle: False
+
