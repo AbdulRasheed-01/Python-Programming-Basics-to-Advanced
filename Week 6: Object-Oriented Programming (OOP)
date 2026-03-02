@@ -906,5 +906,6 @@ Composition is often preferred because:
   - More flexible (can change engine at runtime)
   - Better encapsulation
   - Follows 'favor composition over inheritance' principle
+Exercise 3: Polymorphism and Duck Typing
 
 
