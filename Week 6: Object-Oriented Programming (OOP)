@@ -2047,3 +2047,102 @@ import os
 if os.path.exists("test.txt"):
     os.remove("test.txt")
 
+Output:
+
+============================================================
+SPECIAL METHODS (MAGIC METHODS)
+============================================================
+
+1. BASIC SPECIAL METHODS:
+----------------------------------------
+__str__: 'Python Programming' by John Doe
+__repr__: Book('Python Programming', 'John Doe', 500, 39.99)
+__len__: 500 pages
+__abs__: $39.99
+__bool__: True
+
+2. COMPARISON METHODS:
+----------------------------------------
+r1: Rectangle(4×5, area=20)
+r2: Rectangle(5×4, area=20)
+r3: Rectangle(3×6, area=18)
+r4: Rectangle(2×8, area=16)
+
+r1 == r2: True
+r1 == r3: False
+r1 != r2: False
+r1 < r3: False
+r1 > r3: True
+r1 <= r2: True
+r1 >= r3: True
+
+3. CONTAINER METHODS:
+----------------------------------------
+Playlist: My Favorites
+First song: Bohemian Rhapsody
+Last song: Imagine
+After change: Hey Jude
+
+Number of songs: 4
+'Imagine' in playlist: True
+'Yesterday' in playlist: False
+
+All songs:
+  ♪ Bohemian Rhapsody
+  ♪ Hey Jude
+  ♪ Hotel California
+  ♪ Imagine
+
+Reversed:
+  ♪ Imagine
+  ♪ Hotel California
+  ♪ Hey Jude
+  ♪ Bohemian Rhapsody
+
+After deletion: 3 songs
+
+4. NUMERIC METHODS:
+----------------------------------------
+m1 = $100.00
+m2 = $50.00
+m1 + m2 = $150.00
+m1 - m2 = $50.00
+m1 * m2 = $5000.00
+m1 / m2 = $2.00
+m1 // 3 = $33.00
+m1 % 30 = $10.00
+m2 ** 2 = $2500.00
+-m1 = $-100.00
+abs(-m1) = $100.00
+
+5. CALLABLE OBJECTS:
+----------------------------------------
+double(5): 10
+triple(5): 15
+double(10): 20
+
+6. CONTEXT MANAGER METHODS:
+----------------------------------------
+  Opening test.txt
+  File written
+  Closing test.txt
+
+Reading file:
+  Opening test.txt
+  Content: Hello, World!
+  Closing test.txt
+
+7. ATTRIBUTE ACCESS METHODS:
+----------------------------------------
+  __setattr__ called: name = Alice
+  __setattr__ called: age = 30
+  __getattr__ called for 'name'
+obj.name: Alice
+  __getattr__ called for 'age'
+obj.age: 30
+  __getattr__ called for 'city'
+  Error: 'DynamicAttributes' has no attribute 'city'
+  __delattr__ called for 'age'
+After deletion, 'age' in obj: False
+dir(obj): ['name', '__class__', '__delattr__', ...]
+
