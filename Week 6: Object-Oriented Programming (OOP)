@@ -2147,3 +2147,160 @@ After deletion, 'age' in obj: False
 dir(obj): ['name', '__class__', '__delattr__', ...]
 
 📝 Weekly Project: Library Management System
+
+# week6_project.py
+"""
+WEEK 6 PROJECT: Library Management System
+A comprehensive OOP-based library system
+"""
+
+from datetime import datetime, timedelta
+from abc import ABC, abstractmethod
+import json
+from typing import List, Optional, Dict
+import uuid
+
+class LibraryItem(ABC):
+    """Abstract base class for all library items"""
+    
+    def __init__(self, title: str, item_id: str = None):
+        self.title = title
+        self.item_id = item_id or str(uuid.uuid4())[:8]
+        self.checked_out = False
+        self.due_date = None
+        self.borrower = None
+    
+    @abstractmethod
+    def get_item_type(self) -> str:
+        """Return the type of item"""
+        pass
+    
+    @abstractmethod
+    def get_info(self) -> str:
+        """Return item information"""
+        pass
+    
+    def check_out(self, borrower: str, days: int = 14) -> bool:
+        """Check out item to borrower"""
+        if self.checked_out:
+            return False
+        self.checked_out = True
+        self.borrower = borrower
+        self.due_date = datetime.now() + timedelta(days=days)
+        return True
+    
+    def check_in(self) -> bool:
+        """Return item to library"""
+        if not self.checked_out:
+            return False
+        self.checked_out = False
+        self.borrower = None
+        self.due_date = None
+        return True
+    
+    def is_overdue(self) -> bool:
+        """Check if item is overdue"""
+        if not self.checked_out or not self.due_date:
+            return False
+        return datetime.now() > self.due_date
+    
+    def __str__(self) -> str:
+        status = "📕 Checked out" if self.checked_out else "📗 Available"
+        if self.checked_out and self.due_date:
+            status += f" (due: {self.due_date.strftime('%Y-%m-%d')})"
+            if self.is_overdue():
+                status += " ⚠️ OVERDUE!"
+        return f"[{self.item_id}] {self.title} - {status}"
+
+class Book(LibraryItem):
+    """Book class"""
+    
+    def __init__(self, title: str, author: str, isbn: str, pages: int, item_id: str = None):
+        super().__init__(title, item_id)
+        self.author = author
+        self.isbn = isbn
+        self.pages = pages
+    
+    def get_item_type(self) -> str:
+        return "Book"
+    
+    def get_info(self) -> str:
+        return f"📖 Book: {self.title} by {self.author}, ISBN: {self.isbn}, {self.pages} pages"
+    
+    def to_dict(self) -> Dict:
+        return {
+            "type": "book",
+            "item_id": self.item_id,
+            "title": self.title,
+            "author": self.author,
+            "isbn": self.isbn,
+            "pages": self.pages,
+            "checked_out": self.checked_out,
+            "borrower": self.borrower,
+            "due_date": self.due_date.isoformat() if self.due_date else None
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict) -> 'Book':
+        book = cls(data["title"], data["author"], data["isbn"], data["pages"], data["item_id"])
+        book.checked_out = data["checked_out"]
+        book.borrower = data["borrower"]
+        if data["due_date"]:
+            book.due_date = datetime.fromisoformat(data["due_date"])
+        return book
+
+class DVD(LibraryItem):
+    """DVD class"""
+    
+    def __init__(self, title: str, director: str, duration: int, rating: str, item_id: str = None):
+        super().__init__(title, item_id)
+        self.director = director
+        self.duration = duration
+        self.rating = rating
+    
+    def get_item_type(self) -> str:
+        return "DVD"
+    
+    def get_info(self) -> str:
+        return f"📀 DVD: {self.title} directed by {self.director}, {self.duration} min, Rating: {self.rating}"
+    
+    def to_dict(self) -> Dict:
+        return {
+            "type": "dvd",
+            "item_id": self.item_id,
+            "title": self.title,
+            "director": self.director,
+            "duration": self.duration,
+            "rating": self.rating,
+            "checked_out": self.checked_out,
+            "borrower": self.borrower,
+            "due_date": self.due_date.isoformat() if self.due_date else None
+        }
+    
+    @classmethod
+    def from_dict(cls, data: Dict) -> 'DVD':
+        dvd = cls(data["title"], data["director"], data["duration"], data["rating"], data["item_id"])
+        dvd.checked_out = data["checked_out"]
+        dvd.borrower = data["borrower"]
+        if data["due_date"]:
+            dvd.due_date = datetime.fromisoformat(data["due_date"])
+        return dvd
+
+class Magazine(LibraryItem):
+    """Magazine class"""
+    
+    def __init__(self, title: str, issue: str, publisher: str, item_id: str = None):
+        super().__init__(title, item_id)
+        self.issue = issue
+        self.publisher = publisher
+    
+    def get_item_type(self) -> str:
+        return "Magazine"
+    
+    def get_info(self) -> str:
+        return f"📓 Magazine: {self.title} - Issue {self.issue}, Publisher: {self.publisher}"
+    
+    def to_dict(self) -> Dict:
+        return {
+            "type": "magazine",
+           
