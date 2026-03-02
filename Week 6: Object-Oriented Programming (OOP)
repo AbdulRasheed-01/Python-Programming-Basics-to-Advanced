@@ -815,5 +815,96 @@ print("  - Better encapsulation")
 print("  - Follows 'favor composition over inheritance' principle")
 
 
+Output:
+
+============================================================
+INHERITANCE
+============================================================
+
+1. BASIC INHERITANCE:
+----------------------------------------
+  Animal __init__ called for Buddy
+  Dog __init__ called for Buddy
+  Animal __init__ called for Whiskers
+
+Buddy is eating
+Buddy is sleeping
+Buddy barks: Woof! Woof!
+Buddy is fetching the ball
+
+Whiskers is eating
+Whiskers is sleeping
+Whiskers meows: Meow!
+Whiskers is scratching
+
+Is dog an Animal? True
+Is dog a Dog? True
+Is dog a Cat? False
+Is Animal a parent of Dog? True
+
+2. METHOD RESOLUTION ORDER:
+----------------------------------------
+D().method(): B.method
+D.__mro__:
+  D
+  B
+  C
+  A
+  object
+
+3. MULTIPLE INHERITANCE:
+----------------------------------------
+Flying through the air
+Swimming through water
+Donald - Flyer moving
+
+4. ABSTRACT BASE CLASSES:
+----------------------------------------
+Rectangle:
+  Area: 15.00
+  Perimeter: 16.00
+  Area: 15.00, Perimeter: 16.00
+
+Circle:
+  Area: 50.27
+  Perimeter: 25.13
+  Area: 50.27, Perimeter: 25.13
+
+❌ Cannot instantiate abstract class: Can't instantiate abstract class Shape with abstract methods area, perimeter
+
+5. MIXINS:
+----------------------------------------
+JSON: {"name": "Alice", "age": 30, "city": "New York"}
+XML: <Person><name>Alice</name><age>30</age><city>New York</city></Person>
+
+6. DIAMOND PROBLEM RESOLUTION:
+----------------------------------------
+Derived.who_am_i(): Left
+MRO: ['Derived', 'Left', 'Right', 'Base', 'object']
+
+7. EXTENDING BUILT-IN TYPES:
+----------------------------------------
+IntList: [1, 2, 3, 4, 5]
+Sum: 15
+Average: 3.0
+Product: 120
+
+❌ Error: Expected int, got str
+
+8. COMPOSITION VS INHERITANCE:
+----------------------------------------
+Inheritance:
+  Engine started
+  Toyota car is driving
+
+Composition:
+  Engine started
+  Honda car is driving
+  Engine stopped
+
+Composition is often preferred because:
+  - More flexible (can change engine at runtime)
+  - Better encapsulation
+  - Follows 'favor composition over inheritance' principle
 
 
