@@ -21,3 +21,19 @@ By the end of this week, you will be able to:
 ✅ Use class methods, static methods, and properties
 
 ✅ Implement multiple inheritance and MRO
+
+📚 Theory Content
+
+ Types of Methods
+
+Method Type	         |     Decorator	     |       First Parameter	   |       Called On
+
+Instance Method	     |     None	           |       self	               |       Instance
+
+Class Method	       |     @classmethod	   |       cls	               |       Class
+
+Static Method	       |     @staticmethod   |     	 None	               |       Either
+
+Property	           |     @property	     |       self	               |       Instance (as attribute)
+
+
