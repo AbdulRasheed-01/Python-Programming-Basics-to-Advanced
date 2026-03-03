@@ -315,4 +315,94 @@ for i in range(5):
     api_call(i)
     time.sleep(0.3)
 Output:
+============================================================
+DECORATORS
+============================================================
+
+1. BASIC DECORATOR:
+----------------------------------------
+  Before function call
+  Hello, World!
+  After function call
+
+2. DECORATOR WITH ARGUMENTS:
+----------------------------------------
+  Execution 1:
+  Hello, Alice!
+  Execution 2:
+  Hello, Alice!
+  Execution 3:
+  Hello, Alice!
+
+3. TIMING DECORATOR:
+----------------------------------------
+  slow_function took 1.0012 seconds
+
+4. LOGGING DECORATOR:
+----------------------------------------
+  Calling add(5, 3)
+  add returned 8
+  Calling multiply(2, 3, c=4)
+  multiply returned 24
+
+5. DECORATOR WITH ARGUMENTS AND METADATA:
+----------------------------------------
+  divide(10, 2) = 5.0
+  Error: Argument 0 should be int, got str
+
+6. CLASS-BASED DECORATORS:
+----------------------------------------
+  Call #1 of say_hi
+  Hi, Alice!
+  Call #2 of say_hi
+  Hi, Bob!
+  Call #3 of say_hi
+  Hi, Charlie!
+
+7. MULTIPLE DECORATORS:
+----------------------------------------
+  <b><i>Hello World</i></b>
+
+8. RETRY DECORATOR:
+----------------------------------------
+  Attempt 1/3
+    Failed: Random failure
+  Attempt 2/3
+    Failed: Random failure
+  Attempt 3/3
+    Result: Success!
+
+9. MEMOIZATION DECORATOR:
+----------------------------------------
+  Computing for 10
+  Computing for 9
+  Computing for 8
+  Computing for 7
+  Computing for 6
+  Computing for 5
+  Computing for 4
+  Computing for 3
+  Computing for 2
+  Computing for 1
+  Computing for 0
+  Cache hit for (1,)
+  Cache hit for (2,)
+  Cache hit for (3,)
+  Cache hit for (4,)
+  Cache hit for (5,)
+  Cache hit for (6,)
+  Cache hit for (7,)
+  Cache hit for (8,)
+  fibonacci(10) = 55
+
+10. RATE LIMITING DECORATOR:
+----------------------------------------
+  Processing request 0
+  Processing request 1
+  Rate limit reached. Waiting 0.70s
+  Processing request 2
+  Processing request 3
+  Rate limit reached. Waiting 0.70s
+  Processing request 4
+
 
