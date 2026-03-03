@@ -36,3 +36,283 @@ Asyncio	            |        High-level async I/O	                        |     
 
 🔧 Practical Exercises
 
+Exercise 1: Decorators
+# decorators.py
+"""
+Comprehensive guide to decorators in Python
+"""
+
+print("="*60)
+print("DECORATORS")
+print("="*60)
+
+import functools
+import time
+
+# 1. Basic decorator
+print("\n1. BASIC DECORATOR:")
+print("-"*40)
+
+def simple_decorator(func):
+    """Simple decorator that prints before and after"""
+    def wrapper():
+        print("  Before function call")
+        func()
+        print("  After function call")
+    return wrapper
+
+@simple_decorator
+def say_hello():
+    print("  Hello, World!")
+
+say_hello()
+
+# 2. Decorator with arguments
+print("\n2. DECORATOR WITH ARGUMENTS:")
+print("-"*40)
+
+def repeat(n):
+    """Decorator that repeats function n times"""
+    def decorator(func):
+        def wrapper(*args, **kwargs):
+            for i in range(n):
+                print(f"  Execution {i+1}:")
+                result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
+@repeat(3)
+def greet(name):
+    print(f"  Hello, {name}!")
+
+greet("Alice")
+
+# 3. Timing decorator
+print("\n3. TIMING DECORATOR:")
+print("-"*40)
+
+def timer(func):
+    """Measure execution time of a function"""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        result = func(*args, **kwargs)
+        end = time.time()
+        print(f"  {func.__name__} took {end-start:.4f} seconds")
+        return result
+    return wrapper
+
+@timer
+def slow_function():
+    time.sleep(1)
+    return "Done"
+
+slow_function()
+
+# 4. Logging decorator
+print("\n4. LOGGING DECORATOR:")
+print("-"*40)
+
+def logger(func):
+    """Log function calls and returns"""
+    @functools.wraps(func)
+    def wrapper(*args, **kwargs):
+        args_repr = [repr(a) for a in args]
+        kwargs_repr = [f"{k}={v!r}" for k, v in kwargs.items()]
+        signature = ", ".join(args_repr + kwargs_repr)
+        print(f"  Calling {func.__name__}({signature})")
+        
+        result = func(*args, **kwargs)
+        
+        print(f"  {func.__name__} returned {result!r}")
+        return result
+    return wrapper
+
+@logger
+def add(a, b):
+    return a + b
+
+@logger
+def multiply(a, b, c=1):
+    return a * b * c
+
+add(5, 3)
+multiply(2, 3, c=4)
+
+# 5. Decorator with arguments and preserving metadata
+print("\n5. DECORATOR WITH ARGUMENTS AND METADATA:")
+print("-"*40)
+
+def validate_args(*expected_types):
+    """Validate argument types"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            # Check positional arguments
+            for i, (arg, expected) in enumerate(zip(args, expected_types)):
+                if not isinstance(arg, expected):
+                    raise TypeError(f"Argument {i} should be {expected.__name__}, got {type(arg).__name__}")
+            
+            # Call function
+            result = func(*args, **kwargs)
+            return result
+        return wrapper
+    return decorator
+
+@validate_args(int, int)
+def divide(a, b):
+    return a / b
+
+print(f"  divide(10, 2) = {divide(10, 2)}")
+
+try:
+    divide("10", 2)
+except TypeError as e:
+    print(f"  Error: {e}")
+
+# 6. Class-based decorators
+print("\n6. CLASS-BASED DECORATORS:")
+print("-"*40)
+
+class CountCalls:
+    """Decorator class that counts function calls"""
+    
+    def __init__(self, func):
+        self.func = func
+        self.count = 0
+    
+    def __call__(self, *args, **kwargs):
+        self.count += 1
+        print(f"  Call #{self.count} of {self.func.__name__}")
+        return self.func(*args, **kwargs)
+
+@CountCalls
+def say_hi(name):
+    print(f"  Hi, {name}!")
+
+say_hi("Alice")
+say_hi("Bob")
+say_hi("Charlie")
+
+# 7. Multiple decorators
+print("\n7. MULTIPLE DECORATORS:")
+print("-"*40)
+
+def bold(func):
+    def wrapper(*args, **kwargs):
+        return f"<b>{func(*args, **kwargs)}</b>"
+    return wrapper
+
+def italic(func):
+    def wrapper(*args, **kwargs):
+        return f"<i>{func(*args, **kwargs)}</i>"
+    return wrapper
+
+@bold
+@italic
+def get_text():
+    return "Hello World"
+
+print(f"  {get_text()}")
+
+# 8. Practical example: Retry decorator
+print("\n8. RETRY DECORATOR:")
+print("-"*40)
+
+def retry(max_attempts=3, delay=0.1):
+    """Retry function on failure"""
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            for attempt in range(1, max_attempts + 1):
+                try:
+                    print(f"  Attempt {attempt}/{max_attempts}")
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    print(f"    Failed: {e}")
+                    if attempt == max_attempts:
+                        raise
+                    time.sleep(delay)
+            return None
+        return wrapper
+    return decorator
+
+@retry(max_attempts=3)
+def unstable_function():
+    import random
+    if random.random() < 0.7:  # 70% chance of failure
+        raise ValueError("Random failure")
+    return "Success!"
+
+try:
+    result = unstable_function()
+    print(f"  Result: {result}")
+except Exception as e:
+    print(f"  All attempts failed: {e}")
+
+# 9. Decorator for memoization (caching)
+print("\n9. MEMOIZATION DECORATOR:")
+print("-"*40)
+
+def memoize(func):
+    """Cache function results"""
+    cache = {}
+    
+    @functools.wraps(func)
+    def wrapper(*args):
+        if args in cache:
+            print(f"  Cache hit for {args}")
+            return cache[args]
+        print(f"  Computing for {args}")
+        result = func(*args)
+        cache[args] = result
+        return result
+    return wrapper
+
+@memoize
+def fibonacci(n):
+    if n <= 1:
+        return n
+    return fibonacci(n-1) + fibonacci(n-2)
+
+print(f"  fibonacci(10) = {fibonacci(10)}")
+
+# 10. Decorator for rate limiting
+print("\n10. RATE LIMITING DECORATOR:")
+print("-"*40)
+
+class RateLimit:
+    """Limit function calls per second"""
+    
+    def __init__(self, max_calls_per_second):
+        self.max_calls = max_calls_per_second
+        self.calls = []
+    
+    def __call__(self, func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            now = time.time()
+            
+            # Remove old calls
+            self.calls = [t for t in self.calls if now - t < 1.0]
+            
+            if len(self.calls) >= self.max_calls:
+                wait_time = 1.0 - (now - self.calls[0])
+                print(f"  Rate limit reached. Waiting {wait_time:.2f}s")
+                time.sleep(wait_time)
+            
+            self.calls.append(now)
+            return func(*args, **kwargs)
+        return wrapper
+
+@RateLimit(max_calls_per_second=2)
+def api_call(request_id):
+    print(f"  Processing request {request_id}")
+
+# Test rate limiting
+for i in range(5):
+    api_call(i)
+    time.sleep(0.3)
+Output:
+
