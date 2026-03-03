@@ -660,5 +660,88 @@ import os
 if os.path.exists("sample.txt"):
     os.remove("sample.txt")
     print("\n✅ Cleaned up sample.txt")
+Output:
+
+============================================================
+GENERATORS AND ITERATORS
+============================================================
+
+1. SIMPLE GENERATOR:
+----------------------------------------
+Type: <class 'generator'>
+Values:
+  1 2 3 4 5 
+
+2. GENERATOR VS LIST MEMORY:
+----------------------------------------
+List size (1000 items): 8856 bytes
+Generator size (1000 items): 56 bytes
+Generator is 158x more memory efficient
+
+3. INFINITE GENERATOR:
+----------------------------------------
+First 10 Fibonacci numbers:
+  fib(0) = 0
+  fib(1) = 1
+  fib(2) = 1
+  fib(3) = 2
+  fib(4) = 3
+  fib(5) = 5
+  fib(6) = 8
+  fib(7) = 13
+  fib(8) = 21
+  fib(9) = 34
+
+4. GENERATOR EXPRESSIONS:
+----------------------------------------
+List comprehension: [0, 1, 4, 9, 16, 25, 36, 49, 64, 81]
+Generator expression: <generator object <genexpr> at 0x...>
+First 5 values:
+  0 1 4 9 16 
+
+List comprehension size: 8,000,056 bytes
+Generator expression size: 56 bytes
+
+5. GENERATOR WITH SEND():
+----------------------------------------
+  Received: Hello
+  Received: World
+  Received: 42
+
+6. GENERATOR WITH YIELD FROM:
+----------------------------------------
+  Start A B C End 
+
+7. CUSTOM ITERATOR CLASS:
+----------------------------------------
+Countdown from 5:
+  5 4 3 2 1 
+
+8. READING LARGE FILES WITH GENERATOR:
+----------------------------------------
+Reading first 5 lines of file:
+  Line 0: This is some sample text for testing.
+  Line 1: This is some sample text for testing.
+  Line 2: This is some sample text for testing.
+  Line 3: This is some sample text for testing.
+  Line 4: This is some sample text for testing.
+
+9. PIPELINE WITH GENERATORS:
+----------------------------------------
+Pipeline result (even numbers -> square -> add 1):
+  5 17 37 65 101 
+
+10. DATA STREAMING WITH GENERATORS:
+----------------------------------------
+Processing sensor data stream (5 samples):
+  Sample 1: Temp=24.56°C, Avg=24.56°C, Humidity=52.3%
+  Sample 2: Temp=27.89°C, Avg=26.22°C, Humidity=48.7%
+  Sample 3: Temp=22.34°C, Avg=24.93°C, Humidity=55.1%
+  Sample 4: Temp=28.45°C, Avg=25.81°C, Humidity=51.9%
+  Sample 5: Temp=25.67°C, Avg=25.78°C, Humidity=49.8%
+
+✅ Cleaned up sample.txt
+
+Exercise 3: Context Managers
 
 
