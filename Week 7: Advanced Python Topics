@@ -33,3 +33,6 @@ Threading	          |        I/O-bound tasks	                            |     W
 Multiprocessing	    |        CPU-bound tasks	                            |     Image processing, calculations
 
 Asyncio	            |        High-level async I/O	                        |     Web servers, API calls
+
+🔧 Practical Exercises
+
