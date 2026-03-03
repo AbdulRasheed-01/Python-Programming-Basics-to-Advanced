@@ -743,5 +743,321 @@ Processing sensor data stream (5 samples):
 ✅ Cleaned up sample.txt
 
 Exercise 3: Context Managers
+# context_managers.py
+"""
+Context managers in Python
+"""
+
+print("="*60)
+print("CONTEXT MANAGERS")
+print("="*60)
+
+import time
+import contextlib
+import sqlite3
+
+# 1. Class-based context manager
+print("\n1. CLASS-BASED CONTEXT MANAGER:")
+print("-"*40)
+
+class Timer:
+    """Context manager for timing code blocks"""
+    
+    def __enter__(self):
+        self.start = time.time()
+        print("  Starting timer...")
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.end = time.time()
+        self.elapsed = self.end - self.start
+        print(f"  Elapsed time: {self.elapsed:.4f} seconds")
+        
+        # Handle exceptions if needed
+        if exc_type:
+            print(f"  Exception occurred: {exc_val}")
+        return False  # Don't suppress exceptions
+
+# Use the timer
+with Timer() as timer:
+    time.sleep(1)
+    result = sum(range(1000000))
+    print(f"  Sum calculated: {result}")
+
+# 2. Handling exceptions in context managers
+print("\n2. EXCEPTION HANDLING:")
+print("-"*40)
+
+class DatabaseConnection:
+    """Simulated database connection with rollback on error"""
+    
+    def __enter__(self):
+        print("  Connecting to database...")
+        self.connected = True
+        self.transaction_active = True
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            print(f"  Error occurred: {exc_val}")
+            print("  Rolling back transaction...")
+        else:
+            print("  Committing transaction...")
+        
+        print("  Closing database connection...")
+        self.connected = False
+        return False
+
+# Successful transaction
+with DatabaseConnection() as db:
+    print("  Performing database operations...")
+    print("  All operations successful")
+
+# Failed transaction
+try:
+    with DatabaseConnection() as db:
+        print("  Performing database operations...")
+        raise ValueError("Something went wrong")
+except ValueError:
+    print("  Exception caught outside")
+
+# 3. Context manager with arguments
+print("\n3. CONTEXT MANAGER WITH ARGUMENTS:")
+print("-"*40)
+
+class ManagedFile:
+    """Context manager for file operations with mode"""
+    
+    def __init__(self, filename, mode='r'):
+        self.filename = filename
+        self.mode = mode
+        self.file = None
+    
+    def __enter__(self):
+        print(f"  Opening {self.filename} in {self.mode} mode")
+        self.file = open(self.filename, self.mode)
+        return self.file
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if self.file:
+            self.file.close()
+        print(f"  Closed {self.filename}")
+
+# Use the managed file
+with ManagedFile('test.txt', 'w') as f:
+    f.write('Hello, World!')
+    print("  File written")
+
+# 4. contextlib module
+print("\n4. CONTEXTLIB MODULE:")
+print("-"*40)
+
+@contextlib.contextmanager
+def simple_timer(name):
+    """Generator-based context manager"""
+    print(f"  Starting {name}...")
+    start = time.time()
+    try:
+        yield
+    finally:
+        end = time.time()
+        print(f"  {name} took {end-start:.4f} seconds")
+
+with simple_timer("sleep operation"):
+    time.sleep(0.5)
+
+# 5. Multiple context managers
+print("\n5. MULTIPLE CONTEXT MANAGERS:")
+print("-"*40)
+
+# Using multiple with statements
+with ManagedFile('file1.txt', 'w') as f1, ManagedFile('file2.txt', 'w') as f2:
+    f1.write("Content for file 1")
+    f2.write("Content for file 2")
+    print("  Both files written")
+
+# 6. Context manager for redirecting output
+print("\n6. REDIRECTING OUTPUT:")
+print("-"*40)
+
+import sys
+from io import StringIO
+
+@contextlib.contextmanager
+def redirect_output(file_obj):
+    """Redirect stdout to a file"""
+    original_stdout = sys.stdout
+    sys.stdout = file_obj
+    try:
+        yield
+    finally:
+        sys.stdout = original_stdout
+
+# Capture output
+output = StringIO()
+with redirect_output(output):
+    print("This goes to the StringIO buffer")
+    print("So does this")
+
+print(f"Captured output: {output.getvalue()}")
+
+# 7. Nested context managers
+print("\n7. NESTED CONTEXT MANAGERS:")
+print("-"*40)
+
+@contextlib.contextmanager
+def level1():
+    print("  Enter level 1")
+    yield
+    print("  Exit level 1")
+
+@contextlib.contextmanager
+def level2():
+    print("    Enter level 2")
+    yield
+    print("    Exit level 2")
+
+@contextlib.contextmanager
+def level3():
+    print("      Enter level 3")
+    yield
+    print("      Exit level 3")
+
+with level1():
+    with level2():
+        with level3():
+            print("        Inside all levels")
+
+# 8. Practical: Database transaction
+print("\n8. DATABASE TRANSACTION:")
+print("-"*40)
+
+class Transaction:
+    """Context manager for SQLite transactions"""
+    
+    def __init__(self, db_path):
+        self.db_path = db_path
+        self.conn = None
+    
+    def __enter__(self):
+        self.conn = sqlite3.connect(self.db_path)
+        self.cursor = self.conn.cursor()
+        print("  Transaction started")
+        return self
+    
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        if exc_type:
+            print(f"  Error: {exc_val}")
+            print("  Rolling back transaction")
+            self.conn.rollback()
+        else:
+            print("  Committing transaction")
+            self.conn.commit()
+        self.conn.close()
+        print("  Connection closed")
+        return False
+    
+    def execute(self, query, params=()):
+        self.cursor.execute(query, params)
+        return self.cursor
+
+# Successful transaction
+with Transaction(':memory:') as t:
+    t.execute("CREATE TABLE users (id INTEGER, name TEXT)")
+    t.execute("INSERT INTO users VALUES (?, ?)", (1, 'Alice'))
+    t.execute("INSERT INTO users VALUES (?, ?)", (2, 'Bob'))
+    t.cursor.execute("SELECT * FROM users")
+    print("  Users:", t.cursor.fetchall())
+
+# Failed transaction
+try:
+    with Transaction(':memory:') as t:
+        t.execute("CREATE TABLE users (id INTEGER, name TEXT)")
+        t.execute("INSERT INTO users VALUES (?, ?)", (1, 'Alice'))
+        # This will fail (table doesn't exist)
+        t.execute("INSERT INTO wrong_table VALUES (1)")
+except Exception as e:
+    print(f"  Caught: {e}")
+
+# 9. Context manager for changing directory
+print("\n9. CHANGING DIRECTORY:")
+print("-"*40)
+
+import os
+
+@contextlib.contextmanager
+def change_directory(path):
+    """Temporarily change working directory"""
+    original = os.getcwd()
+    print(f"  Original directory: {original}")
+    os.chdir(path)
+    print(f"  Changed to: {os.getcwd()}")
+    try:
+        yield
+    finally:
+        os.chdir(original)
+        print(f"  Restored to: {os.getcwd()}")
+
+# Create a test directory
+os.makedirs("test_dir", exist_ok=True)
+
+with change_directory("test_dir"):
+    print("    Inside test_dir")
+    with open("test.txt", "w") as f:
+        f.write("Hello")
+
+print(f"  Back in original directory")
+
+# 10. Context manager for resource pooling
+print("\n10. RESOURCE POOLING:")
+print("-"*40)
+
+class ConnectionPool:
+    """Simple connection pool"""
+    
+    def __init__(self, size=3):
+        self.size = size
+        self.available = list(range(size))
+        self.in_use = []
+    
+    @contextlib.contextmanager
+    def get_connection(self):
+        """Get a connection from the pool"""
+        if not self.available:
+            raise Exception("No available connections")
+        
+        conn = self.available.pop()
+        self.in_use.append(conn)
+        print(f"  Acquired connection {conn}")
+        
+        try:
+            yield conn
+        finally:
+            self.in_use.remove(conn)
+            self.available.append(conn)
+            print(f"  Released connection {conn}")
+
+pool = ConnectionPool(2)
+
+# Use connections
+with pool.get_connection() as conn1:
+    print(f"    Using connection {conn1}")
+    with pool.get_connection() as conn2:
+        print(f"    Using connection {conn2}")
+
+# Clean up
+if os.path.exists("test.txt"):
+    os.remove("test.txt")
+if os.path.exists("file1.txt"):
+    os.remove("file1.txt")
+if os.path.exists("file2.txt"):
+    os.remove("file2.txt")
+import shutil
+if os.path.exists("test_dir"):
+    shutil.rmtree("test_dir")
+print("\n✅ Cleaned up files")
+
+Output:
+
 
 
