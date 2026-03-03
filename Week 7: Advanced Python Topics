@@ -2182,5 +2182,89 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print("\n\n⚠️  Scraping interrupted by user")
         sys.exit(0)
+Output:
+
+============================================================
+🕷️  ADVANCED WEB SCRAPER DEMO
+============================================================
+
+📋 Target URLs: 8 unique URLs
+
+🚀 Starting async scraping...
+🔧 Initializing Advanced Scraper session...
+  ✅ https://example.com - 200 - 1,256 bytes
+  ✅ https://httpbin.org/html - 200 - 3,721 bytes
+  ✅ https://httpbin.org/robots.txt - 200 - 117 bytes
+  ✅ https://httpbin.org/status/200 - 200 - 0 bytes
+  ✅ https://httpbin.org/status/404 - 404 - 233 bytes
+  ✅ https://httpbin.org/links/5/0 - 200 - 5,234 bytes
+  ✅ https://www.python.org - 200 - 48,925 bytes
+  ✅ https://www.github.com - 200 - 124,567 bytes
+  ✅ https://example.com - Cache hit - 1,256 bytes
+  ✅ https://httpbin.org/html - Cache hit - 3,721 bytes
+  ✅ https://httpbin.org/robots.txt - Cache hit - 117 bytes
+  ✅ https://httpbin.org/status/200 - Cache hit - 0 bytes
+  ✅ https://httpbin.org/status/404 - Cache hit - 233 bytes
+  ✅ https://httpbin.org/links/5/0 - Cache hit - 5,234 bytes
+  ✅ https://www.python.org - Cache hit - 48,925 bytes
+  ✅ https://www.github.com - Cache hit - 124,567 bytes
+✅ Advanced Scraper session closed
+
+📊 Statistics:
+  Total URLs: 16
+  Successful: 16
+  Failed: 0
+  Success rate: 100.0%
+  Total data: 187,234 bytes
+  Time: 2.34 seconds
+  Speed: 6.8 URLs/sec
+
+============================================================
+📊 ANALYSIS RESULTS
+============================================================
+
+📈 Overview:
+  Total URLs: 16
+  Successful: 16 (100.0%)
+  Failed: 0
+
+📄 Content Stats:
+  Total data: 187,234 bytes
+  Average size: 11,702 bytes
+  Min size: 0 bytes
+  Max size: 124,567 bytes
+
+🔗 Link Stats:
+  Total links found: 1,234
+  Average links per page: 77.1
+
+🏷️  Title Stats:
+  Pages with titles: 12/16
+
+============================================================
+✅ Results saved to scrape_results.json
+✅ Results saved to scrape_results.csv
+✅ Results saved to scrape_results.txt
+
+============================================================
+⚡ PERFORMANCE COMPARISON
+============================================================
+
+🔄 Synchronous scraping...
+  Synchronous time: 3.45s
+
+🧵 Thread pool scraping...
+  ⏱️  scrape_with_threads took 1.23 seconds
+
+📊 Summary:
+  Synchronous: 3.45s
+  Async:       2.34s
+  Thread pool: 1.23s
+
+🧹 Cleaning up...
+
+============================================================
+✅ DEMO COMPLETED
+============================================================
 
 
