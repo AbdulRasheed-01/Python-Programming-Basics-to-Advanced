@@ -17,3 +17,19 @@ By the end of this week, you will be able to:
 ✅ Use asyncio for asynchronous programming
 
 ✅ Profile and optimize Python code
+📚 Theory Content
+When to Use Each
+
+Concept	            |        Use Case	                                    |     Example
+
+Decorators	        |        Add functionality to existing functions	    |     Logging, timing, authentication
+
+Generators	        |        Process large datasets, infinite sequences	  |     Reading large files, data streaming
+
+Context Managers	  |        Resource cleanup, setup/teardown	            |     File handling, database connections
+
+Threading	          |        I/O-bound tasks	                            |     Web scraping, file downloads
+
+Multiprocessing	    |        CPU-bound tasks	                            |     Image processing, calculations
+
+Asyncio	            |        High-level async I/O	                        |     Web servers, API calls
