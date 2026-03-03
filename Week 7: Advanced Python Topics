@@ -405,4 +405,260 @@ DECORATORS
   Rate limit reached. Waiting 0.70s
   Processing request 4
 
+Exercise 2: Generators and Iterators
+# generators.py
+"""
+Generators and iterators in Python
+"""
+
+print("="*60)
+print("GENERATORS AND ITERATORS")
+print("="*60)
+
+import sys
+import time
+
+# 1. Simple generator
+print("\n1. SIMPLE GENERATOR:")
+print("-"*40)
+
+def count_up_to(n):
+    """Generator that counts from 1 to n"""
+    i = 1
+    while i <= n:
+        yield i
+        i += 1
+
+# Create generator
+counter = count_up_to(5)
+print(f"Type: {type(counter)}")
+
+# Iterate through generator
+print("Values:")
+for num in counter:
+    print(f"  {num}", end=" ")
+print()
+
+# 2. Generator vs List memory comparison
+print("\n2. GENERATOR VS LIST MEMORY:")
+print("-"*40)
+
+def first_n_squares_list(n):
+    """Return list of first n squares"""
+    return [i**2 for i in range(n)]
+
+def first_n_squares_generator(n):
+    """Generator of first n squares"""
+    for i in range(n):
+        yield i**2
+
+# Compare memory usage
+n = 1000000
+list_size = sys.getsizeof(first_n_squares_list(1000))
+gen_size = sys.getsizeof(first_n_squares_generator(1000))
+
+print(f"List size (1000 items): {list_size} bytes")
+print(f"Generator size (1000 items): {gen_size} bytes")
+print(f"Generator is {list_size/gen_size:.0f}x more memory efficient")
+
+# 3. Infinite generator
+print("\n3. INFINITE GENERATOR:")
+print("-"*40)
+
+def fibonacci():
+    """Infinite Fibonacci sequence generator"""
+    a, b = 0, 1
+    while True:
+        yield a
+        a, b = b, a + b
+
+# Get first 10 Fibonacci numbers
+fib = fibonacci()
+print("First 10 Fibonacci numbers:")
+for i in range(10):
+    print(f"  fib({i}) = {next(fib)}")
+
+# 4. Generator expressions
+print("\n4. GENERATOR EXPRESSIONS:")
+print("-"*40)
+
+# List comprehension (creates full list)
+list_squares = [x**2 for x in range(10)]
+print(f"List comprehension: {list_squares}")
+
+# Generator expression (creates generator)
+gen_squares = (x**2 for x in range(10))
+print(f"Generator expression: {gen_squares}")
+print(f"First 5 values:")
+for i, val in enumerate(gen_squares):
+    if i >= 5:
+        break
+    print(f"  {val}", end=" ")
+print()
+
+# Memory comparison for large data
+n = 1000000
+list_comp = [x for x in range(n)]
+gen_exp = (x for x in range(n))
+
+print(f"\nList comprehension size: {sys.getsizeof(list_comp):,} bytes")
+print(f"Generator expression size: {sys.getsizeof(gen_exp)} bytes")
+
+# 5. Generator with send()
+print("\n5. GENERATOR WITH SEND():")
+print("-"*40)
+
+def echo():
+    """Generator that echoes what you send"""
+    while True:
+        received = yield
+        print(f"  Received: {received}")
+
+e = echo()
+next(e)  # Start generator
+e.send("Hello")
+e.send("World")
+e.send(42)
+
+# 6. Generator with yield from
+print("\n6. GENERATOR WITH YIELD FROM:")
+print("-"*40)
+
+def sub_generator():
+    yield "A"
+    yield "B"
+    yield "C"
+
+def main_generator():
+    yield "Start"
+    yield from sub_generator()
+    yield "End"
+
+for item in main_generator():
+    print(f"  {item}", end=" ")
+print()
+
+# 7. Custom iterator class
+print("\n7. CUSTOM ITERATOR CLASS:")
+print("-"*40)
+
+class Countdown:
+    """Custom iterator that counts down from n"""
+    
+    def __init__(self, start):
+        self.start = start
+    
+    def __iter__(self):
+        return self
+    
+    def __next__(self):
+        if self.start <= 0:
+            raise StopIteration
+        self.start -= 1
+        return self.start + 1
+
+print("Countdown from 5:")
+for num in Countdown(5):
+    print(f"  {num}", end=" ")
+print()
+
+# 8. Practical: Reading large files with generator
+print("\n8. READING LARGE FILES WITH GENERATOR:")
+print("-"*40)
+
+# Create a sample large file
+with open("sample.txt", "w") as f:
+    for i in range(1000):
+        f.write(f"Line {i}: This is some sample text for testing.\n")
+
+def read_large_file(file_path):
+    """Generator to read large file line by line"""
+    with open(file_path, 'r') as f:
+        for line in f:
+            yield line.strip()
+
+print("Reading first 5 lines of file:")
+for i, line in enumerate(read_large_file("sample.txt")):
+    if i >= 5:
+        break
+    print(f"  {line}")
+
+# 9. Pipeline with generators
+print("\n9. PIPELINE WITH GENERATORS:")
+print("-"*40)
+
+def read_numbers():
+    """Generate numbers from 1 to 10"""
+    for i in range(1, 11):
+        yield i
+
+def filter_even(numbers):
+    """Filter even numbers"""
+    for num in numbers:
+        if num % 2 == 0:
+            yield num
+
+def square(numbers):
+    """Square each number"""
+    for num in numbers:
+        yield num ** 2
+
+def add_one(numbers):
+    """Add one to each number"""
+    for num in numbers:
+        yield num + 1
+
+# Create pipeline
+pipeline = add_one(square(filter_even(read_numbers())))
+
+print("Pipeline result (even numbers -> square -> add 1):")
+for result in pipeline:
+    print(f"  {result}", end=" ")
+print()
+
+# 10. Practical: Data streaming with generators
+print("\n10. DATA STREAMING WITH GENERATORS:")
+print("-"*40)
+
+import random
+
+def sensor_data_stream():
+    """Simulate continuous sensor data"""
+    while True:
+        yield {
+            'timestamp': time.time(),
+            'temperature': random.uniform(20, 30),
+            'humidity': random.uniform(40, 60),
+            'pressure': random.uniform(1000, 1020)
+        }
+        time.sleep(0.5)
+
+def moving_average(data_stream, window_size=5):
+    """Calculate moving average of data stream"""
+    window = []
+    for data in data_stream:
+        window.append(data['temperature'])
+        if len(window) > window_size:
+            window.pop(0)
+        avg_temp = sum(window) / len(window)
+        yield {**data, 'avg_temperature': avg_temp}
+
+# Process stream for a few samples
+print("Processing sensor data stream (5 samples):")
+stream = sensor_data_stream()
+processed = moving_average(stream)
+
+for i, data in enumerate(processed):
+    if i >= 5:
+        break
+    print(f"  Sample {i+1}: Temp={data['temperature']:.2f}°C, "
+          f"Avg={data['avg_temperature']:.2f}°C, "
+          f"Humidity={data['humidity']:.1f}%")
+
+# Clean up
+import os
+if os.path.exists("sample.txt"):
+    os.remove("sample.txt")
+    print("\n✅ Cleaned up sample.txt")
+
 
