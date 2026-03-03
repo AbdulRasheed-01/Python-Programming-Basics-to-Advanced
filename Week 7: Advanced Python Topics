@@ -1147,6 +1147,58 @@ So does this
 
 ✅ Cleaned up files
 
+Exercise 4: Concurrency - Threading, Multiprocessing, Asyncio
+# concurrency.py
+"""
+Concurrency in Python: Threading, Multiprocessing, Asyncio
+"""
 
+print("="*60)
+print("CONCURRENCY IN PYTHON")
+print("="*60)
+
+import time
+import threading
+import multiprocessing
+import asyncio
+import concurrent.futures
+import requests
+from datetime import datetime
+
+# 1. Threading basics
+print("\n1. THREADING BASICS:")
+print("-"*40)
+
+def worker(name, delay):
+    """Simple worker function"""
+    print(f"  Thread {name} starting")
+    time.sleep(delay)
+    print(f"  Thread {name} finished after {delay}s")
+
+# Create threads
+threads = []
+for i in range(3):
+    t = threading.Thread(target=worker, args=(f"Thread-{i}", i+1))
+    threads.append(t)
+    t.start()
+
+# Wait for all threads
+for t in threads:
+    t.join()
+print("  All threads completed")
+
+# 2. Thread pool
+print("\n2. THREAD POOL:")
+print("-"*40)
+
+def task(n):
+    print(f"  Task {n} starting")
+    time.sleep(1)
+    return f"Task {n} result"
+
+with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:
+    futures = [executor.submit(task, i) for i in range(5)]
+    
+   
 
 
