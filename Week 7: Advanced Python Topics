@@ -1,1 +1,19 @@
+Week 7: Advanced Python Topics
+📋 Learning Objectives
+By the end of this week, you will be able to:
 
+✅ Create and use decorators to modify function behavior
+
+✅ Implement generators for memory-efficient data processing
+
+✅ Build custom context managers for resource management
+
+✅ Understand and use iterators and iterables
+
+✅ Work with closures and function factories
+
+✅ Implement multithreading and multiprocessing
+
+✅ Use asyncio for asynchronous programming
+
+✅ Profile and optimize Python code
