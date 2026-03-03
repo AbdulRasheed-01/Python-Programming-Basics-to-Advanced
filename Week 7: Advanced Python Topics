@@ -1058,6 +1058,95 @@ if os.path.exists("test_dir"):
 print("\n✅ Cleaned up files")
 
 Output:
+============================================================
+CONTEXT MANAGERS
+============================================================
+
+1. CLASS-BASED CONTEXT MANAGER:
+----------------------------------------
+  Starting timer...
+  Sum calculated: 499999500000
+  Elapsed time: 1.0012 seconds
+
+2. EXCEPTION HANDLING:
+----------------------------------------
+  Connecting to database...
+  Performing database operations...
+  All operations successful
+  Committing transaction...
+  Closing database connection...
+  Connecting to database...
+  Performing database operations...
+  Error occurred: Something went wrong
+  Rolling back transaction...
+  Closing database connection...
+  Exception caught outside
+
+3. CONTEXT MANAGER WITH ARGUMENTS:
+----------------------------------------
+  Opening test.txt in w mode
+  File written
+  Closed test.txt
+
+4. CONTEXTLIB MODULE:
+----------------------------------------
+  Starting sleep operation...
+  sleep operation took 0.5012 seconds
+
+5. MULTIPLE CONTEXT MANAGERS:
+----------------------------------------
+  Opening file1.txt in w mode
+  Opening file2.txt in w mode
+  Both files written
+  Closed file1.txt
+  Closed file2.txt
+
+6. REDIRECTING OUTPUT:
+----------------------------------------
+Captured output: This goes to the StringIO buffer
+So does this
+
+7. NESTED CONTEXT MANAGERS:
+----------------------------------------
+  Enter level 1
+    Enter level 2
+      Enter level 3
+        Inside all levels
+      Exit level 3
+    Exit level 2
+  Exit level 1
+
+8. DATABASE TRANSACTION:
+----------------------------------------
+  Transaction started
+  Users: [(1, 'Alice'), (2, 'Bob')]
+  Committing transaction
+  Connection closed
+  Transaction started
+  Error: no such table: wrong_table
+  Rolling back transaction
+  Connection closed
+  Caught: no such table: wrong_table
+
+9. CHANGING DIRECTORY:
+----------------------------------------
+  Original directory: /home/user/ros2_ws
+  Changed to: /home/user/ros2_ws/test_dir
+    Inside test_dir
+  Restored to: /home/user/ros2_ws
+  Back in original directory
+
+10. RESOURCE POOLING:
+----------------------------------------
+  Acquired connection 1
+    Using connection 1
+  Acquired connection 0
+    Using connection 0
+  Released connection 0
+  Released connection 1
+
+✅ Cleaned up files
+
 
 
 
