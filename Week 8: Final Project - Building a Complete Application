@@ -1940,7 +1940,6 @@ Step 7: HTML Templates
 </div>
 {% endblock %}
 Step 8: Background Tasks with Celery
-
 # celery_worker.py
 """
 Celery worker for background tasks
@@ -1984,6 +1983,165 @@ celery_app.conf.update(
 celery_app.conf.beat_schedule = {
     "check-overdue-tasks": {
         "task": "celery_worker.check_overdue_tasks",
-        "schedule": crontab(hour="*/1"),  #
+        "schedule": crontab(hour="*/1"),  # Every hour
+    },
+    "send-daily-digest": {
+        "task": "celery_worker.send_daily_digest",
+        "schedule": crontab(hour=8, minute=0),  # Every day at 8 AM
+    },
+    "cleanup-old-tasks": {
+        "task": "celery_worker.cleanup_old_tasks",
+        "schedule": crontab(day_of_week="sunday", hour=0, minute=0),  # Weekly
+    },
+}
 
+@celery_app.task
+def check_overdue_tasks():
+    """Check for overdue tasks and send notifications"""
+    logger.info("Checking for overdue tasks...")
+    
+    async def _run():
+        async with AsyncSessionLocal() as db:
+            # Get all overdue tasks
+            tasks = await crud.get_overdue_tasks(db)
+            
+            for task in tasks:
+                # Send notification (implement based on user preferences)
+                logger.info(f"Task {task.id} is overdue: {task.title}")
+                
+                # You could send email here
+                if task.owner.email:
+                    send_overdue_notification.delay(task.id, task.owner.email)
+    
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_run())
+    loop.close()
+    
+    logger.info(f"Checked {len(tasks)} overdue tasks")
 
+@celery_app.task
+def send_overdue_notification(task_id: int, email: str):
+    """Send overdue task notification email"""
+    logger.info(f"Sending overdue notification for task {task_id} to {email}")
+    
+    # Email configuration
+    if not settings.SMTP_HOST:
+        logger.warning("SMTP not configured, skipping email")
+        return
+    
+    msg = MIMEMultipart()
+    msg["From"] = settings.EMAIL_FROM
+    msg["To"] = email
+    msg["Subject"] = "Task Overdue Notification"
+    
+    body = f"""
+    <html>
+        <body>
+            <h2>Task Overdue</h2>
+            <p>Your task (ID: {task_id}) is now overdue.</p>
+            <p>Please log in to TaskFlow to review and update your tasks.</p>
+            <br>
+            <p><a href="http://localhost:8000/tasks/{task_id}">View Task</a></p>
+        </body>
+    </html>
+    """
+    
+    msg.attach(MIMEText(body, "html"))
+    
+    try:
+        with smtplib.SMTP(settings.SMTP_HOST, settings.SMTP_PORT) as server:
+            if settings.SMTP_USER:
+                server.starttls()
+                server.login(settings.SMTP_USER, settings.SMTP_PASSWORD)
+            server.send_message(msg)
+        logger.info(f"Email sent successfully to {email}")
+    except Exception as e:
+        logger.error(f"Failed to send email: {e}")
+
+@celery_app.task
+def send_daily_digest():
+    """Send daily task digest to users"""
+    logger.info("Sending daily digests...")
+    
+    async def _run():
+        async with AsyncSessionLocal() as db:
+            # Get all active users
+            users = await crud.get_users(db, active_only=True)
+            
+            for user in users:
+                if not user.email:
+                    continue
+                
+                # Get user's tasks for the day
+                today_start = datetime.now().replace(hour=0, minute=0, second=0)
+                today_end = today_start + timedelta(days=1)
+                
+                tasks = await crud.get_tasks(
+                    db, user.id,
+                    filters={
+                        "due_date": {
+                            "gte": today_start,
+                            "lt": today_end
+                        }
+                    }
+                )
+                
+                if tasks:
+                    send_daily_digest_email.delay(user.id, user.email, [
+                        {"id": t.id, "title": t.title} for t in tasks
+                    ])
+    
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_run())
+    loop.close()
+
+@celery_app.task
+def send_daily_digest_email(user_id: int, email: str, tasks: list):
+    """Send daily digest email"""
+    logger.info(f"Sending daily digest to {email}")
+    
+    # Similar to send_overdue_notification but with task list
+
+@celery_app.task
+def cleanup_old_tasks():
+    """Archive or delete old completed tasks"""
+    logger.info("Cleaning up old tasks...")
+    
+    async def _run():
+        async with AsyncSessionLocal() as db:
+            # Get tasks completed more than 30 days ago
+            cutoff_date = datetime.now() - timedelta(days=30)
+            
+            await crud.archive_old_tasks(db, cutoff_date)
+    
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_run())
+    loop.close()
+
+@celery_app.task
+def export_user_tasks(user_id: int, format: str = "csv"):
+    """Export user tasks to file (runs in background)"""
+    logger.info(f"Exporting tasks for user {user_id} to {format}")
+    
+    async def _run():
+        async with AsyncSessionLocal() as db:
+            tasks = await crud.get_tasks(db, user_id, limit=10000)
+            
+            if format == "csv":
+                filename = f"exports/user_{user_id}_tasks_{datetime.now().strftime('%Y%m%d_%H%M%S')}.csv"
+                await crud.export_to_csv(db, tasks, filename)
+            elif format == "json":
+                filename = f"exports/user_{user_id}_tasks_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
+                await crud.export_to_json(db, tasks, filename)
+            
+            logger.info(f"Exported {len(tasks)} tasks to {filename}")
+            
+            # Notify user (via email, websocket, etc.)
+    
+    loop = asyncio.new_event_loop()
+    asyncio.set_event_loop(loop)
+    loop.run_until_complete(_run())
+    loop.close()
