@@ -872,5 +872,6 @@ def setup_auth(app):
         logger.info(f"User {current_user.username} logged out")
         return {"message": "Successfully logged out"}
 
+Step 4: CRUD Operations
 
 
