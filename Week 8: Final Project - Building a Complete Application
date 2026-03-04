@@ -53,3 +53,44 @@ Docker	           |       Containerized deployment	           |         Docker, 
 🔧 Step-by-Step Implementation
 Step 1: Project Setup and Configuration
 
+# requirements.txt
+"""
+FastAPI framework and dependencies
+"""
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+jinja2==3.1.2
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.0
+
+# Database
+sqlalchemy==2.0.23
+alembic==1.12.1
+psycopg2-binary==2.9.9  # For PostgreSQL
+aiosqlite==0.19.0        # For SQLite (development)
+
+# Background tasks
+celery==5.3.4
+redis==5.0.1
+
+# Email
+jinja2==3.1.2
+aiofiles==23.2.1
+
+# Utilities
+pydantic[email]==2.5.0
+pydantic-settings==2.1.0
+python-dateutil==2.8.2
+pendulum==3.0.0
+
+# Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+httpx==0.25.1
+factory-boy==3.3.0
+
+# Monitoring
+prometheus-client==0.19.0
+
