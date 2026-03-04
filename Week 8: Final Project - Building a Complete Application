@@ -1342,4 +1342,5 @@ async def get_task_stats(db: AsyncSession, user_id: int) -> schemas.TaskStats:
         medium=medium,
         low=low
     )
+Step 5: API Routes
 
