@@ -1688,3 +1688,255 @@ async def dashboard(
         }
     )
 
+Step 7: HTML Templates
+<!-- app/templates/base.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}TaskFlow{% endblock %}</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/static/css/style.css">
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Logo -->
+                <div class="flex items-center">
+                    <a href="/" class="flex items-center space-x-2">
+                        <i class="fas fa-tasks text-blue-600 text-2xl"></i>
+                        <span class="font-bold text-xl text-gray-800">TaskFlow</span>
+                    </a>
+                </div>
+                
+                <!-- Navigation Links -->
+                <div class="hidden md:flex items-center space-x-4">
+                    {% if request.session.get('user_id') %}
+                        <a href="/dashboard" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-chart-pie mr-1"></i>Dashboard
+                        </a>
+                        <a href="/tasks" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-list mr-1"></i>Tasks
+                        </a>
+                        <a href="/categories" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-tags mr-1"></i>Categories
+                        </a>
+                        <a href="/profile" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-user mr-1"></i>Profile
+                        </a>
+                        <a href="/logout" class="bg-red-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-red-600">
+                            <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                        </a>
+                    {% else %}
+                        <a href="/login" class="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">
+                            Login
+                        </a>
+                        <a href="/register" class="bg-blue-500 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-600">
+                            Register
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button type="button" class="text-gray-500 hover:text-gray-600 focus:outline-none">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto py-6 px-4">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-white border-t mt-auto">
+        <div class="max-w-7xl mx-auto py-6 px-4">
+            <p class="text-center text-gray-500 text-sm">
+                &copy; 2024 TaskFlow. All rights reserved.
+            </p>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="/static/js/main.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
+
+<!-- app/templates/dashboard.html -->
+{% extends "base.html" %}
+
+{% block title %}Dashboard - TaskFlow{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    <!-- Welcome Section -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h1 class="text-2xl font-bold text-gray-800">
+            Welcome back, {{ user.full_name or user.username }}!
+        </h1>
+        <p class="text-gray-600 mt-1">
+            Here's what's happening with your tasks today.
+        </p>
+    </div>
+    
+    <!-- Statistics Cards -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Total Tasks</p>
+                    <p class="text-3xl font-bold text-gray-800">{{ stats.total }}</p>
+                </div>
+                <div class="bg-blue-100 rounded-full p-3">
+                    <i class="fas fa-tasks text-blue-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Completed</p>
+                    <p class="text-3xl font-bold text-green-600">{{ stats.done }}</p>
+                </div>
+                <div class="bg-green-100 rounded-full p-3">
+                    <i class="fas fa-check-circle text-green-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">In Progress</p>
+                    <p class="text-3xl font-bold text-yellow-600">{{ stats.in_progress }}</p>
+                </div>
+                <div class="bg-yellow-100 rounded-full p-3">
+                    <i class="fas fa-spinner text-yellow-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+        
+        <div class="bg-white rounded-lg shadow p-6">
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-gray-500 text-sm">Overdue</p>
+                    <p class="text-3xl font-bold text-red-600">{{ stats.overdue }}</p>
+                </div>
+                <div class="bg-red-100 rounded-full p-3">
+                    <i class="fas fa-exclamation-circle text-red-600 text-xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Completion Rate Card -->
+    <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold text-gray-800 mb-4">Completion Rate</h2>
+        <div class="relative pt-1">
+            <div class="flex mb-2 items-center justify-between">
+                <div>
+                    <span class="text-xs font-semibold inline-block py-1 px-2 uppercase rounded-full text-blue-600 bg-blue-200">
+                        Progress
+                    </span>
+                </div>
+                <div class="text-right">
+                    <span class="text-xs font-semibold inline-block text-blue-600">
+                        {{ "%.1f"|format(stats.completion_rate) }}%
+                    </span>
+                </div>
+            </div>
+            <div class="overflow-hidden h-2 mb-4 text-xs flex rounded bg-blue-200">
+                <div style="width: {{ stats.completion_rate }}%" 
+                     class="shadow-none flex flex-col text-center whitespace-nowrap text-white justify-center bg-blue-500">
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Tasks -->
+    <div class="bg-white rounded-lg shadow">
+        <div class="px-6 py-4 border-b">
+            <h2 class="text-lg font-semibold text-gray-800">Recent Tasks</h2>
+        </div>
+        <div class="divide-y">
+            {% for task in recent_tasks %}
+            <div class="px-6 py-4 hover:bg-gray-50">
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h3 class="font-medium text-gray-800">{{ task.title }}</h3>
+                        <p class="text-sm text-gray-500">
+                            {% if task.category %}
+                                <span class="inline-block px-2 py-1 text-xs rounded-full" 
+                                      style="background-color: {{ task.category.color }}20; color: {{ task.category.color }}">
+                                    {{ task.category.name }}
+                                </span>
+                            {% endif %}
+                            
+                            {% if task.due_date %}
+                                <span class="ml-2 text-{{ 'red' if task.is_overdue else 'gray' }}-500">
+                                    <i class="far fa-calendar mr-1"></i>
+                                    {{ task.due_date.strftime('%Y-%m-%d') }}
+                                    {% if task.is_overdue %}
+                                        <span class="text-red-500">(Overdue)</span>
+                                    {% endif %}
+                                </span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    <span class="px-2 py-1 text-xs rounded-full 
+                        {% if task.priority == 'urgent' %}bg-red-100 text-red-800
+                        {% elif task.priority == 'high' %}bg-orange-100 text-orange-800
+                        {% elif task.priority == 'medium' %}bg-yellow-100 text-yellow-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {{ task.priority }}
+                    </span>
+                </div>
+            </div>
+            {% else %}
+            <div class="px-6 py-8 text-center text-gray-500">
+                No tasks yet. <a href="/tasks/new" class="text-blue-600 hover:underline">Create your first task</a>
+            </div>
+            {% endfor %}
+        </div>
+        {% if recent_tasks %}
+        <div class="px-6 py-4 border-t">
+            <a href="/tasks" class="text-blue-600 hover:underline">View all tasks →</a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <a href="/tasks/new" class="bg-blue-500 hover:bg-blue-600 text-white rounded-lg shadow p-6 text-center">
+            <i class="fas fa-plus-circle text-3xl mb-2"></i>
+            <h3 class="text-lg font-semibold">Create New Task</h3>
+            <p class="text-sm opacity-90">Add a new task to your list</p>
+        </a>
+        
+        <a href="/export" class="bg-green-500 hover:bg-green-600 text-white rounded-lg shadow p-6 text-center">
+            <i class="fas fa-download text-3xl mb-2"></i>
+            <h3 class="text-lg font-semibold">Export Tasks</h3>
+            <p class="text-sm opacity-90">Download your tasks as CSV</p>
+        </a>
+    </div>
+</div>
+{% endblock %}
+
