@@ -255,4 +255,55 @@ def create_app() -> FastAPI:
     logger.info(f"Application created successfully in {settings.ENVIRONMENT} mode")
     return app
 Step 2: Database Models and Schemas
+# app/database.py
+"""
+Database configuration and session management
+"""
+
+from sqlalchemy.ext.asyncio import create_async_engine, AsyncSession
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import sessionmaker, declared_attr
+from sqlalchemy import Column, DateTime, func
+from .config import settings
+import re
+
+# Create async engine
+engine = create_async_engine(
+    settings.DATABASE_URL,
+    echo=settings.DEBUG,
+    pool_size=settings.DATABASE_POOL_SIZE,
+    max_overflow=10
+)
+
+# Create async session factory
+AsyncSessionLocal = sessionmaker(
+    engine,
+    class_=AsyncSession,
+    expire_on_commit=False
+)
+
+# Base class for models
+class Base(declarative_base()):
+    """Base model class with common attributes"""
+    
+    __abstract__ = True
+    
+    created_at = Column(DateTime, server_default=func.now(), nullable=False)
+    updated_at = Column(DateTime, onupdate=func.now(), server_default=func.now())
+    
+    @declared_attr
+    def __tablename__(cls):
+        """Generate table name from class name"""
+        name = re.sub(r'(?<!^)(?=[A-Z])', '_', cls.__name__).lower()
+        return name + 's'
+
+# Dependency to get database session
+async def get_db():
+    """Dependency for getting database session"""
+    async with AsyncSessionLocal() as session:
+        try:
+            yield session
+        finally:
+            await session.close()
+
 
