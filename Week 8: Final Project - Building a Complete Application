@@ -2585,7 +2585,29 @@ http {
         location / {
             proxy_pass http://taskflow_backend;
             proxy_set_header Host $host;
-            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Real-IP $remote_addr;# app/main.py
+
+Step 11: Main Application Entry Point
+
+"""
+Main application entry point
+"""
+
+from . import create_app
+import logging
+
+# Create FastAPI application
+app = create_app()
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "app.main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        log_level="info"
+    )
             proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
             proxy_set_header X-Forwarded-Proto $scheme;
         }
@@ -2593,3 +2615,49 @@ http {
 }
 
 
+Step 12: Project Documentation
+# README.md
+
+# TaskFlow - Complete Task Management System
+
+TaskFlow is a comprehensive task management application built with FastAPI, SQLAlchemy, and modern Python practices. It demonstrates a full-stack application with authentication, database operations, background tasks, and containerized deployment.
+
+## 🚀 Features
+
+- **User Management**: Registration, login, profile management
+- **Task Management**: Create, read, update, delete tasks
+- **Categories & Tags**: Organize tasks with categories and tags
+- **Search & Filter**: Advanced search and filtering capabilities
+- **Dashboard**: Visual statistics and task overview
+- **Background Tasks**: Email reminders, exports, cleanup jobs
+- **REST API**: Full API access with Swagger documentation
+- **Authentication**: JWT-based authentication with refresh tokens
+- **Database**: Async SQLAlchemy with PostgreSQL/SQLite
+- **Testing**: Comprehensive unit and integration tests
+- **Docker**: Containerized deployment with Docker Compose
+
+## 🛠️ Tech Stack
+
+- **Backend**: FastAPI, SQLAlchemy, Pydantic
+- **Database**: PostgreSQL (production), SQLite (development)
+- **Authentication**: JWT, Passlib
+- **Background Tasks**: Celery, Redis
+- **Frontend**: Jinja2 templates, TailwindCSS
+- **Testing**: Pytest, HTTPX
+- **Deployment**: Docker, Docker Compose, Nginx
+
+## 📋 Prerequisites
+
+- Python 3.11+
+- PostgreSQL (optional, SQLite works for development)
+- Redis (for Celery)
+- Docker and Docker Compose (optional)
+
+## 🔧 Installation
+
+### Local Development
+
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/taskflow.git
+cd taskflow
