@@ -2701,5 +2701,167 @@ When running in development mode, API documentation is available at:
 Swagger UI: http://localhost:8000/api/docs
 
 ReDoc: http://localhost:8000/api/redoc
+🧪 Running Tests
+
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=app tests/
+
+# Run specific test file
+pytest tests/test_api.py -v
+
+🚦 API Endpoints
+Authentication
+POST /api/auth/login - User login
+
+POST /api/auth/refresh - Refresh access token
+
+POST /api/auth/logout - User logout
+
+Users
+POST /api/users/register - Register new user
+
+GET /api/users/me - Get current user
+
+PUT /api/users/me - Update current user
+
+DELETE /api/users/me - Delete current user
+
+GET /api/users/ - Get all users (admin)
+
+GET /api/users/stats - Get user statistics
+
+Tasks
+GET /api/tasks/ - List tasks
+
+POST /api/tasks/ - Create task
+
+GET /api/tasks/{id} - Get task
+
+PUT /api/tasks/{id} - Update task
+
+DELETE /api/tasks/{id} - Delete task
+
+POST /api/tasks/{id}/complete - Mark task complete
+
+Categories
+GET /api/categories/ - List categories
+
+POST /api/categories/ - Create category
+
+GET /api/categories/{id} - Get category
+
+PUT /api/categories/{id} - Update category
+
+DELETE /api/categories/{id} - Delete category
+
+📊 Database Schema
+
+-- Users table
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    username VARCHAR(50) UNIQUE NOT NULL,
+    full_name VARCHAR(100),
+    hashed_password VARCHAR(255) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    is_superuser BOOLEAN DEFAULT FALSE,
+    last_login TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Categories table
+CREATE TABLE categories (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    color VARCHAR(7) DEFAULT '#3498db',
+    user_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tags table
+CREATE TABLE tags (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(50) UNIQUE NOT NULL,
+    color VARCHAR(7) DEFAULT '#2ecc71',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tasks table
+CREATE TABLE tasks (
+    id SERIAL PRIMARY KEY,
+    title VARCHAR(200) NOT NULL,
+    description TEXT,
+    priority VARCHAR(20) DEFAULT 'medium',
+    status VARCHAR(20) DEFAULT 'todo',
+    due_date TIMESTAMP,
+    completed_at TIMESTAMP,
+    estimated_hours FLOAT DEFAULT 0,
+    actual_hours FLOAT DEFAULT 0,
+    owner_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    category_id INTEGER REFERENCES categories(id) ON DELETE SET NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Task-Tag association
+CREATE TABLE task_tags (
+    task_id INTEGER REFERENCES tasks(id) ON DELETE CASCADE,
+    tag_id INTEGER REFERENCES tags(id) ON DELETE CASCADE,
+    PRIMARY KEY (task_id, tag_id)
+);
+
+🙏 Acknowledgments
+FastAPI documentation and community
+
+SQLAlchemy team for excellent async ORM
+
+All contributors and users of TaskFlow
+
+Built with using Python and FastAPI
+
+
+---
+
+## 🚀 Running the Complete Application
+
+### Development Mode
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/yourusername/taskflow.git
+cd taskflow
+
+# 2. Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# 3. Install dependencies
+pip install -r requirements.txt
+
+# 4. Create .env file
+cp .env.example .env
+# Edit .env with your settings
+
+# 5. Run database migrations
+alembic upgrade head
+
+# 6. Start Redis (for Celery)
+redis-server
+
+# 7. Start Celery worker (in new terminal)
+celery -A celery_worker worker --loglevel=info
+
+# 8. Start Celery beat (in new terminal)
+celery -A celery_worker beat --loglevel=info
+
+# 9. Start FastAPI application
+uvicorn app.main:app --reload
+
+
 
 
