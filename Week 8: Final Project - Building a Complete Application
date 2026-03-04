@@ -164,3 +164,94 @@ def get_settings():
     return Settings()
 
 settings = get_settings()
+
+# app/__init__.py
+"""
+Application package initializer
+"""
+
+from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.templating import Jinja2Templates
+from contextlib import asynccontextmanager
+import logging
+from .config import settings
+from .database import engine, Base
+from .auth import setup_auth
+from .api import api_router
+from .web import web_router
+
+# Configure logging
+logging.basicConfig(
+    level=logging.INFO if not settings.DEBUG else logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+logger = logging.getLogger(__name__)
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Lifespan context manager for startup/shutdown events
+    """
+    # Startup
+    logger.info("Starting up TaskFlow application...")
+    
+    # Create database tables
+    async with engine.begin() as conn:
+        await conn.run_sync(Base.metadata.create_all)
+    
+    logger.info("Database tables created/verified")
+    
+    yield
+    
+    # Shutdown
+    logger.info("Shutting down TaskFlow application...")
+    await engine.dispose()
+
+def create_app() -> FastAPI:
+    """Application factory"""
+    
+    app = FastAPI(
+        title=settings.APP_NAME,
+        version=settings.APP_VERSION,
+        debug=settings.DEBUG,
+        lifespan=lifespan,
+        docs_url="/api/docs" if settings.DEBUG else None,
+        redoc_url="/api/redoc" if settings.DEBUG else None
+    )
+    
+    # Mount static files
+    app.mount("/static", StaticFiles(directory="static"), name="static")
+    
+    # Setup templates
+    templates = Jinja2Templates(directory="app/templates")
+    app.state.templates = templates
+    
+    # Setup authentication
+    setup_auth(app)
+    
+    # Include routers
+    app.include_router(api_router, prefix="/api")
+    app.include_router(web_router)
+    
+    # Add middleware
+    from starlette.middleware.cors import CORSMiddleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.ALLOWED_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+    
+    from starlette.middleware.sessions import SessionMiddleware
+    app.add_middleware(
+        SessionMiddleware,
+        secret_key=settings.SECRET_KEY,
+        session_cookie="taskflow_session",
+        max_age=86400  # 24 hours
+    )
+    
+    logger.info(f"Application created successfully in {settings.ENVIRONMENT} mode")
+    return app
+
