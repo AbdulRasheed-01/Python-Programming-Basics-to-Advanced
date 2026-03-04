@@ -254,4 +254,5 @@ def create_app() -> FastAPI:
     
     logger.info(f"Application created successfully in {settings.ENVIRONMENT} mode")
     return app
+Step 2: Database Models and Schemas
 
