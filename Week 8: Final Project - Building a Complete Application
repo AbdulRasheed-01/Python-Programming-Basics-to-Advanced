@@ -1468,4 +1468,223 @@ async def complete_task(
     task = await crud.update_task(db, task_id, current_user.id, update_data)
     return task
 
+Step 6: Web Routes (Templates)
+# app/web/__init__.py
+"""
+Web routes package for serving HTML templates
+"""
+
+from fastapi import APIRouter
+
+web_router = APIRouter()
+
+from . import auth_routes, task_routes, dashboard_routes
+
+# app/web/auth_routes.py
+"""
+Authentication web routes
+"""
+
+from fastapi import APIRouter, Request, Depends, HTTPException, status
+from fastapi.responses import HTMLResponse, RedirectResponse
+from fastapi.templating import Jinja2Templates
+from sqlalchemy.ext.asyncio import AsyncSession
+from .. import schemas, crud
+from ..database import get_db
+from ..auth import authenticate_user, create_access_token
+from ..config import settings
+from . import web_router
+
+templates = Jinja2Templates(directory="app/templates")
+
+@web_router.get("/login", response_class=HTMLResponse)
+async def login_page(request: Request):
+    """Render login page"""
+    return templates.TemplateResponse(
+        "login.html",
+        {"request": request}
+    )
+
+@web_router.post("/login")
+async def login(
+    request: Request,
+    db: AsyncSession = Depends(get_db)
+):
+    """Process login form"""
+    form = await request.form()
+    username = form.get("username")
+    password = form.get("password")
+    
+    # Authenticate user
+    user = await authenticate_user(db, username, password)
+    
+    if not user:
+        return templates.TemplateResponse(
+            "login.html",
+            {
+                "request": request,
+                "error": "Invalid username or password"
+            }
+        )
+    
+    # Create session
+    access_token = create_access_token({"sub": str(user.id)})
+    response = RedirectResponse(url="/dashboard", status_code=302)
+    response.set_cookie(
+        key="access_token",
+        value=f"Bearer {access_token}",
+        httponly=True,
+        max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60,
+        secure=not settings.DEBUG
+    )
+    
+    return response
+
+@web_router.get("/register", response_class=HTMLResponse)
+async def register_page(request: Request):
+    """Render registration page"""
+    return templates.TemplateResponse(
+        "register.html",
+        {"request": request}
+    )
+
+@web_router.post("/register")
+async def register(
+    request: Request,
+    db: AsyncSession = Depends(get_db)
+):
+    """Process registration form"""
+    form = await request.form()
+    
+    user_data = schemas.UserCreate(
+        email=form.get("email"),
+        username=form.get("username"),
+        full_name=form.get("full_name"),
+        password=form.get("password")
+    )
+    
+    # Validate password match
+    if form.get("password") != form.get("confirm_password"):
+        return templates.TemplateResponse(
+            "register.html",
+            {
+                "request": request,
+                "error": "Passwords do not match"
+            }
+        )
+    
+    try:
+        # Check if user exists
+        existing = await crud.get_user_by_email(db, user_data.email)
+        if existing:
+            return templates.TemplateResponse(
+                "register.html",
+                {
+                    "request": request,
+                    "error": "Email already registered"
+                }
+            )
+        
+        existing = await crud.get_user_by_username(db, user_data.username)
+        if existing:
+            return templates.TemplateResponse(
+                "register.html",
+                {
+                    "request": request,
+                    "error": "Username already taken"
+                }
+            )
+        
+        # Create user
+        user = await crud.create_user(db, user_data)
+        
+        # Auto-login after registration
+        access_token = create_access_token({"sub": str(user.id)})
+        response = RedirectResponse(url="/dashboard", status_code=302)
+        response.set_cookie(
+            key="access_token",
+            value=f"Bearer {access_token}",
+            httponly=True,
+            max_age=settings.ACCESS_TOKEN_EXPIRE_MINUTES * 60
+        )
+        
+        return response
+        
+    except Exception as e:
+        return templates.TemplateResponse(
+            "register.html",
+            {
+                "request": request,
+                "error": f"Registration failed: {str(e)}"
+            }
+        )
+
+@web_router.get("/logout")
+async def logout():
+    """Logout user"""
+    response = RedirectResponse(url="/")
+    response.delete_cookie("access_token")
+    return response
+
+# app/web/dashboard_routes.py
+"""
+Dashboard web routes
+"""
+
+from fastapi import APIRouter, Request, Depends
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+from sqlalchemy.ext.asyncio import AsyncSession
+from .. import crud
+from ..database import get_db
+from ..auth import get_current_user
+from ..models import User
+from . import web_router
+
+templates = Jinja2Templates(directory="app/templates")
+
+@web_router.get("/", response_class=HTMLResponse)
+async def home_page(request: Request):
+    """Render home page"""
+    return templates.TemplateResponse(
+        "index.html",
+        {"request": request}
+    )
+
+@web_router.get("/dashboard", response_class=HTMLResponse)
+async def dashboard(
+    request: Request,
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user)
+):
+    """Render dashboard page"""
+    if not current_user:
+        return templates.TemplateResponse(
+            "login.html",
+            {"request": request, "error": "Please login to continue"}
+        )
+    
+    # Get statistics
+    stats = await crud.get_task_stats(db, current_user.id)
+    
+    # Get recent tasks
+    recent_tasks = await crud.get_tasks(
+        db, current_user.id, limit=5, sort_by="created_at", sort_desc=True
+    )
+    
+    # Get upcoming tasks (due soon)
+    upcoming_tasks = await crud.get_tasks(
+        db, current_user.id, limit=5, sort_by="due_date", sort_desc=False
+    )
+    
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {
+            "request": request,
+            "user": current_user,
+            "stats": stats,
+            "recent_tasks": recent_tasks,
+            "upcoming_tasks": upcoming_tasks
+        }
+    )
 
