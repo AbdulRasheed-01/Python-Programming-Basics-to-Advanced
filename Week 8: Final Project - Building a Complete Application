@@ -2440,4 +2440,156 @@ USER appuser
 # Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # PostgreSQL database
+  postgres:
+    image: postgres:15
+    container_name: taskflow_postgres
+    environment:
+      POSTGRES_USER: taskflow
+      POSTGRES_PASSWORD: taskflow123
+      POSTGRES_DB: taskflow
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - taskflow_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U taskflow"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Redis for caching and Celery broker
+  redis:
+    image: redis:7-alpine
+    container_name: taskflow_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - taskflow_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # FastAPI application
+  web:
+    build: .
+    container_name: taskflow_web
+    command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+    ports:
+      - "8000:8000"
+    environment:
+      DATABASE_URL: postgresql+asyncpg://taskflow:taskflow123@postgres:5432/taskflow
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+      SECRET_KEY: ${SECRET_KEY:-development-secret-key-change-in-production}
+      JWT_SECRET_KEY: ${JWT_SECRET_KEY:-jwt-secret-key-change-in-production}
+      ENVIRONMENT: development
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - .:/app
+    networks:
+      - taskflow_network
+
+  # Celery worker
+  celery_worker:
+    build: .
+    container_name: taskflow_celery
+    command: celery -A celery_worker worker --loglevel=info
+    environment:
+      DATABASE_URL: postgresql+asyncpg://taskflow:taskflow123@postgres:5432/taskflow
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    depends_on:
+      - postgres
+      - redis
+      - web
+    volumes:
+      - .:/app
+    networks:
+      - taskflow_network
+
+  # Celery beat for scheduled tasks
+  celery_beat:
+    build: .
+    container_name: taskflow_beat
+    command: celery -A celery_worker beat --loglevel=info
+    environment:
+      DATABASE_URL: postgresql+asyncpg://taskflow:taskflow123@postgres:5432/taskflow
+      REDIS_URL: redis://redis:6379/0
+      CELERY_BROKER_URL: redis://redis:6379/1
+      CELERY_RESULT_BACKEND: redis://redis:6379/2
+    depends_on:
+      - postgres
+      - redis
+      - web
+    volumes:
+      - .:/app
+    networks:
+      - taskflow_network
+
+  # Nginx reverse proxy
+  nginx:
+    image: nginx:alpine
+    container_name: taskflow_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./static:/static
+    depends_on:
+      - web
+    networks:
+      - taskflow_network
+
+volumes:
+  postgres_data:
+
+networks:
+  taskflow_network:
+    driver: bridge
+
+# nginx.conf
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream taskflow_backend {
+        server web:8000;
+    }
+
+    server {
+        listen 80;
+        server_name localhost;
+
+        location /static/ {
+            alias /static/;
+            expires 30d;
+        }
+
+        location / {
+            proxy_pass http://taskflow_backend;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+        }
+    }
+}
+
 
