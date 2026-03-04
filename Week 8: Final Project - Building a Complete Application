@@ -21,3 +21,31 @@ By the end of this week, you will be able to:
 ✅ Containerize with Docker
 
 ✅ Deploy to production
+
+Features Implemented
+
+Feature	           |       Description	                       |         Technologies Used
+
+User Management	   |       Registration, login, profile	       |         FastAPI, JWT, Passlib
+
+Task CRUD	         |       Create, read, update, delete tasks	 |         SQLAlchemy, Pydantic
+
+Categories	       |       Organize tasks by categories	       |         Database relationships
+
+Tags	             |       Add tags to tasks	                 |         Many-to-many relationships
+
+Search & Filter	   |       Search tasks by various criteria	   |         SQL queries
+
+Due Dates	         |       Set and track deadlines	           |         DateTime handling
+
+Email Reminders	   |       Send reminders for upcoming tasks	 |         Celery, SMTP
+
+Export/Import	     |       Export tasks to CSV/JSON	           |         File handling
+
+Dashboard	         |       Statistics and visualizations	     |         Charts.js
+
+API Access	       |       RESTful API for external clients	   |         FastAPI, Swagger
+
+Testing	           |      Unit and integration tests	         |         Pytest
+
+Docker	           |       Containerized deployment	           |         Docker, Docker Compose
