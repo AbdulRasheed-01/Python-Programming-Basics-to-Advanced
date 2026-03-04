@@ -2661,3 +2661,45 @@ TaskFlow is a comprehensive task management application built with FastAPI, SQLA
 ```bash
 git clone https://github.com/yourusername/taskflow.git
 cd taskflow
+
+Create virtual environment:
+
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+Install dependencies:
+
+
+pip install -r requirements.txt
+
+Create environment file:
+
+
+cp .env.example .env
+# Edit .env with your configuration
+
+Run database migrations:
+
+alembic upgrade head
+
+Start the development server:
+
+uvicorn app.main:app --reload
+
+Visit http://localhost:8000
+
+Docker Deployment
+Build and run with Docker Compose:
+
+docker-compose up --build
+
+Access the application at http://localhost
+
+📚 API Documentation
+When running in development mode, API documentation is available at:
+
+Swagger UI: http://localhost:8000/api/docs
+
+ReDoc: http://localhost:8000/api/redoc
+
+
